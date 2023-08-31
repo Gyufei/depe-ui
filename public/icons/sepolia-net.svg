@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Sepolia</title>
+    <g id="" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="" transform="translate(-536.000000, -912.000000)">
+            <g id="group-14" transform="translate(520.000000, 893.000000)">
+                <g id="group-6" transform="translate(16.000000, 19.000000)">
+                    <circle id="m" fill="#CFB5F0" cx="10" cy="10" r="10"></circle>
+                    <polygon id="path" fill="#FFFFFF" points="5.87706303 10 9.86974854 3.36823086 13.9798741 10 9.92846855 12.5408872"></polygon>
+                    <polygon id="path-2" fill="#FFFFFF" points="5.87706303 10.8655749 9.92846855 16.6941352 13.9798741 10.8655749 9.92846855 13.1880497"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

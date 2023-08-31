@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const plugin = require("tailwindcss/plugin");
 
 module.exports = {
   content: ["./app/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
@@ -8,64 +7,25 @@ module.exports = {
   },
   theme: {
     extend: {
+      colors: {
+        black: "#0E043E",
+        yellow: "#E8F453",
+        sky: "#DBFDF0",
+        blue: "#E8F0FE",
+        pink: "#0E043E",
+      },
+      boxShadow: {
+        1: "1px 1px 0px 0px",
+        20: "0.2rem 0.2rem 0px 0px",
+        25: "0.25rem 0.25rem 0px 0px",
+        30: "0.3rem 0.3rem 0px 0px",
+        50: "0.5rem 0.5rem 0px 0px",
+      },
       fontFamily: {
-        display: ["var(--font-sf)", "system-ui", "sans-serif"],
-        default: ["var(--font-inter)", "system-ui", "sans-serif"],
-      },
-      animation: {
-        // Fade up and down
-        "fade-up": "fade-up 0.5s",
-        "fade-down": "fade-down 0.5s",
-        // Tooltip
-        "slide-up-fade": "slide-up-fade 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-        "slide-down-fade": "slide-down-fade 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-      },
-      keyframes: {
-        // Fade up and down
-        "fade-up": {
-          "0%": {
-            opacity: 0,
-            transform: "translateY(10px)",
-          },
-          "80%": {
-            opacity: 0.6,
-          },
-          "100%": {
-            opacity: 1,
-            transform: "translateY(0px)",
-          },
-        },
-        "fade-down": {
-          "0%": {
-            opacity: 0,
-            transform: "translateY(-10px)",
-          },
-          "80%": {
-            opacity: 0.6,
-          },
-          "100%": {
-            opacity: 1,
-            transform: "translateY(0px)",
-          },
-        },
-        // Tooltip
-        "slide-up-fade": {
-          "0%": { opacity: 0, transform: "translateY(6px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
-        },
-        "slide-down-fade": {
-          "0%": { opacity: 0, transform: "translateY(-6px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
-        },
+        primary: ["var(--font-haas-text)"],
+        title: ["var(--font-haas-disp)"],
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/typography"),
-    plugin(({ addVariant }) => {
-      addVariant("radix-side-top", '&[data-side="top"]');
-      addVariant("radix-side-bottom", '&[data-side="bottom"]');
-    }),
-  ],
+  plugins: [require("tailwindcss-animate")],
 };
