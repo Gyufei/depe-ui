@@ -18,7 +18,7 @@ export default function ConnectBtn() {
   return (
     <>
       <ShadowButton
-        className="rounded-xl bg-yellow"
+        className="rounded-xl bg-yellow hover:bg-yellow/90"
         onClick={() => modal.open()}
       >
         {isDisconnected ? (

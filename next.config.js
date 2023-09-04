@@ -4,7 +4,10 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains: [],
-  }
+  },
+  // experimental: {
+  //   swcPlugins: [["@swc-jotai/react-refresh", {}]],
+  // },
 };
 
 module.exports = nextConfig;
