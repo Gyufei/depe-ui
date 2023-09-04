@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { Loader2 } from "lucide-react";
+import { useNetwork, useSwitchNetwork } from "wagmi";
 
 import {
   Popover,
@@ -8,26 +10,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const networks = [
-  {
-    name: "Ethereum Mainnet",
-    src: "/icons/eth-net.svg",
-  },
-  {
-    name: "Ethereum Sepolia",
-    src: "/icons/sepolia-net.svg",
-  },
-];
+import { getChainLogo } from "@/lib/chain-configs";
+import Triangle from "/public/icons/triangle.svg";
+import { Skeleton } from "./ui/skeleton";
 
 export default function NetworkSelect() {
-  const [network, setNetwork] = useState(networks[0]);
+  const { chain } = useNetwork();
+  const { chains, switchNetworkAsync, isLoading, pendingChainId } =
+    useSwitchNetwork();
+
   const [popOpen, setPopOpen] = useState(false);
 
-  const handleSelectNet = (net: typeof network) => {
-    setNetwork(net);
-    setTimeout(() => {
-      setPopOpen(false);
-    }, 100);
+  const handleSelectNet = async (cId: number) => {
+    if (cId === chain?.id) return;
+
+    await switchNetworkAsync?.(cId);
+
+    setPopOpen(false);
   };
 
   return (
@@ -37,20 +36,22 @@ export default function NetworkSelect() {
           data-state={popOpen ? "open" : "close"}
           className="relative flex h-12 w-[88px] cursor-pointer items-center rounded-xl px-2 data-[state=open]:bg-sky"
         >
-          <Image
-            width={40}
-            height={40}
-            src={network.src}
-            alt={network.name}
-            className="z-10 rounded-full border border-black shadow-1 shadow-black"
-          ></Image>
-          <div className="ml-2 flex h-6 w-6 items-center justify-center">
+          {chain ? (
             <Image
-              width={14}
-              height={8}
-              src="/icons/triangle.svg"
-              alt="ethereum network"
+              width={40}
+              height={40}
+              src={getChainLogo(chain.name)}
+              alt="current chain logo"
+              className="z-10 rounded-full border border-black shadow-1 shadow-black"
             ></Image>
+          ) : (
+            <Skeleton className="h-10 w-10 rounded-full" />
+          )}
+          <div
+            data-state={popOpen ? "open" : "close"}
+            className="ml-2 flex h-6 w-6 items-center justify-center data-[state=open]:rotate-180"
+          >
+            <Image width={14} height={8} src={Triangle} alt="triangle"></Image>
           </div>
         </div>
       </PopoverTrigger>
@@ -59,21 +60,24 @@ export default function NetworkSelect() {
         align="start"
         alignOffset={-170}
       >
-        {networks.map((net) => (
+        {chains.map((c) => (
           <div
-            onClick={() => handleSelectNet(net)}
-            key={net.name}
-            data-state={network.name === net.name ? "active" : "inactive"}
-            className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black data-[state=active]:bg-black data-[state=active]:text-yellow"
+            key={c.name}
+            onClick={() => handleSelectNet(c.id)}
+            data-state={c.id === chain?.id ? "active" : "inactive"}
+            className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black hover:bg-black/90 hover:text-yellow data-[state=active]:bg-black data-[state=active]:text-yellow"
           >
             <Image
               width={24}
               height={24}
-              src={net.src}
-              alt={net.name}
+              src={getChainLogo(c.name)}
+              alt="chain logo"
               className="z-10 rounded-full border border-black shadow-1 shadow-black"
             />
-            <div className="text-sm">{net.name}</div>
+            <div className="flex-1 text-sm">{c.name}</div>
+            {isLoading && pendingChainId === c.id && (
+              <Loader2 className="h-4 w-4 animate-spin text-pink" />
+            )}
           </div>
         ))}
       </PopoverContent>

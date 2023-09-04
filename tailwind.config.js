@@ -8,11 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        black: "#0E043E",
-        yellow: "#E8F453",
-        sky: "#DBFDF0",
-        blue: "#E8F0FE",
-        pink: "#0E043E",
+        muted: "hsl(var(--color-muted))",
+        black: "hsl(var(--color-black))",
+        yellow: "hsl(var(--color-yellow))",
+        sky: "hsl(var(--color-sky))",
+        blue: "hsl(var(--color-blue))",
+        pink: "hsl(var(--color-pink))",
       },
       boxShadow: {
         1: "1px 1px 0px 0px",

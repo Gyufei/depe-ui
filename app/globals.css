@@ -5,3 +5,13 @@
 body {
   font-family: var(--font-haas-text);
 }
+
+:root {
+  --color-muted: 210 40% 96.1%;
+
+  --color-black: 250 88% 13%;
+  --color-sky: 168 75% 95%;
+  --color-yellow: 68 85% 70%;
+  --color-blue: 210 85% 97%;
+  --color-pink: 300 100% 90%;
+}

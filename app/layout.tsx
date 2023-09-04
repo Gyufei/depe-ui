@@ -2,6 +2,8 @@ import "./globals.css";
 import { HaasGrotDisp, HaasGrotText } from "./fonts";
 
 import { cn } from "@/lib/utils";
+import Web3ConnectProvider from "@/components/provider/web3-connect-provider";
+import BgProvider from "@/components/provider/bg-provider";
 
 export const metadata = {
   title: "Depe",
@@ -19,10 +21,12 @@ export default async function RootLayout({
         className={cn(
           HaasGrotDisp.variable,
           HaasGrotText.variable,
-          "bg-sky h-full w-full",
+          "h-screen w-screen",
         )}
       >
-        {children}
+        <Web3ConnectProvider>
+          <BgProvider>{children}</BgProvider>
+        </Web3ConnectProvider>
       </body>
     </html>
   );
