@@ -14,6 +14,7 @@ module.exports = {
         sky: "hsl(var(--color-sky))",
         blue: "hsl(var(--color-blue))",
         pink: "hsl(var(--color-pink))",
+        gray: "hsl(var(--color-gray))",
       },
       boxShadow: {
         1: "1px 1px 0px 0px",

@@ -12,7 +12,7 @@ import {
 
 import { getChainLogo } from "@/lib/chain-configs";
 import Triangle from "/public/icons/triangle.svg";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 export default function NetworkSelect() {
   const { chain } = useNetwork();

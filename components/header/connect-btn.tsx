@@ -3,12 +3,12 @@
 import Image from "next/image";
 
 import { useWeb3Modal } from "@web3modal/react";
-import ShadowButton from "./ui/shadow-button";
+import ShadowButton from "../ui/shadow-button";
 import { useAccount } from "wagmi";
 import { truncateAddr } from "@/lib/utils";
 
 import AccountAvatar from "/public/icons/account-avatar.svg";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 export default function ConnectBtn() {
   const modal = useWeb3Modal();
@@ -18,7 +18,7 @@ export default function ConnectBtn() {
   return (
     <>
       <ShadowButton
-        className="rounded-xl bg-yellow hover:bg-yellow/90"
+        className="rounded-xl bg-yellow font-title font-bold hover:bg-yellow/90"
         onClick={() => modal.open()}
       >
         {isDisconnected ? (

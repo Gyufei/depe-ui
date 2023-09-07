@@ -2,16 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: var(--font-haas-text);
-}
-
 :root {
   --color-muted: 210 40% 96.1%;
-
   --color-black: 250 88% 13%;
   --color-sky: 168 75% 95%;
   --color-yellow: 68 85% 70%;
   --color-blue: 210 85% 97%;
   --color-pink: 300 100% 90%;
+  --color-gray: 0 0% 60%;
+}
+
+body {
+  font-family: var(--font-haas-text);
+}
+
+@layer components {
+  .shadow-panel {
+    @apply box-border rounded-3xl border-2 border-gray bg-white p-6 shadow-50 shadow-gray data-[state="active"]:border-black data-[state="active"]:shadow-black;
+  }
 }
