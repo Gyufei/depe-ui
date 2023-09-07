@@ -3,7 +3,6 @@
 import Image from "next/image";
 
 import { useWeb3Modal } from "@web3modal/react";
-import ShadowButton from "../ui/shadow-button";
 import { useAccount } from "wagmi";
 import { truncateAddr } from "@/lib/utils";
 
@@ -17,8 +16,8 @@ export default function ConnectBtn() {
 
   return (
     <>
-      <ShadowButton
-        className="rounded-xl bg-yellow font-title font-bold hover:bg-yellow/90"
+      <button
+        className="c-shadow-btn c-shadow-translate bg-yellow px-[30px] py-[14px] text-base hover:bg-yellow/90"
         onClick={() => modal.open()}
       >
         {isDisconnected ? (
@@ -39,7 +38,7 @@ export default function ConnectBtn() {
             )}
           </div>
         )}
-      </ShadowButton>
+      </button>
     </>
   );
 }
