@@ -1,23 +1,30 @@
+import { cn } from "@/lib/utils";
+
 export default function PanelLeaderButton({
   isActive,
   children,
+  className,
 }: {
   isActive: boolean;
   children: React.ReactNode;
+  className?: string;
 }) {
   const activeState = isActive ? "active" : "inactive";
   return (
     <div
       data-state={activeState}
-      className="c-active-border relative ml-6 h-11 w-[153px] rounded-t-xl border-2 border-b-0 p-2"
+      className="c-active-border relative ml-6 inline-block h-11 w-fit rounded-t-xl border-2 border-b-0 p-2"
     >
       <div
         data-state={activeState}
-        className="c-active-border h-9 rounded-t-md border-2 border-b-0"
+        className="c-active-border h-9 rounded-t-md border-2 border-b-0 px-2"
       >
         <button
           data-state={activeState}
-          className="c-shadow-btn c-active-border c-active-shadow absolute -top-10 rounded-[32px] bg-pink text-xl "
+          className={cn(
+            "c-shadow-btn c-active-border c-active-shadow relative -top-10 rounded-[32px] text-xl",
+            className,
+          )}
         >
           {children}
         </button>

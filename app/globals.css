@@ -4,19 +4,17 @@
 
 :root {
   --color-muted: 210 40% 96.1%;
-  --color-black: 250 88% 13%;
-  --color-sky: 168 75% 95%;
-  --color-yellow: 68 85% 70%;
-  --color-blue: 210 85% 97%;
-  --color-pink: 300 100% 90%;
-  --color-gray: 0 0% 60%;
-  /* 
-   black: "#0E043E",
-   yellow: "#E8F453",
-   sky: "#DBFDF0",
-   blue: "#E8F0FE",
-   pink: "#F7C8FF",
-   */
+  --color-black: #0e043e;
+  --color-sky: #dbfdf0;
+  --color-yellow: #e8f453;
+  --color-blue: #e8f0fe;
+  --color-pink: #f7c8ff;
+  --color-gray: #999999;
+  --color-brown: #ffc7ae;
+  --color-sea: #c8dcff;
+  --color-green: #2cb079;
+  --color-red: #f16464;
+  --color-tan: #d4a509;
 }
 
 body {
@@ -30,6 +28,10 @@ body {
 
   .c-active-border {
     @apply border-gray transition-colors data-[state="active"]:border-black;
+  }
+  
+  .c-image-shadow {
+    @apply rounded-full border border-black shadow-1 shadow-black;
   }
 
   .c-active-shadow {

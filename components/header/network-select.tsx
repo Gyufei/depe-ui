@@ -32,17 +32,14 @@ export default function NetworkSelect() {
   return (
     <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
       <PopoverTrigger asChild>
-        <div
-          data-state={popOpen ? "open" : "close"}
-          className="relative flex h-12 w-[88px] cursor-pointer items-center rounded-xl px-2 data-[state=open]:bg-sky"
-        >
+        <div className="relative flex h-12 w-[88px] cursor-pointer items-center rounded-xl bg-transparent px-2">
           {chain ? (
             <Image
               width={40}
               height={40}
               src={getChainLogo(chain.name)}
               alt="current chain logo"
-              className="z-10 rounded-full border border-black shadow-1 shadow-black"
+              className="c-image-shadow z-10"
             ></Image>
           ) : (
             <Skeleton className="h-10 w-10 rounded-full" />
@@ -65,14 +62,14 @@ export default function NetworkSelect() {
             key={c.name}
             onClick={() => handleSelectNet(c.id)}
             data-state={c.id === chain?.id ? "active" : "inactive"}
-            className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black hover:bg-black/90 hover:text-yellow data-[state=active]:bg-black data-[state=active]:text-yellow"
+            className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black data-[state=active]:bg-black data-[state=active]:text-yellow"
           >
             <Image
               width={24}
               height={24}
               src={getChainLogo(c.name)}
               alt="chain logo"
-              className="z-10 rounded-full border border-black shadow-1 shadow-black"
+              className="c-image-shadow z-10"
             />
             <div className="flex-1 text-sm">{c.name}</div>
             {isLoading && pendingChainId === c.id && (

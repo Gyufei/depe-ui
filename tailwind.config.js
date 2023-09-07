@@ -9,12 +9,17 @@ module.exports = {
     extend: {
       colors: {
         muted: "hsl(var(--color-muted))",
-        black: "hsl(var(--color-black))",
-        yellow: "hsl(var(--color-yellow))",
-        sky: "hsl(var(--color-sky))",
-        blue: "hsl(var(--color-blue))",
-        pink: "hsl(var(--color-pink))",
-        gray: "hsl(var(--color-gray))",
+        black: "var(--color-black)",
+        yellow: "var(--color-yellow)",
+        sky: "var(--color-sky)",
+        blue: "var(--color-blue)",
+        pink: "var(--color-pink)",
+        gray: "var(--color-gray)",
+        brown: "var(--color-brown)",
+        sea: "var(--color-sea)",
+        green: "var(--color-green)",
+        red: "var(--color-red)",
+        tan: "var(--color-tan)",
       },
       boxShadow: {
         1: "1px 1px 0px 0px",

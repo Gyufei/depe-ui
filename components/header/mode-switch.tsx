@@ -16,7 +16,7 @@ export default function ModeSwitch() {
   };
 
   return (
-    <div className="relative flex h-11 w-[210px] items-end justify-around  rounded-xl border-2 border-black bg-white shadow-25 shadow-black">
+    <div className="relative flex h-11 w-[210px] items-end justify-around rounded-xl border-2 border-black bg-white shadow-25 shadow-black">
       <Image
         data-state={mode === "Simple" ? "simple" : "pro"}
         className="absolute z-0 data-[state='simple']:left-[-2px] data-[state='simple']:bottom-[-2px] data-[state='pro']:-right-[3px] data-[state='pro']:-bottom-[2px]"

@@ -2,11 +2,7 @@
 
 import { useNetwork } from "wagmi";
 
-export default function BgProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function BgLayout({ children }: { children: React.ReactNode }) {
   const { chain } = useNetwork();
 
   return (
@@ -16,7 +12,8 @@ export default function BgProvider({
       h-screen
       w-screen overflow-x-auto
       overflow-y-auto
-      data-[chain='OPMainnet']:bg-sky data-[chain='Ethereum']:bg-sky data-[chain='Sepolia']:bg-sky data-[chain='Base']:bg-sky"
+      bg-white
+      data-[chain='OPMainnet']:bg-yellow data-[chain='Ethereum']:bg-sky data-[chain='Sepolia']:bg-brown data-[chain='Base']:bg-pink"
     >
       {children}
     </div>
