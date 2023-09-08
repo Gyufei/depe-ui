@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --color-muted: #E8E8E8;
+  --color-muted: #e8e8e8;
   --color-black: #0e043e;
   --color-sky: #dbfdf0;
   --color-yellow: #e8f453;
@@ -32,12 +32,12 @@ body {
     @apply border-gray transition-colors data-[state="active"]:border-black;
   }
 
-  .c-image-shadow {
-    @apply rounded-full border border-black shadow-1 shadow-black;
-  }
-
   .c-active-shadow {
     @apply shadow-gray transition-shadow data-[state="active"]:shadow-black !important;
+  }
+
+  .c-image-shadow {
+    @apply rounded-full border border-black shadow-1 shadow-black;
   }
 
   .c-shadow-btn {

@@ -24,11 +24,11 @@ module.exports = {
         bggray: "var(--color-bggray)",
       },
       boxShadow: {
-        1: "1px 1px 0px 0px",
-        20: "0.2rem 0.2rem 0px 0px",
-        25: "0.25rem 0.25rem 0px 0px",
-        30: "0.3rem 0.3rem 0px 0px",
-        50: "0.5rem 0.5rem 0px 0px",
+        1: "1px 1px 0px 0px var(--color-black)",
+        20: "0.2rem 0.2rem 0px 0px var(--color-black)",
+        25: "0.25rem 0.25rem 0px 0px var(--color-black)",
+        30: "0.3rem 0.3rem 0px 0px var(--color-black)",
+        50: "0.5rem 0.5rem 0px 0px var(--color-black)",
       },
       fontFamily: {
         primary: ["var(--font-haas-text)"],

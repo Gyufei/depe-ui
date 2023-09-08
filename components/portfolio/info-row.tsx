@@ -6,6 +6,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import TokenPairImage from "./token-pair-image";
 import { useState } from "react";
@@ -80,7 +86,7 @@ export function SkeletonRow() {
 }
 
 export function FarmingRow({ isLast }: { isLast: boolean }) {
-  const [popOpen, setPopOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <div className="flex pl-2 pt-[10px] pr-6">
@@ -105,11 +111,14 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
           <TitleText text="300" />
           <SecondText text="USDT" />
         </div>
-        <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
-          <PopoverTrigger asChild>
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+        >
+          <DialogTrigger asChild>
             <div
-              data-state={popOpen ? "open" : "close"}
-              className="absolute -right-2 top-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md hover:bg-yellow data-[state='open']:bg-yellow"
+              data-state={dialogOpen ? "open" : "close"}
+              className="absolute -right-2 top-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md outline-none hover:bg-yellow data-[state='open']:bg-yellow"
             >
               <Image
                 width={20}
@@ -118,26 +127,11 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
                 alt="operate"
               ></Image>
             </div>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className="flex w-[200px] flex-col items-stretch border-0 bg-white p-2"
-            style={{
-              boxShadow: "0px 4px 8px 0px rgba(14, 4, 62, 0.08)",
-            }}
-          >
-            <Arrow
-              style={{
-                boxShadow: "0px 4px 8px 0px rgba(14, 4, 62, 0.08)",
-              }}
-              className="fill-white"
-            />
-            <OperationPopRow onClick={() => {}} text="Info" />
-            <OperationPopRow onClick={() => {}} text="Trade" />
-            <OperationPopRow onClick={() => {}} text="Share" />
-            <OperationPopRow onClick={() => {}} text="Transfer" />
-          </PopoverContent>
-        </Popover>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogTitle>Farming</DialogTitle>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
@@ -203,17 +197,9 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="flex w-[200px] flex-col items-stretch border-0 bg-white p-2"
-            style={{
-              boxShadow: "0px 4px 8px 0px rgba(14, 4, 62, 0.08)",
-            }}
+            className="flex w-[200px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
           >
-            <Arrow
-              style={{
-                boxShadow: "0px 4px 8px 0px rgba(14, 4, 62, 0.08)",
-              }}
-              className="fill-white"
-            />
+            <Arrow className="fill-white" />
             <OperationPopRow onClick={() => {}} text="Info" />
             <OperationPopRow onClick={() => {}} text="Trade" />
             <OperationPopRow onClick={() => {}} text="Share" />
