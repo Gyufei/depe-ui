@@ -5,7 +5,6 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function BlockNumberTag() {
   const { data, isLoading, status } = useBlockNumber();
-  console.log(data, status);
 
   return (
     <div

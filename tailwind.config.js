@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        muted: "hsl(var(--color-muted))",
+        muted: "var(--color-muted)",
         black: "var(--color-black)",
         yellow: "var(--color-yellow)",
         sky: "var(--color-sky)",
@@ -20,6 +20,8 @@ module.exports = {
         green: "var(--color-green)",
         red: "var(--color-red)",
         tan: "var(--color-tan)",
+        lightgray: "var(--color-lightgray)",
+        bggray: "var(--color-bggray)",
       },
       boxShadow: {
         1: "1px 1px 0px 0px",

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --color-muted: 210 40% 96.1%;
+  --color-muted: #E8E8E8;
   --color-black: #0e043e;
   --color-sky: #dbfdf0;
   --color-yellow: #e8f453;
@@ -15,6 +15,8 @@
   --color-green: #2cb079;
   --color-red: #f16464;
   --color-tan: #d4a509;
+  --color-lightgray: #c0c4cc;
+  --color-bggray: #f5f6f7;
 }
 
 body {
@@ -29,7 +31,7 @@ body {
   .c-active-border {
     @apply border-gray transition-colors data-[state="active"]:border-black;
   }
-  
+
   .c-image-shadow {
     @apply rounded-full border border-black shadow-1 shadow-black;
   }
