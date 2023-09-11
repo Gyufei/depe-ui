@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 import {
   Dialog,
-  DialogContent,
+  DialogStyledContent,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -16,6 +16,8 @@ import {
 import TokenPairImage from "./token-pair-image";
 import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
+import RowOperateDot from "./row-operate-dot";
+import FarmingDialogContent from "./farming-dialog-content";
 
 function TitleText({ text }: { text: string }) {
   return <div className="text-lg leading-7 text-black">{text}</div>;
@@ -111,27 +113,20 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
           <TitleText text="300" />
           <SecondText text="USDT" />
         </div>
-        <Dialog
-          open={dialogOpen}
-          onOpenChange={(isOpen) => setDialogOpen(isOpen)}
-        >
-          <DialogTrigger asChild>
-            <div
-              data-state={dialogOpen ? "open" : "close"}
-              className="absolute -right-2 top-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md outline-none hover:bg-yellow data-[state='open']:bg-yellow"
-            >
-              <Image
-                width={20}
-                height={20}
-                src="/icons/operate-dot.svg"
-                alt="operate"
-              ></Image>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogTitle>Farming</DialogTitle>
-          </DialogContent>
-        </Dialog>
+        <div className="absolute -right-2 top-2">
+          <Dialog
+            open={dialogOpen}
+            onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+          >
+            <DialogTrigger asChild>
+              <RowOperateDot active={dialogOpen} />
+            </DialogTrigger>
+            <DialogStyledContent className="sm:max-w-[425px]">
+              <DialogTitle>Farming</DialogTitle>
+              <FarmingDialogContent />
+            </DialogStyledContent>
+          </Dialog>
+        </div>
       </div>
     </div>
   );
@@ -181,31 +176,23 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
           </div>
           <SecondText text="Margin" />
         </div>
-        <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
-          <PopoverTrigger asChild>
-            <div
-              data-state={popOpen ? "open" : "close"}
-              className="absolute -right-2 top-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md hover:bg-yellow data-[state='open']:bg-yellow"
+        <div className="absolute -right-2 top-2">
+          <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
+            <PopoverTrigger>
+              <RowOperateDot active={popOpen} />
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="flex w-[200px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
             >
-              <Image
-                width={20}
-                height={20}
-                src="/icons/operate-dot.svg"
-                alt="operate"
-              ></Image>
-            </div>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className="flex w-[200px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
-          >
-            <Arrow className="fill-white" />
-            <OperationPopRow onClick={() => {}} text="Info" />
-            <OperationPopRow onClick={() => {}} text="Trade" />
-            <OperationPopRow onClick={() => {}} text="Share" />
-            <OperationPopRow onClick={() => {}} text="Transfer" />
-          </PopoverContent>
-        </Popover>
+              <Arrow className="fill-white" />
+              <OperationPopRow onClick={() => {}} text="Info" />
+              <OperationPopRow onClick={() => {}} text="Trade" />
+              <OperationPopRow onClick={() => {}} text="Share" />
+              <OperationPopRow onClick={() => {}} text="Transfer" />
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
   );

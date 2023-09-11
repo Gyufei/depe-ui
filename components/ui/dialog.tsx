@@ -76,19 +76,18 @@ const DialogStyledContent = React.forwardRef<
       )}
       {...props}
     >
-      <div className="relative">
-        <div className="absolute h-full">
-          <div>
-            <div className="h-[12px] w-[10px]"></div>
-          </div>
+      <div className="absolute -left-[2px] top-[26px] h-full">
+        <div>
+          <div className="h-[16px] w-[8px] rounded-r-sm border-2 border-l-0 border-black bg-white"></div>
+          <div className="mt-[5px] h-[16px] w-[8px] rounded-r-sm border-2 border-l-0 border-black bg-white"></div>
         </div>
-        {children}
-        {showClose && (
-          <DialogPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-black text-black shadow-1 outline-0 transition-opacity hover:bg-yellow disabled:pointer-events-none">
-            <X className="h-4 w-4" />
-          </DialogPrimitive.Close>
-        )}
       </div>
+      {children}
+      {showClose && (
+        <DialogPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-black text-black shadow-1 outline-0 transition-opacity hover:bg-yellow disabled:pointer-events-none">
+          <X className="h-4 w-4" />
+        </DialogPrimitive.Close>
+      )}
     </DialogPrimitive.Content>
   </DialogPortal>
 ));
@@ -123,4 +122,11 @@ const DialogDescription = React.forwardRef<
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
-export { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription };
+export {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogStyledContent,
+  DialogTitle,
+  DialogDescription,
+};
