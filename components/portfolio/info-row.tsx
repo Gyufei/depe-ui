@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 import {
   Dialog,
-  DialogStyledContent,
+  DialogContent,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -18,6 +18,7 @@ import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import RowOperateDot from "./row-operate-dot";
 import FarmingDialogContent from "./farming-dialog-content";
+import DialogGimp from "../common/dialog-gimp";
 
 function TitleText({ text }: { text: string }) {
   return <div className="text-lg leading-7 text-black">{text}</div>;
@@ -121,10 +122,11 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
             <DialogTrigger asChild>
               <RowOperateDot active={dialogOpen} />
             </DialogTrigger>
-            <DialogStyledContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogGimp />
               <DialogTitle>Farming</DialogTitle>
               <FarmingDialogContent />
-            </DialogStyledContent>
+            </DialogContent>
           </Dialog>
         </div>
       </div>

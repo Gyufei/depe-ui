@@ -28,3 +28,7 @@ export function truncateAddr(
       ${address.slice(address.length - (nSuffix || 4))}`
     : address;
 }
+
+export function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}

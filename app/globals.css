@@ -18,10 +18,17 @@
   --color-tan: #d4a509;
   --color-lightgray: #c0c4cc;
   --color-bggray: #f5f6f7;
+  --color-accentblue: #6284f5;
 }
 
 body {
   font-family: var(--font-haas-text);
+}
+
+@layer base {
+  input {
+    @apply outline-none focus:outline-none focus-visible:outline-none;
+  }
 }
 
 @layer components {
