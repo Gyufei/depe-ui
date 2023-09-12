@@ -2,23 +2,19 @@
 
 import Image from "next/image";
 
-import { useWeb3Modal } from "@web3modal/react";
-import { useAccount } from "wagmi";
-import { truncateAddr } from "@/lib/utils";
-
 import AccountAvatar from "/public/icons/account-avatar.svg";
 import { Skeleton } from "../ui/skeleton";
+import { useConnectModal } from "@/lib/hooks/use-connect";
 
 export default function ConnectBtn() {
-  const modal = useWeb3Modal();
-  const { address, isDisconnected, isConnecting } = useAccount();
-  const shortAddress = truncateAddr(address);
+  const { shortAddress, openConnectModal, isDisconnected, isConnecting } =
+    useConnectModal();
 
   return (
     <>
       <button
-        className="c-shadow-btn c-shadow-translate bg-yellow px-[30px] py-[14px] text-base hover:bg-yellow/90"
-        onClick={() => modal.open()}
+        className="c-shadow-btn c-shadow-translate hover:bg-yellow/90 bg-yellow px-[30px] py-[14px] text-base"
+        onClick={() => openConnectModal()}
       >
         {isDisconnected ? (
           "Connect"

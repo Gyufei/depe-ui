@@ -12,6 +12,7 @@ export function useActivePanel(panelName: TPanel) {
   };
 
   return {
+    activePanel,
     isActivePanel,
     setPanelActive,
   };

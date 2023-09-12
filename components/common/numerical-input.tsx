@@ -27,20 +27,19 @@ const NumericalInput = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <input
+        {...rest}
         className={
           (cn(
-            "pointer-events-auto relative w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap border-none p-0 text-right text-xl text-black transition-colors data-[state='disabled']:pointer-events-none data-[state='error']:text-red",
+            "pointer-events-auto relative w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap border-none p-0 text-right text-xl text-black transition-colors data-[state=disabled]:pointer-events-none data-[state=error]:text-red",
           ),
           rest?.className)
         }
         style={{
-          backgroundColor: "transparent !important",
           appearance: "textfield",
         }}
         data-state={
           rest.error ? "error" : rest.disabled ? "disabled" : "default"
         }
-        {...rest}
         ref={ref}
         value={prependSymbol && value ? prependSymbol + value : value}
         onChange={(event) => {

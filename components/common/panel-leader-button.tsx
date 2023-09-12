@@ -13,7 +13,7 @@ export default function PanelLeaderButton({
   return (
     <div
       data-state={activeState}
-      className="c-active-border relative ml-6 inline-block h-11 w-fit rounded-t-xl border-2 border-b-0 p-2"
+      className="c-active-border ml-6 inline-block h-11 w-fit rounded-t-xl border-2 border-b-0 p-2"
     >
       <div
         data-state={activeState}

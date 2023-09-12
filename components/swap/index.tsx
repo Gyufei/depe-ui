@@ -1,15 +1,15 @@
 "use client";
 
-import Image from "next/image";
-import SettingIcon from "/public/icons/setting.svg";
-
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import PanelLeaderButton from "../common/panel-leader-button";
 import InputPanel from "../common/input-panel";
 import { useState } from "react";
 import PoolSelect from "./pool-select";
 import NFTCheck from "./nft-check";
-import FormBtn from "../common/form-btn";
+import FormBtnWithWallet from "../common/form-btn";
+import SwapSetting from "./swap-setting";
+import OrderOverview from "./order-overview";
+import LeverageSelectInput from "./leverage-select-input";
 
 export default function Swap() {
   const { isActivePanel, setPanelActive } = useActivePanel("Swap");
@@ -22,15 +22,9 @@ export default function Swap() {
   return (
     <div onClick={setPanelActive} className="flex flex-col">
       <PanelLeaderButton className="bg-brown" isActive={isActivePanel}>
-        <div className="flex items-center">
-          Margin Swap
-          <Image
-            width={24}
-            height={24}
-            src={SettingIcon}
-            alt="setting"
-            className="ml-4"
-          ></Image>
+        <div className="flex items-center gap-x-4">
+          <div className="flex items-center">Margin Swap</div>
+          <SwapSetting />
         </div>
       </PanelLeaderButton>
 
@@ -40,13 +34,17 @@ export default function Swap() {
       >
         <div className="flex flex-col">
           <InputPanel
+            isActive={isActivePanel}
             token={token1}
             setToken={setToken1}
             value={value1}
             setValue={setValue1}
           />
+          <div className="relative h-3 px-[68px]">
+            <LeverageSelectInput className="relative -top-[20px] mx-auto" />
+          </div>
           <InputPanel
-            className="mt-3"
+            isActive={isActivePanel}
             token={token2}
             setToken={setToken2}
             value={value2}
@@ -56,9 +54,13 @@ export default function Swap() {
             <PoolSelect />
             <NFTCheck />
           </div>
-          <FormBtn>Confirm</FormBtn>
+          <FormBtnWithWallet isActive={isActivePanel}>
+            Confirm
+          </FormBtnWithWallet>
         </div>
       </div>
+
+      <OrderOverview className="mt-12" />
     </div>
   );
 }

@@ -29,7 +29,7 @@ function ListContainer({
       {isLoading ? (
         <Skeleton className="mb-1 h-5 w-[72px]" />
       ) : (
-        <div className="c-title-text mb-1 px-2 text-base">{title}</div>
+        <div className="c-font-title-65 leading-5 text-black mb-1 px-2 text-base">{title}</div>
       )}
       {children}
     </div>
@@ -46,7 +46,7 @@ function FarmingList(props: any) {
       ) : (
         <ScrollArea className="h-[210px]">
           {[1, 2, 3, 4, 5].map((i: number) => {
-            return <FarmingRow key={i} isLast={i === 2} />;
+            return <FarmingRow key={i} isLast={i === 5} />;
           })}
           <ScrollBar />
         </ScrollArea>
@@ -65,7 +65,7 @@ function TradingList(props: any) {
       ) : (
         <ScrollArea className="h-[140px]">
           {[1, 2, 3, 4, 5, 6].map((i: number) => {
-            return <TradingRow key={i} isLast={i === 2} />;
+            return <TradingRow key={i} isLast={i === 6} />;
           })}
           <ScrollBar />
         </ScrollArea>

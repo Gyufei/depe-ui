@@ -22,7 +22,6 @@ module.exports = {
 				red: "var(--color-red)",
 				tan: "var(--color-tan)",
 				lightgray: "var(--color-lightgray)",
-				bggray: "var(--color-bggray)",
 				accentblue: "var(--color-accentblue)",
 			},
 			boxShadow: {

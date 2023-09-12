@@ -13,12 +13,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import TokenPairImage from "./token-pair-image";
-import { useState } from "react";
+import TokenPairImage from "../common/token-pair-image";
+import { forwardRef, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import RowOperateDot from "./row-operate-dot";
 import FarmingDialogContent from "./farming-dialog-content";
 import DialogGimp from "../common/dialog-gimp";
+import TradeDialogContent from "./trade-dialog-content";
+import PositionDialogContent from "./position-dialog-content";
+import TransferDialogContent from "./transfer-dialog-content";
 
 function TitleText({ text }: { text: string }) {
   return <div className="text-lg leading-7 text-black">{text}</div>;
@@ -34,7 +37,7 @@ function APYText({ apy }: { apy: number }) {
   return (
     <div
       data-state={isGreaterThanZero ? "positive" : "negative"}
-      className="text-lg leading-7 data-[state='positive']:text-green data-[state='negative']:text-red"
+      className="text-lg leading-7 data-[state=positive]:text-green data-[state=negative]:text-red"
     >
       {isGreaterThanZero ? "+" : ""}
       {apy}%
@@ -42,22 +45,19 @@ function APYText({ apy }: { apy: number }) {
   );
 }
 
-function OperationPopRow({
-  onClick,
-  text,
-}: {
-  onClick: () => void;
-  text: string;
-}) {
-  return (
+export const OperationPopRow = forwardRef(
+  ({ text, ...rest }: { text: string; [key: string]: any }, ref: any) => (
     <div
-      onClick={() => onClick()}
-      className="flex h-12 cursor-pointer items-center rounded-xl px-4 text-sm text-black hover:bg-bggray"
+      ref={ref}
+      className="flex h-12 cursor-pointer items-center rounded-xl px-4 text-sm text-black hover:bg-[#f5f6f7]"
+      {...rest}
     >
       {text}
     </div>
-  );
-}
+  ),
+);
+
+OperationPopRow.displayName = "OperationPopRow";
 
 export function SkeletonRow() {
   return (
@@ -96,17 +96,17 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
       <TokenPairImage className="mt-1" />
       <div
         data-state={isLast ? "last" : ""}
-        className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state='last']:border-0"
+        className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
         <div className="flex flex-1 flex-col">
           <TitleText text="# 301" />
           <SecondText text="DOGE" />
         </div>
-        <div className="flex flex-col items-end pr-[28px]">
-          <TitleText text="1~10x" />
-          <SecondText text="Leverage" />
+        <div className="flex flex-col items-end pr-[9%]">
+          <TitleText text="1~10×" />
+          <SecondText text="w-[400px]" />
         </div>
-        <div className="flex flex-col items-end pr-[37px]">
+        <div className="flex flex-col items-end pr-[12%]">
           <APYText apy={70} />
           <SecondText text="APY" />
         </div>
@@ -122,7 +122,7 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
             <DialogTrigger asChild>
               <RowOperateDot active={dialogOpen} />
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="w-[400px]">
               <DialogGimp />
               <DialogTitle>Farming</DialogTitle>
               <FarmingDialogContent />
@@ -137,12 +137,16 @@ export function FarmingRow({ isLast }: { isLast: boolean }) {
 export function TradingRow({ isLast }: { isLast: boolean }) {
   const [popOpen, setPopOpen] = useState(false);
 
+  const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
+  const [transferDialogOpen, setTransferDialogOpen] = useState(false);
+  const [positionDialogOpen, setPositionDialogOpen] = useState(false);
+
   return (
     <div className="flex pl-2 pt-[10px] pr-6">
       <TokenPairImage className="mt-1" />
       <div
         data-state={isLast ? "last" : ""}
-        className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state='last']:border-0"
+        className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
         <div className="flex flex-1 flex-col">
           <TitleText text="# 100" />
@@ -188,10 +192,49 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
               className="flex w-[200px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
             >
               <Arrow className="fill-white" />
-              <OperationPopRow onClick={() => {}} text="Info" />
-              <OperationPopRow onClick={() => {}} text="Trade" />
-              <OperationPopRow onClick={() => {}} text="Share" />
-              <OperationPopRow onClick={() => {}} text="Transfer" />
+              <Dialog
+                open={positionDialogOpen}
+                onOpenChange={(isOpen) => setPositionDialogOpen(isOpen)}
+              >
+                <DialogTrigger asChild>
+                  <OperationPopRow text="Info" />
+                </DialogTrigger>
+                <DialogContent className="w-[480px]">
+                  <DialogGimp />
+                  <DialogTitle>Position Info (5×)</DialogTitle>
+                  <PositionDialogContent />
+                </DialogContent>
+              </Dialog>
+
+              <Dialog
+                open={tradeDialogOpen}
+                onOpenChange={(isOpen) => setTradeDialogOpen(isOpen)}
+              >
+                <DialogTrigger asChild>
+                  <OperationPopRow text="Trade" />
+                </DialogTrigger>
+                <DialogContent className="w-[480px]">
+                  <DialogGimp />
+                  <DialogTitle>Trade</DialogTitle>
+                  <TradeDialogContent />
+                </DialogContent>
+              </Dialog>
+
+              <OperationPopRow text="Share" />
+
+              <Dialog
+                open={transferDialogOpen}
+                onOpenChange={(isOpen) => setTransferDialogOpen(isOpen)}
+              >
+                <DialogTrigger asChild>
+                  <OperationPopRow text="Transfer" />
+                </DialogTrigger>
+                <DialogContent className="w-[480px]">
+                  <DialogGimp />
+                  <DialogTitle>Trade</DialogTitle>
+                  <TransferDialogContent />
+                </DialogContent>
+              </Dialog>
             </PopoverContent>
           </Popover>
         </div>

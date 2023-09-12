@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
-import FormBtn from "../common/form-btn";
+import { ReactNode, useState } from "react";
+import FormBtnWithWallet from "../common/form-btn";
+import SwitchTab from "../common/switch-tab";
+import InputPanel from "../common/input-panel";
 
 function RowContainer({ children }: { children: ReactNode }) {
   return (
@@ -37,6 +39,11 @@ function FieldText({ children }: { children: ReactNode }) {
 }
 
 export default function FarmingDialogContent() {
+  const [token, setToken] = useState("DOGE");
+  const [value, setValue] = useState("");
+
+  const [activeTab, setActiveTab] = useState("Deposit");
+
   return (
     <div className="flex flex-col items-stretch gap-y-6">
       <div>
@@ -47,7 +54,7 @@ export default function FarmingDialogContent() {
           </FieldContainer>
           <FieldContainer className="items-end">
             <TitleText>Leverage</TitleText>
-            <FieldText>1~10x</FieldText>
+            <FieldText>1~10×</FieldText>
           </FieldContainer>
         </RowContainer>
 
@@ -63,7 +70,25 @@ export default function FarmingDialogContent() {
         </RowContainer>
       </div>
 
-      <FormBtn>Confirm</FormBtn>
+      <div>
+        <SwitchTab
+          tabs={["Deposit", "Withdraw"]}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+        <InputPanel
+          showToken={false}
+          balanceText="Balance"
+          isActive={true}
+          className="rounded-tl-none"
+          value={value}
+          setValue={setValue}
+          token={token}
+          setToken={setToken}
+        />
+      </div>
+
+      <FormBtnWithWallet>Confirm</FormBtnWithWallet>
     </div>
   );
 }

@@ -44,14 +44,15 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border-2 border-black bg-white p-6 shadow-50 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full",
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border-2 border-black bg-white p-6 shadow-50 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
         className,
       )}
+      onOpenAutoFocus={(e) => e.preventDefault()}
       {...props}
     >
       {children}
       {showClose && (
-        <DialogPrimitive.Close className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-black text-black shadow-1 outline-0 transition-opacity hover:bg-yellow disabled:pointer-events-none">
+        <DialogPrimitive.Close className="absolute right-6 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-black text-black shadow-1 outline-0 transition-opacity hover:bg-yellow disabled:pointer-events-none">
           <X className="h-4 w-4" />
         </DialogPrimitive.Close>
       )}
@@ -66,7 +67,10 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn("c-title-text text-xl leading-6 tracking-tight", className)}
+    className={cn(
+      "c-font-title-65 text-xl leading-6 tracking-tight text-black",
+      className,
+    )}
     {...props}
   >
     <div className="flex items-center">

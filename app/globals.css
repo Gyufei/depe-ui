@@ -17,12 +17,19 @@
   --color-red: #f16464;
   --color-tan: #d4a509;
   --color-lightgray: #c0c4cc;
-  --color-bggray: #f5f6f7;
   --color-accentblue: #6284f5;
 }
 
 body {
   font-family: var(--font-haas-text);
+}
+
+input[type="text"] {
+  background: transparent !important;
+}
+
+.no-scroll-bar::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
 }
 
 @layer base {
@@ -32,16 +39,36 @@ body {
 }
 
 @layer components {
-  .c-title-text {
-    @apply font-title font-bold leading-5 text-black;
+  .c-font-title-55 {
+    @apply font-title font-light;
+  }
+
+  .c-font-title-65 {
+    @apply font-title font-bold;
+  }
+
+  .c-font-text-65 {
+    @apply font-primary font-semibold;
+  }
+
+  .c-font-text-75 {
+    @apply font-primary font-bold;
+  }
+
+  .c-active-bg {
+    @apply bg-lightgray transition-colors data-[state=active]:bg-black;
+  }
+
+  .c-active-border-light {
+    @apply border-lightgray transition-colors data-[state=active]:border-black;
   }
 
   .c-active-border {
-    @apply border-gray transition-colors data-[state="active"]:border-black;
+    @apply border-gray transition-colors data-[state=active]:border-black;
   }
 
   .c-active-shadow {
-    @apply shadow-gray transition-shadow data-[state="active"]:shadow-black !important;
+    @apply shadow-gray transition-shadow data-[state=active]:shadow-black !important;
   }
 
   .c-image-shadow {
@@ -49,7 +76,7 @@ body {
   }
 
   .c-shadow-btn {
-    @apply c-title-text rounded-xl border-2 px-6 py-[16px] shadow-25 transition-all;
+    @apply c-font-title-65 rounded-xl border-2 px-6 py-[16px] leading-5 text-black shadow-25 transition-all;
   }
 
   /* btn with active and hover style */
