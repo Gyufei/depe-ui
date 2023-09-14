@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import { Arrow } from "@radix-ui/react-popover";
 
@@ -12,11 +12,48 @@ import Triangle from "/public/icons/triangle.svg";
 import { Search } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import TokenPairImage from "./token-pair-image";
+import { IPool } from "@/lib/types/pool";
+
+import { useGraphqlClient } from "@/lib/hooks/use-graphql";
+import { GqlDocPool } from "@/lib/gql-document";
+import useSWR from "swr";
+import { Skeleton } from "../ui/skeleton";
+import { range } from "lodash";
+import Empty from "./empty";
 
 export default function SelectPoolDialogContent() {
   const [isAuto, setIsAuto] = useState(false);
   const [sortBy, setSortBy] = useState("Num");
-  const [activePool, setActivePool] = useState<number | null>(null);
+  const [searchStr, setSearchStr] = useState("");
+  const [activePool, setActivePool] = useState<IPool | null>(null);
+
+  const { gqlFetcher } = useGraphqlClient();
+  const { data, isLoading } = useSWR(GqlDocPool(1), gqlFetcher);
+  const pools: Array<IPool> = useMemo(() => data?.pools?.data || [], [data]);
+  const filteredPools = useMemo<Array<IPool>>((): Array<IPool> => {
+    if (!pools) return [];
+
+    let sortedPools = pools;
+
+    if (sortBy === "Num") {
+      sortedPools = pools.sort((a, b) => a.poolId - b.poolId);
+    } else if (sortBy === "APY") {
+      sortedPools = pools.sort((a, b) => a.apy - b.apy);
+    } else if (sortBy === "Leverage") {
+      sortedPools = pools.sort((a, b) => a.leverage - b.leverage);
+    }
+
+    let fPools = sortedPools;
+    if (!searchStr) {
+      return fPools;
+    } else {
+      fPools = sortedPools.filter((p) => {
+        return p.poolId.toString().includes(searchStr);
+      });
+    }
+
+    return fPools;
+  }, [sortBy, searchStr, pools]);
 
   const handleAuto = () => {
     if (isAuto) return;
@@ -25,9 +62,9 @@ export default function SelectPoolDialogContent() {
     setIsAuto(true);
   };
 
-  const handleSelectPool = (i: number) => {
+  const handleSelectPool = (pool: IPool) => {
     setIsAuto(false);
-    setActivePool(i);
+    setActivePool(pool);
   };
 
   return (
@@ -35,7 +72,7 @@ export default function SelectPoolDialogContent() {
       <div
         onClick={handleAuto}
         data-check={isAuto ? "true" : "false"}
-        className="mx-6 cursor-pointer rounded-xl border-2 border-black bg-white px-4 py-[18px] text-sm leading-5 data-[check=true]:bg-blue"
+        className="mx-6 cursor-pointer rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5 data-[check=true]:bg-blue"
       >
         Automatch
       </div>
@@ -65,9 +102,9 @@ export default function SelectPoolDialogContent() {
               className="flex w-[120px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
             >
               <Arrow className="fill-white" />
-              <OperationPopRow onClick={() => setSortBy("Num")} text="Num" />
-              <OperationPopRow onClick={() => setSortBy("APY")} text="APY" />
-              <OperationPopRow
+              <SortPopRow onClick={() => setSortBy("Num")} text="Num" />
+              <SortPopRow onClick={() => setSortBy("APY")} text="APY" />
+              <SortPopRow
                 onClick={() => setSortBy("Leverage")}
                 text="Leverage"
               />
@@ -78,6 +115,8 @@ export default function SelectPoolDialogContent() {
             <input
               type="text"
               className="w-[100px] border-0"
+              value={searchStr}
+              onChange={(e) => setSearchStr(e.target.value)}
               placeholder="Search"
             />
             <Search className="h-4 w-4 cursor-pointer text-lightgray" />
@@ -85,31 +124,36 @@ export default function SelectPoolDialogContent() {
         </div>
 
         <div className="mt-3 pl-6 pr-2">
-          <ScrollArea className="h-[312px] pr-4">
-            {[1, 2, 3, 4, 5, 6].map((i: number) => {
-              return (
+          {isLoading ? (
+            <div className="h-[312px] pr-4">
+              {range(5).map((i: number) => {
+                return <SkeletonRow key={i} />;
+              })}
+            </div>
+          ) : filteredPools.length ? (
+            <ScrollArea className="h-[312px] pr-4">
+              {filteredPools.map((p) => (
                 <PoolRow
-                  key={i}
-                  isSelected={activePool === i}
-                  onClick={() => handleSelectPool(i)}
+                  key={p.poolId}
+                  pool={p}
+                  isSelected={activePool?.poolId === p.poolId}
+                  onClick={() => handleSelectPool(p)}
                 />
-              );
-            })}
-            <ScrollBar />
-          </ScrollArea>
+              ))}
+              <ScrollBar />
+            </ScrollArea>
+          ) : (
+            <div className="flex h-[312px] items-center justify-center pr-4">
+              <Empty />
+            </div>
+          )}
         </div>
       </div>
     </>
   );
 }
 
-export function OperationPopRow({
-  onClick,
-  text,
-}: {
-  onClick: () => void;
-  text: string;
-}) {
+function SortPopRow({ onClick, text }: { onClick: () => void; text: string }) {
   return (
     <div
       onClick={() => onClick()}
@@ -121,9 +165,11 @@ export function OperationPopRow({
 }
 
 function PoolRow({
+  pool,
   isSelected,
   onClick,
 }: {
+  pool: IPool;
   isSelected: boolean;
   onClick: () => void;
 }) {
@@ -136,7 +182,7 @@ function PoolRow({
       <TokenPairImage className="mt-1" />
       <div className="ml-3 flex flex-1 justify-between">
         <div className="flex flex-col">
-          <TitleText text="# 301" />
+          <TitleText text={`# ${pool.poolId}`} />
           <SecondText text="DOGE" />
         </div>
         <div className="flex flex-col items-end">
@@ -146,6 +192,30 @@ function PoolRow({
         <div className="flex flex-col items-end">
           <TitleText text="100%" />
           <SecondText text="APY" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonRow() {
+  return (
+    <div className="mt-[6px] flex rounded-xl border-2 border-black py-2 px-4 first:mt-0">
+      <div className="mt-1 h-8 w-8">
+        <Skeleton className="h-8 w-8 rounded-full" />
+      </div>
+      <div className="ml-3 flex flex-1 justify-between">
+        <div className="flex flex-col space-y-[2px]">
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+        <div className="flex flex-col items-end space-y-[2px]">
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-3 w-12" />
+        </div>
+        <div className="flex flex-col items-end space-y-[2px]">
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-3 w-12" />
         </div>
       </div>
     </div>

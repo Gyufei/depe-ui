@@ -1,5 +1,5 @@
-import BgLayout from "@/components/common/bg-layout";
-import BlockNumberTag from "@/components/common/block-number";
+import BgLayout from "@/components/share/bg-layout";
+import BlockNumberTag from "@/components/share/block-number";
 import Farming from "@/components/farming";
 import Header from "@/components/header";
 import Portfolio from "@/components/portfolio";

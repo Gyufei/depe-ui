@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Image from "next/image";
 
-import StrokeArrowIcon from "@/components/common/icons/stroke-arrow";
-import { NumericalInput } from "@/components/common/numerical-input";
+import StrokeArrowIcon from "@/components/share/icons/stroke-arrow";
+import { NumericalInput } from "@/components/share/numerical-input";
 import { cn } from "@/lib/utils";
 
 import {

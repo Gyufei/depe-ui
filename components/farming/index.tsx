@@ -15,11 +15,11 @@ import {
 
 import Triangle from "/public/icons/triangle.svg";
 
-import PanelLeaderButton from "../common/panel-leader-button";
-import FormBtnWithWallet from "../common/form-btn";
-import InputPanel from "../common/input-panel";
-import DialogGimp from "../common/dialog-gimp";
-import SelectPoolDialogContent from "../common/select-pool-dialog-content";
+import PanelLeaderButton from "../share/panel-leader-button";
+import FormBtnWithWallet from "../share/form-btn";
+import InputPanel from "../share/input-panel";
+import DialogGimp from "../share/dialog-gimp";
+import SelectPoolDialogContent from "../share/select-pool-dialog-content";
 
 export default function Farming() {
   const { isActivePanel, setPanelActive } = useActivePanel("Farming");

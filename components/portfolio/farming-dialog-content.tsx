@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
 import { ReactNode, useState } from "react";
-import FormBtnWithWallet from "../common/form-btn";
-import SwitchTab from "../common/switch-tab";
-import InputPanel from "../common/input-panel";
+import FormBtnWithWallet from "../share/form-btn";
+import SwitchTab from "../share/switch-tab";
+import InputPanel from "../share/input-panel";
 
 function RowContainer({ children }: { children: ReactNode }) {
   return (

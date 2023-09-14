@@ -2,9 +2,9 @@ import { ReactNode, useState } from "react";
 import { HelpCircle } from "lucide-react";
 import Image from "next/image";
 
-import FormBtnWithWallet from "../common/form-btn";
-import SwitchTab from "../common/switch-tab";
-import InputPanel from "../common/input-panel";
+import FormBtnWithWallet from "../share/form-btn";
+import SwitchTab from "../share/switch-tab";
+import InputPanel from "../share/input-panel";
 
 import {
   Tooltip,

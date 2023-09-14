@@ -14,12 +14,14 @@ export const chains = [mainnet, optimism, base, sepolia];
 const projectId = "bb5e726f6ba3a2f3f7b43e645f4786c4";
 
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+
 const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
+  connectors: [...w3mConnectors({ projectId, chains })],
   publicClient,
 });
 const ethereumClient = new EthereumClient(wagmiConfig, chains);
+console.log(wagmiConfig)
 
 export default function Web3ConnectProvider({
   children,
@@ -36,6 +38,7 @@ export default function Web3ConnectProvider({
         }}
         projectId={projectId}
         ethereumClient={ethereumClient}
+        defaultChain={sepolia}
       />
     </>
   );

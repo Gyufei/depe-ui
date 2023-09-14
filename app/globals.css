@@ -33,7 +33,8 @@ input[type="text"] {
 }
 
 @layer base {
-  input {
+  input,
+  .no-outline {
     @apply outline-none focus:outline-none focus-visible:outline-none;
   }
 }

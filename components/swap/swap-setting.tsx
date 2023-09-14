@@ -1,6 +1,6 @@
 import Image from "next/image";
 import SettingIcon from "/public/icons/setting.svg";
-import StrokeArrowIcon from "@/components/common/icons/stroke-arrow";
+import StrokeArrowIcon from "@/components/share/icons/stroke-arrow";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";

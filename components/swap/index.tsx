@@ -1,15 +1,16 @@
 "use client";
 
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
-import PanelLeaderButton from "../common/panel-leader-button";
-import InputPanel from "../common/input-panel";
+import PanelLeaderButton from "../share/panel-leader-button";
+import InputPanel from "../share/input-panel";
 import { useState } from "react";
 import PoolSelect from "./pool-select";
 import NFTCheck from "./nft-check";
-import FormBtnWithWallet from "../common/form-btn";
+import FormBtnWithWallet from "../share/form-btn";
 import SwapSetting from "./swap-setting";
 import OrderOverview from "./order-overview";
 import LeverageSelectInput from "./leverage-select-input";
+import ActionTip, { IActionType } from "../share/action-tip";
 
 export default function Swap() {
   const { isActivePanel, setPanelActive } = useActivePanel("Swap");
@@ -18,6 +19,11 @@ export default function Swap() {
 
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
+
+  const [sendTxResult, setSendTxResult] = useState<{
+    type: IActionType;
+    message: string;
+  } | null>();
 
   return (
     <div onClick={setPanelActive} className="flex flex-col">
@@ -57,6 +63,12 @@ export default function Swap() {
           <FormBtnWithWallet isActive={isActivePanel}>
             Confirm
           </FormBtnWithWallet>
+
+          <ActionTip
+            type={sendTxResult?.type || "success"}
+            handleClose={() => setSendTxResult(null)}
+            message={sendTxResult?.message || null}
+          />
         </div>
       </div>
 

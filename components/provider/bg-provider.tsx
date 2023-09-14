@@ -1,13 +1,13 @@
 "use client";
 
-import { useNetwork } from "wagmi";
+import { usePublicClient } from "wagmi";
 
 export default function BgProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { chain } = useNetwork();
+  const { chain } = usePublicClient();
 
   return (
     <div

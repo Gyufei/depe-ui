@@ -10,11 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import DialogGimp from "../common/dialog-gimp";
-import SelectPoolDialogContent from "../common/select-pool-dialog-content";
+import DialogGimp from "../share/dialog-gimp";
+import SelectPoolDialogContent from "../share/select-pool-dialog-content";
 
 export default function PoolSelect() {
-  const [pool] = useState(100);
+  const [selectedPool] = useState(100);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -27,7 +27,7 @@ export default function PoolSelect() {
             src={PoolCircleIcon}
             alt="pools"
           ></Image>
-          <div className="ml-1 mr-[14px] leading-[22px]">#{pool}</div>
+          <div className="ml-1 mr-[14px] leading-[22px]">#{selectedPool}</div>
           <Image
             width={14}
             height={8}

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { usePublicClient, useSwitchNetwork } from "wagmi";
 
 import {
   Popover,
@@ -15,17 +15,14 @@ import Triangle from "/public/icons/triangle.svg";
 import { Skeleton } from "../ui/skeleton";
 
 export default function NetworkSelect() {
-  const { chain } = useNetwork();
-  const { chains, switchNetworkAsync, isLoading, pendingChainId } =
-    useSwitchNetwork();
+  const { chain, chains } = usePublicClient();
+  const { switchNetworkAsync, isLoading, pendingChainId } = useSwitchNetwork();
 
   const [popOpen, setPopOpen] = useState(false);
 
   const handleSelectNet = async (cId: number) => {
     if (cId === chain?.id) return;
-
     await switchNetworkAsync?.(cId);
-
     setPopOpen(false);
   };
 
