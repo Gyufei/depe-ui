@@ -1,17 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
 import { range } from "lodash";
-import useSWR from "swr";
 
 import { SkeletonRow } from "./row-common";
 import { FarmingRow } from "./farming-row";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { ListContainer } from "./list-container";
-import { GqlDocPool } from "@/lib/gql-document";
-import { useGraphqlClient } from "@/lib/hooks/use-graphql";
-import { IPool } from "@/lib/types/pool";
 import Empty from "../share/empty";
+import usePools from "@/lib/hooks/use-pools";
+import usePoolsAPY from "@/lib/hooks/use-pools-apy";
 
 export function FarmingList({
   isActivePanel,
@@ -20,31 +17,41 @@ export function FarmingList({
   isActivePanel: boolean;
   className?: string;
 }) {
-  const { gqlFetcher } = useGraphqlClient();
-  const { data, isLoading } = useSWR(GqlDocPool(1), gqlFetcher);
-  const pools: Array<IPool> = useMemo(() => data?.pools?.data || [], [data]);
+  const { pools, isLoading } = usePools();
+  const { poolAPYs } = usePoolsAPY(pools);
 
   return (
     <ListContainer
       isLoading={isLoading}
-      title="Trading"
+      title="Farming"
       isActivePanel={isActivePanel}
       className={className}
     >
-      {isLoading ? (
+      {isLoading && (
         <div className="h-[210px]">
           {range(3).map((i: number) => {
             return <SkeletonRow key={i} />;
           })}
         </div>
-      ) : pools.length ? (
+      )}
+
+      {!isLoading && pools.length > 0 && (
         <ScrollArea className="h-[210px]">
-          {pools.map((p: IPool, i: number) => {
-            return <FarmingRow pool={p} key={p.poolId} isLast={i === pools.length} />;
+          {pools.map((p, i: number) => {
+            return (
+              <FarmingRow
+                pool={p}
+                poolAPY={poolAPYs[p.poolId]}
+                key={p.poolId}
+                isLast={i === pools.length}
+              />
+            );
           })}
           <ScrollBar />
         </ScrollArea>
-      ) : (
+      )}
+
+      {!isLoading && !pools.length && (
         <div className="flex h-[210px] items-center justify-center pr-4">
           <Empty />
         </div>

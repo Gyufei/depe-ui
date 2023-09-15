@@ -54,7 +54,7 @@ export default function NetworkSelect() {
         align="start"
         alignOffset={-170}
       >
-        {chains.map((c) => (
+        {(chains || []).map((c) => (
           <div
             key={c.name}
             onClick={() => handleSelectNet(c.id)}

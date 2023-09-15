@@ -11,34 +11,52 @@ import RowOperateDot from "./row-operate-dot";
 import FarmingDialogContent from "./farming-dialog-content";
 import DialogGimp from "../share/dialog-gimp";
 import { APYText, SecondText, TitleText } from "./row-common";
-import { IPool } from "@/lib/types/pool";
-import { useToken } from "wagmi";
+import type { IPool } from "@/lib/types/pool";
+import { useTokensInfo } from "@/lib/hooks/use-token-info";
+import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
+import { Skeleton } from "../ui/skeleton";
 
-export function FarmingRow({ isLast, pool }: { isLast: boolean; pool: IPool }) {
+export function FarmingRow({
+  isLast,
+  pool,
+  poolAPY,
+}: {
+  isLast: boolean;
+  pool: IPool;
+  poolAPY: IPoolAPY;
+}) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  
-  const { data } = useToken({
-    address: pool.quoteToken
-  })
-  console.log(data);
+
+  const [baseToken, quoteToken] = useTokensInfo([
+    pool.baseToken,
+    pool.quoteToken,
+  ]);
 
   return (
     <div className="flex pl-2 pt-[10px] pr-6">
-      <TokenPairImage className="mt-1" />
+      <TokenPairImage
+        img1={quoteToken?.logoURI || ""}
+        img2={baseToken?.logoURI || ""}
+        className="mt-1"
+      />
       <div
         data-state={isLast ? "last" : ""}
         className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
         <div className="flex flex-1 flex-col">
           <TitleText text={`# ${pool.poolId}`} />
-          <SecondText text="DOGE" />
+          <SecondText text={quoteToken?.symbol || ""} />
         </div>
         <div className="flex flex-col items-end pr-[9%]">
-          <TitleText text="1~10×" />
-          <SecondText text="w-[400px]" />
+          <TitleText text={`1~${pool.maxleverage}×`} />
+          <SecondText text="Leverage" />
         </div>
         <div className="flex flex-col items-end pr-[12%]">
-          <APYText apy={70} />
+          {!poolAPY || poolAPY?.isLoading ? (
+            <Skeleton className="h-7 w-[50px]" />
+          ) : (
+            <APYText apy={poolAPY?.value} />
+          )}
           <SecondText text="APY" />
         </div>
         <div className="flex flex-col items-end">

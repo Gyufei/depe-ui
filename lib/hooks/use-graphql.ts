@@ -1,7 +1,10 @@
+import useSWR, { SWRResponse } from "swr";
+
 import { GraphQLClient } from "graphql-request";
 import { useEndPoint } from "./use-endpoint";
+import { plainFetcher } from "../fetcher";
 
-export function useGraphqlClient() {
+export function useGqlRequest<T = any>(doc: string): SWRResponse<T, any, any> {
   const { gqlEndPoint: networkEndPoint } = useEndPoint();
 
   const gqlClient = new GraphQLClient(networkEndPoint || "", {
@@ -10,21 +13,9 @@ export function useGraphqlClient() {
       parse: JSON.parse,
       stringify: JSON.stringify,
     },
+    fetch: plainFetcher,
   });
 
-  const gqlFetcher = async (...rest: any[]) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const res = await gqlClient.request(...rest);
-      console.log("res", res);
-      return (res as any)?.data || res;
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  return {
-    gqlFetcher,
-  };
+  const res = useSWR<T>(doc, gqlClient.request.bind(gqlClient));
+  return res;
 }

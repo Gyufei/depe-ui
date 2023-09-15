@@ -9,8 +9,8 @@ export function SecondText({ text }: { text: string }) {
   return <div className="text-xs leading-[18px] text-lightgray">{text}</div>;
 }
 
-export function APYText({ apy }: { apy: number }) {
-  const isGreaterThanZero = apy > 0;
+export function APYText({ apy }: { apy: number | null }) {
+  const isGreaterThanZero = apy && apy > 0;
 
   return (
     <div

@@ -12,14 +12,13 @@ import Triangle from "/public/icons/triangle.svg";
 import { Search } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import TokenPairImage from "./token-pair-image";
-import { IPool } from "@/lib/types/pool";
+import type { IPool } from "@/lib/types/pool";
 
-import { useGraphqlClient } from "@/lib/hooks/use-graphql";
-import { GqlDocPool } from "@/lib/gql-document";
-import useSWR from "swr";
 import { Skeleton } from "../ui/skeleton";
 import { range } from "lodash";
 import Empty from "./empty";
+import usePools from "@/lib/hooks/use-pools";
+import { useTokensInfo } from "@/lib/hooks/use-token-info";
 
 export default function SelectPoolDialogContent() {
   const [isAuto, setIsAuto] = useState(false);
@@ -27,20 +26,21 @@ export default function SelectPoolDialogContent() {
   const [searchStr, setSearchStr] = useState("");
   const [activePool, setActivePool] = useState<IPool | null>(null);
 
-  const { gqlFetcher } = useGraphqlClient();
-  const { data, isLoading } = useSWR(GqlDocPool(1), gqlFetcher);
-  const pools: Array<IPool> = useMemo(() => data?.pools?.data || [], [data]);
+  const { pools, isLoading } = usePools();
+
   const filteredPools = useMemo<Array<IPool>>((): Array<IPool> => {
     if (!pools) return [];
 
     let sortedPools = pools;
 
     if (sortBy === "Num") {
-      sortedPools = pools.sort((a, b) => a.poolId - b.poolId);
+      sortedPools = pools.sort((a, b) => Number(a.poolId) - Number(b.poolId));
     } else if (sortBy === "APY") {
-      sortedPools = pools.sort((a, b) => a.apy - b.apy);
+      sortedPools = pools.sort((a, b) => a.APY.value - b.APY.value);
     } else if (sortBy === "Leverage") {
-      sortedPools = pools.sort((a, b) => a.leverage - b.leverage);
+      sortedPools = pools.sort(
+        (a, b) => Number(a.maxleverage) - Number(b.maxleverage),
+      );
     }
 
     let fPools = sortedPools;
@@ -124,13 +124,19 @@ export default function SelectPoolDialogContent() {
         </div>
 
         <div className="mt-3 pl-6 pr-2">
-          {isLoading ? (
+          {isLoading && (
             <div className="h-[312px] pr-4">
               {range(5).map((i: number) => {
                 return <SkeletonRow key={i} />;
               })}
             </div>
-          ) : filteredPools.length ? (
+          )}
+          {!isLoading && !filteredPools.length && (
+            <div className="flex h-[312px] items-center justify-center pr-4">
+              <Empty />
+            </div>
+          )}
+          {!isLoading && filteredPools.length > 0 && (
             <ScrollArea className="h-[312px] pr-4">
               {filteredPools.map((p) => (
                 <PoolRow
@@ -142,10 +148,6 @@ export default function SelectPoolDialogContent() {
               ))}
               <ScrollBar />
             </ScrollArea>
-          ) : (
-            <div className="flex h-[312px] items-center justify-center pr-4">
-              <Empty />
-            </div>
           )}
         </div>
       </div>
@@ -173,23 +175,33 @@ function PoolRow({
   isSelected: boolean;
   onClick: () => void;
 }) {
+  const [baseToken, quoteToken] = useTokensInfo([
+    pool.baseToken,
+    pool.quoteToken,
+  ]);
+
+  console.log(baseToken, quoteToken);
+
   return (
     <div
       onClick={onClick}
       data-check={isSelected ? "true" : "false"}
-      className="mt-[6px] flex cursor-pointer rounded-xl border-2 border-black py-2 px-4 first:mt-0 data-[check=true]:bg-blue"
+      className="mt-[6px] flex cursor-pointer items-center rounded-xl border-2 border-black py-2 px-4 first:mt-0 data-[check=true]:bg-blue"
     >
-      <TokenPairImage className="mt-1" />
-      <div className="ml-3 flex flex-1 justify-between">
-        <div className="flex flex-col">
+      <TokenPairImage
+        img1={quoteToken?.logoURI || ""}
+        img2={baseToken?.logoURI || ""}
+      />
+      <div className="ml-3 flex flex-1 items-center justify-between">
+        <div className="flex flex-col justify-between">
           <TitleText text={`# ${pool.poolId}`} />
-          <SecondText text="DOGE" />
+          <SecondText text={quoteToken?.symbol} />
         </div>
-        <div className="flex flex-col items-end">
-          <TitleText text="1~15×" />
+        <div className="flex flex-col items-end justify-between">
+          <TitleText text={`1~${pool.maxleverage}×`} />
           <SecondText text="Leverage" />
         </div>
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-end justify-between">
           <TitleText text="100%" />
           <SecondText text="APY" />
         </div>
@@ -222,10 +234,10 @@ export function SkeletonRow() {
   );
 }
 
-function TitleText({ text }: { text: string }) {
+function TitleText({ text = "" }: { text: string | undefined }) {
   return <div className="text-lg leading-[19px] text-black">{text}</div>;
 }
 
-function SecondText({ text }: { text: string }) {
+function SecondText({ text = "" }: { text: string | undefined }) {
   return <div className="text-xs leading-[18px] text-lightgray">{text}</div>;
 }

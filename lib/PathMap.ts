@@ -3,8 +3,16 @@ export function WithHost(path: string) {
 }
 
 export const EndPointPathMap = {
-  ethGql: WithHost("/ethereum/graphql"),
+  ethApi: WithHost("/mainnet"),
+  sepoliaApi: WithHost("/sepolia"),
+  opApi: WithHost("/op"),
+  baseApi: WithHost("/base"),
+
+  ethGql: WithHost("/mainnet/graphql"),
   sepoliaGql: WithHost("/sepolia/graphql"),
   opGql: WithHost("/op/graphql"),
   baseGql: WithHost("/base/graphql"),
+
+  token:
+    "https://cdn.shorter.finance/tokens/mainnet/tokenlist.json?ts=1694769072373",
 };
