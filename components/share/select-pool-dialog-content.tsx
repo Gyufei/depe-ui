@@ -19,6 +19,7 @@ import { range } from "lodash";
 import Empty from "./empty";
 import usePools from "@/lib/hooks/use-pools";
 import { useTokensInfo } from "@/lib/hooks/use-token-info";
+import usePoolsAPY, { IPoolAPY } from "@/lib/hooks/use-pools-apy";
 
 export default function SelectPoolDialogContent() {
   const [isAuto, setIsAuto] = useState(false);
@@ -27,6 +28,7 @@ export default function SelectPoolDialogContent() {
   const [activePool, setActivePool] = useState<IPool | null>(null);
 
   const { pools, isLoading } = usePools();
+  const { poolAPYs } = usePoolsAPY(pools);
 
   const filteredPools = useMemo<Array<IPool>>((): Array<IPool> => {
     if (!pools) return [];
@@ -36,7 +38,11 @@ export default function SelectPoolDialogContent() {
     if (sortBy === "Num") {
       sortedPools = pools.sort((a, b) => Number(a.poolId) - Number(b.poolId));
     } else if (sortBy === "APY") {
-      sortedPools = pools.sort((a, b) => a.APY.value - b.APY.value);
+      sortedPools = pools.sort((a, b) => {
+        const aAPY = poolAPYs[a.poolId].value || 0;
+        const bAPY = poolAPYs[b.poolId].value || 0;
+        return aAPY - bAPY;
+      });
     } else if (sortBy === "Leverage") {
       sortedPools = pools.sort(
         (a, b) => Number(a.maxleverage) - Number(b.maxleverage),
@@ -142,6 +148,7 @@ export default function SelectPoolDialogContent() {
                 <PoolRow
                   key={p.poolId}
                   pool={p}
+                  poolAPY={poolAPYs[p.poolId]}
                   isSelected={activePool?.poolId === p.poolId}
                   onClick={() => handleSelectPool(p)}
                 />
@@ -169,9 +176,11 @@ function SortPopRow({ onClick, text }: { onClick: () => void; text: string }) {
 function PoolRow({
   pool,
   isSelected,
+  poolAPY,
   onClick,
 }: {
   pool: IPool;
+  poolAPY: IPoolAPY;
   isSelected: boolean;
   onClick: () => void;
 }) {
@@ -202,7 +211,11 @@ function PoolRow({
           <SecondText text="Leverage" />
         </div>
         <div className="flex flex-col items-end justify-between">
-          <TitleText text="100%" />
+          {poolAPY?.isLoading ? (
+            <Skeleton className="h-5 w-[38px]" />
+          ) : (
+            <TitleText text={`${poolAPY.value}%`} />
+          )}
           <SecondText text="APY" />
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { random } from "lodash";
-import { useCacheMap } from "./use-cache-map";
+import { POOL_APY_CACHE_KEY, useCacheMap } from "./use-cache-map";
 import { IPool } from "../types/pool";
 import { useEffect, useState } from "react";
 
 export default function usePoolAPY(pool?: IPool) {
-  const poolAPYMap = useCacheMap("PoolApy");
+  const poolAPYMap = useCacheMap(POOL_APY_CACHE_KEY);
 
   const [poolApy, setPoolApy] = useState<number | null>(null);
 

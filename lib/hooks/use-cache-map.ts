@@ -2,6 +2,8 @@ import { usePublicClient } from "wagmi";
 
 const GlobalCacheMap = new Map();
 
+export const POOL_APY_CACHE_KEY = "PoolApy";
+
 export function useCacheMap(target: string) {
   const { chain } = usePublicClient();
 

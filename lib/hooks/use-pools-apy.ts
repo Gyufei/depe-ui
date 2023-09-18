@@ -19,7 +19,6 @@ export default function usePoolsAPY(pools: Array<IPool>) {
   }, {} as any);
 
   const [poolAPYs, setPoolAPYs] = useState<Record<string, IPoolAPY>>(initAPYs);
-  console.log(poolAPYs);
 
   useEffect(() => {
     const getPoolsAPY = async () => {
@@ -33,13 +32,14 @@ export default function usePoolsAPY(pools: Array<IPool>) {
               value: apy,
             },
           });
+
+          return apy;
         };
 
         return singleGet();
       });
 
-      const res = await Promise.all(allPoolGet);
-      console.log(res, '111');
+      await Promise.all(allPoolGet);
     };
 
     getPoolsAPY();
