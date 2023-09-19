@@ -76,10 +76,6 @@ input[type="text"] {
     @apply rounded-full border border-black shadow-1 shadow-black;
   }
 
-  .c-shadow-btn {
-    @apply c-font-title-65 rounded-xl border-2 px-6 py-[16px] leading-5 text-black shadow-25 transition-all;
-  }
-
   /* btn with active and hover style */
   .c-shadow-translate {
     @apply transition-shadow hover:-translate-x-[0.06rem] hover:-translate-y-[0.06rem] hover:shadow-30 active:translate-x-[0.06rem] active:translate-y-[0.06rem] active:shadow-20;

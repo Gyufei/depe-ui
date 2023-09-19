@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-import PoolCircleIcon from "/public/icons/pool-circle.svg";
+import PoolCircleIcon from "/public/icons/pools-circle.svg";
 import Triangle from "/public/icons/triangle.svg";
 
 import {

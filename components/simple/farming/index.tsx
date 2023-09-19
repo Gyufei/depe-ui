@@ -224,7 +224,7 @@ function Pool({ isActivePanel }: { isActivePanel: boolean }) {
           <DialogTrigger asChild>
             <div
               data-state={isActivePanel ? "active" : "inactive"}
-              className=" c-active-border flex flex-1 cursor-pointer items-center justify-between rounded-xl border-2 p-4 hover:contrast-50"
+              className=" c-active-border flex flex-1 cursor-pointer items-center justify-between rounded-xl border-2 p-4 hover:brightness-110"
             >
               <div className="flex items-center text-sm leading-[17px] text-black ">
                 <div className="mr-[14px]">Automatch</div>

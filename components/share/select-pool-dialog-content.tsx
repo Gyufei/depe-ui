@@ -189,8 +189,6 @@ function PoolRow({
     pool.quoteToken,
   ]);
 
-  console.log(baseToken, quoteToken);
-
   return (
     <div
       onClick={onClick}
@@ -203,20 +201,20 @@ function PoolRow({
       />
       <div className="ml-3 flex flex-1 items-center justify-between">
         <div className="flex flex-col justify-between">
-          <TitleText text={`# ${pool.poolId}`} />
-          <SecondText text={quoteToken?.symbol} />
+          <TitleText>#{pool.poolId}</TitleText>
+          <SecondText>{quoteToken?.symbol} </SecondText>
         </div>
         <div className="flex flex-col items-end justify-between">
-          <TitleText text={`1~${pool.maxleverage}×`} />
-          <SecondText text="Leverage" />
+          <TitleText>1~{pool.maxleverage}×</TitleText>
+          <SecondText>Leverage</SecondText>
         </div>
         <div className="flex flex-col items-end justify-between">
           {poolAPY?.isLoading ? (
             <Skeleton className="h-5 w-[38px]" />
           ) : (
-            <TitleText text={`${poolAPY.value}%`} />
+            <TitleText>{poolAPY.value}%</TitleText>
           )}
-          <SecondText text="APY" />
+          <SecondText>APY</SecondText>
         </div>
       </div>
     </div>
@@ -247,10 +245,12 @@ export function SkeletonRow() {
   );
 }
 
-function TitleText({ text = "" }: { text: string | undefined }) {
-  return <div className="text-lg leading-[19px] text-black">{text}</div>;
+function TitleText({ children }: { children: React.ReactNode }) {
+  return <div className="text-lg leading-[19px] text-black">{children}</div>;
 }
 
-function SecondText({ text = "" }: { text: string | undefined }) {
-  return <div className="text-xs leading-[18px] text-lightgray">{text}</div>;
+function SecondText({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-xs leading-[18px] text-lightgray">{children}</div>
+  );
 }

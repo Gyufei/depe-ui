@@ -13,7 +13,7 @@ export default function ConnectBtn() {
   return (
     <>
       <button
-        className="c-shadow-btn c-shadow-translate hover:bg-yellow/90 bg-yellow px-[30px] py-[14px] text-base"
+        className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all"
         onClick={() => openConnectModal()}
       >
         {isDisconnected ? (

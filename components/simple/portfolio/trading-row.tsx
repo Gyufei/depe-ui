@@ -37,8 +37,8 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
         className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
         <div className="flex flex-1 flex-col">
-          <TitleText text="# 100" />
-          <SecondText text="DOGE(20✕)" />
+          <TitleText># 100</TitleText>
+          <SecondText>DOGE(20✕)</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[28px]">
           <div className="flex items-center text-lg leading-7 text-black">
@@ -51,11 +51,11 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
               className="ml-1"
             ></Image>
           </div>
-          <SecondText text="Size" />
+          <SecondText>Size</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[37px]">
           <APYText apy={70} />
-          <SecondText text="P/L" />
+          <SecondText>P/L</SecondText>
         </div>
         <div className="flex flex-col items-end">
           <div className="flex items-center text-lg leading-7 text-black">
@@ -68,7 +68,7 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
               className="ml-1"
             ></Image>
           </div>
-          <SecondText text="Margin" />
+          <SecondText>Margin</SecondText>
         </div>
         <div className="absolute -right-2 top-2">
           <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
@@ -85,7 +85,7 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
                 onOpenChange={(isOpen) => setPositionDialogOpen(isOpen)}
               >
                 <DialogTrigger asChild>
-                  <OperationPopRow text="Info" />
+                  <OperationPopRow>Info</OperationPopRow>
                 </DialogTrigger>
                 <DialogContent className="w-[480px]">
                   <DialogGimp />
@@ -99,7 +99,7 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
                 onOpenChange={(isOpen) => setTradeDialogOpen(isOpen)}
               >
                 <DialogTrigger asChild>
-                  <OperationPopRow text="Trade" />
+                  <OperationPopRow>Trade</OperationPopRow>
                 </DialogTrigger>
                 <DialogContent className="w-[480px]">
                   <DialogGimp />
@@ -108,14 +108,14 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
                 </DialogContent>
               </Dialog>
 
-              <OperationPopRow text="Share" />
+              <OperationPopRow>Share</OperationPopRow>
 
               <Dialog
                 open={transferDialogOpen}
                 onOpenChange={(isOpen) => setTransferDialogOpen(isOpen)}
               >
                 <DialogTrigger asChild>
-                  <OperationPopRow text="Transfer" />
+                  <OperationPopRow>Transfer</OperationPopRow>
                 </DialogTrigger>
                 <DialogContent className="w-[480px]">
                   <DialogGimp />

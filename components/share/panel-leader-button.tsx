@@ -22,7 +22,7 @@ export default function PanelLeaderButton({
         <button
           data-state={activeState}
           className={cn(
-            "c-shadow-btn c-active-border c-active-shadow relative -top-10 rounded-[32px] text-xl",
+            "c-active-border c-active-shadow c-font-title-65 relative -top-10 rounded-[32px] border-2 px-6 py-[16px] text-xl leading-5 text-black shadow-25 transition-all ",
             className,
           )}
         >

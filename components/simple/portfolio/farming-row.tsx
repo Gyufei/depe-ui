@@ -44,12 +44,12 @@ export function FarmingRow({
         className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
         <div className="flex flex-1 flex-col">
-          <TitleText text={`# ${pool.poolId}`} />
-          <SecondText text={quoteToken?.symbol || ""} />
+          <TitleText># {pool.poolId}</TitleText>
+          <SecondText>{quoteToken?.symbol || ""}</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[9%]">
-          <TitleText text={`1~${pool.maxleverage}×`} />
-          <SecondText text="Leverage" />
+          <TitleText>1~{pool.maxleverage}×</TitleText>
+          <SecondText>Leverage</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[12%]">
           {!poolAPY || poolAPY?.isLoading ? (
@@ -57,11 +57,11 @@ export function FarmingRow({
           ) : (
             <APYText apy={poolAPY?.value} />
           )}
-          <SecondText text="APY" />
+          <SecondText>APY</SecondText>
         </div>
         <div className="flex flex-col items-end">
-          <TitleText text="300" />
-          <SecondText text="USDT" />
+          <TitleText>300</TitleText>
+          <SecondText>USDT</SecondText>
         </div>
         <div className="absolute -right-2 top-2">
           <Dialog

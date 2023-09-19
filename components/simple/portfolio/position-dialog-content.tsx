@@ -93,7 +93,7 @@ export default function PositionDialogContent() {
                 <Image
                   width={20}
                   height={20}
-                  src={`/icons/clock.svg`}
+                  src="/icons/clock.svg"
                   alt="expiration"
                 ></Image>
                 <div className="ml-2">23 d 5 h</div>

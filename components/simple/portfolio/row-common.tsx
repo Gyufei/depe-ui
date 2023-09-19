@@ -1,12 +1,14 @@
 import { forwardRef } from "react";
 import { Skeleton } from "../../ui/skeleton";
 
-export function TitleText({ text }: { text: string }) {
-  return <div className="text-lg leading-7 text-black">{text}</div>;
+export function TitleText({ children }: { children: React.ReactNode }) {
+  return <div className="text-lg leading-7 text-black">{children}</div>;
 }
 
-export function SecondText({ text }: { text: string }) {
-  return <div className="text-xs leading-[18px] text-lightgray">{text}</div>;
+export function SecondText({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-xs leading-[18px] text-lightgray">{children}</div>
+  );
 }
 
 export function APYText({ apy }: { apy: number | null }) {
@@ -24,13 +26,16 @@ export function APYText({ apy }: { apy: number | null }) {
 }
 
 export const OperationPopRow = forwardRef(
-  ({ text, ...rest }: { text: string; [key: string]: any }, ref: any) => (
+  (
+    { children, ...rest }: { children: React.ReactNode; [key: string]: any },
+    ref: any,
+  ) => (
     <div
       ref={ref}
       className="flex h-12 cursor-pointer items-center rounded-xl px-4 text-sm text-black hover:bg-[#f5f6f7]"
       {...rest}
     >
-      {text}
+      {children}
     </div>
   ),
 );

@@ -11,7 +11,7 @@ export default function ModeSwitch() {
   const router = useRouter();
   const routerMath = {
     Simple: "/",
-    Pro: "/pro",
+    Pro: "/pools",
   };
 
   const [mode, setMode] = useAtom(ModeAtom);
