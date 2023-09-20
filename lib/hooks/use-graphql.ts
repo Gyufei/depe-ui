@@ -5,17 +5,19 @@ import { useEndPoint } from "./use-endpoint";
 import { plainFetcher } from "../fetcher";
 
 export function useGqlRequest<T = any>(doc: string): SWRResponse<T, any, any> {
-  const { gqlEndPoint: networkEndPoint } = useEndPoint();
+  const { gqlEndPoint } = useEndPoint();
 
-  const gqlClient = new GraphQLClient(networkEndPoint || "", {
-    method: `GET`,
-    jsonSerializer: {
-      parse: JSON.parse,
-      stringify: JSON.stringify,
-    },
-    fetch: plainFetcher,
-  });
+  const fetchGql = async ([document, endPoint]: [string, string]) => {
+    const gqlClient = new GraphQLClient(endPoint || "", {
+      method: `GET`,
+      fetch: plainFetcher,
+    });
 
-  const res = useSWR<T>(doc, gqlClient.request.bind(gqlClient));
+    const res = gqlClient.request(document as any);
+    return res;
+  };
+
+  const res = useSWR<T>([doc, gqlEndPoint], fetchGql as any);
+
   return res;
 }

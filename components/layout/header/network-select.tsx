@@ -2,7 +2,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
-import { usePublicClient, useSwitchNetwork } from "wagmi";
+import {
+  Chain,
+  useAccount,
+  useConfig,
+  usePublicClient,
+  useSwitchNetwork,
+} from "wagmi";
 
 import {
   Popover,
@@ -15,14 +21,31 @@ import Triangle from "/public/icons/triangle.svg";
 import { Skeleton } from "../../ui/skeleton";
 
 export default function NetworkSelect() {
+  const { isConnected } = useAccount();
   const { chain, chains } = usePublicClient();
   const { switchNetworkAsync, isLoading, pendingChainId } = useSwitchNetwork();
+  const config = useConfig();
 
   const [popOpen, setPopOpen] = useState(false);
 
-  const handleSelectNet = async (cId: number) => {
-    if (cId === chain?.id) return;
-    await switchNetworkAsync?.(cId);
+  const handleSelectNet = async (selectChain: Chain) => {
+    if (selectChain.id === chain?.id) return;
+    if (isConnected) {
+      await switchNetworkAsync?.(selectChain.id);
+    } else {
+      config.setState((x) => {
+        return {
+          ...x,
+          data: {
+            ...x.data,
+            chain: {
+              ...selectChain,
+              unsupported: false,
+            },
+          },
+        };
+      });
+    }
     setPopOpen(false);
   };
 
@@ -57,7 +80,7 @@ export default function NetworkSelect() {
         {(chains || []).map((c) => (
           <div
             key={c.name}
-            onClick={() => handleSelectNet(c.id)}
+            onClick={() => handleSelectNet(c)}
             data-state={c.id === chain?.id ? "active" : "inactive"}
             className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black data-[state=active]:bg-black data-[state=active]:text-yellow"
           >
