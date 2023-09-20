@@ -3,7 +3,7 @@
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import PanelLeaderButton from "../../share/panel-leader-button";
 import InputPanel from "../../share/input-panel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PoolSelect from "./pool-select";
 import NFTCheck from "./nft-check";
 import FormBtnWithWallet from "../../share/form-btn";
@@ -11,11 +11,25 @@ import SwapSetting from "./swap-setting";
 import OrderOverview from "./order-overview";
 import LeverageSelectInput from "./leverage-select-input";
 import ActionTip, { IActionType } from "../../share/action-tip";
+import { IToken } from "@/lib/types/token";
+import { useTokens } from "@/lib/hooks/use-tokens";
 
 export default function Swap() {
   const { isActivePanel, setPanelActive } = useActivePanel("Swap");
-  const [token1, setToken1] = useState("USDT");
-  const [token2, setToken2] = useState("DOGE");
+
+  const { marginTokens, notMarginTokens } = useTokens();
+  const [token1, setToken1] = useState<IToken | null>(null);
+  const [token2, setToken2] = useState<IToken | null>(null);
+
+  useEffect(() => {
+    if (marginTokens?.length) {
+      setToken1(marginTokens[0]);
+    }
+
+    if (notMarginTokens?.length) {
+      setToken2(notMarginTokens[0]);
+    }
+  }, [marginTokens, notMarginTokens]);
 
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
@@ -40,6 +54,7 @@ export default function Swap() {
       >
         <div className="flex flex-col">
           <InputPanel
+            isStableToken={true}
             isActive={isActivePanel}
             token={token1}
             setToken={setToken1}

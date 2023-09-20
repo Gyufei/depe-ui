@@ -13,6 +13,10 @@ export const ChainConfigs = [
       default: EndPointPathMap.ethApi,
       tokenApi: EndPointPathMap.ethTokens,
     },
+    marginTokens: [
+      "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
+      "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+    ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -29,6 +33,10 @@ export const ChainConfigs = [
       default: EndPointPathMap.sepoliaApi,
       tokenApi: EndPointPathMap.sepoliaTokens,
     },
+    marginTokens: [
+      "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
+      "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+    ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -45,6 +53,10 @@ export const ChainConfigs = [
       default: EndPointPathMap.opApi,
       tokenApi: EndPointPathMap.opTokens,
     },
+    marginTokens: [
+      "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
+      "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+    ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -61,6 +73,10 @@ export const ChainConfigs = [
       default: EndPointPathMap.baseApi,
       tokenApi: EndPointPathMap.baseTokens,
     },
+    marginTokens: [
+      "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
+      "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+    ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -82,4 +98,8 @@ export function getChainApiPath(chainName: string) {
 
 export function getChainTokenApiPath(chainName: string) {
   return ChainConfigs.find((c) => c.name === chainName)?.api.tokenApi;
+}
+
+export function getChainMarginTokens(chainName: string) {
+  return ChainConfigs.find((c) => c.name === chainName)?.marginTokens;
 }

@@ -6,19 +6,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "assets.coingecko.com",
+        hostname: "cdn.depe.app",
       },
       {
         protocol: "https",
         hostname: "explorer-api.walletconnect.com",
-      },
-      {
-        protocol: "https",
-        hostname: "raw.githubusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.shorter.finance",
       },
     ],
   },
