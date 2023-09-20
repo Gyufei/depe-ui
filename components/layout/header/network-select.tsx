@@ -21,10 +21,10 @@ import Triangle from "/public/icons/triangle.svg";
 import { Skeleton } from "../../ui/skeleton";
 
 export default function NetworkSelect() {
+  const config = useConfig();
   const { isConnected } = useAccount();
   const { chain, chains } = usePublicClient();
   const { switchNetworkAsync, isLoading, pendingChainId } = useSwitchNetwork();
-  const config = useConfig();
 
   const [popOpen, setPopOpen] = useState(false);
 

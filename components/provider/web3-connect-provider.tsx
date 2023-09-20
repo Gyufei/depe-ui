@@ -11,7 +11,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { base, mainnet, optimism, sepolia } from "wagmi/chains";
 import { infuraProvider } from "wagmi/providers/infura";
 
-export const chains = [mainnet, optimism, base, sepolia];
+const chains = [mainnet, optimism, base, sepolia];
 const projectId = "bb5e726f6ba3a2f3f7b43e645f4786c4";
 
 const { publicClient } = configureChains(chains, [

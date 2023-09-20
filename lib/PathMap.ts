@@ -1,5 +1,11 @@
 export function WithHost(path: string) {
-  return `${process.env.NEXT_PUBLIC_API_URL}${path}`;
+  return `https://api.depe.app${path}`;
+  //return `${process.env.NEXT_PUBLIC_API_URL}${path}`;
+}
+
+export function WithCDN(path: string) {
+  return `https://cdn.depe.app${path}`;
+  // return `${process.env.NEXT_PUBLIC_CDN_URL}${path}`;
 }
 
 export const EndPointPathMap = {
@@ -13,6 +19,8 @@ export const EndPointPathMap = {
   opGql: WithHost("/op/graphql"),
   baseGql: WithHost("/base/graphql"),
 
-  token:
-    "https://cdn.shorter.finance/tokens/mainnet/tokenlist.json?ts=1694769072373",
+  ethTokens: WithCDN("/tokens/mainnet/tokenlist.json"),
+  sepoliaTokens: WithCDN("/tokens/sepolia/tokenlist.json"),
+  opTokens: WithCDN("/tokens/op/tokenlist.json"),
+  baseTokens: WithCDN("/tokens/base/tokenlist.json"),
 };

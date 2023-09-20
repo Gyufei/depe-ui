@@ -23,7 +23,9 @@ export default async function RootLayout({
         <Web3ConnectProvider>
           <JotaiProvider>
             <SWRConfigProvider>
-              <HomeLayout>{children}</HomeLayout>
+              <HomeLayout>
+                {children}
+              </HomeLayout>
             </SWRConfigProvider>
           </JotaiProvider>
         </Web3ConnectProvider>

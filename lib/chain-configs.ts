@@ -9,8 +9,10 @@ export const ChainConfigs = [
   {
     name: "Ethereum",
     logo: EthereumLogo,
-    gqlApi: EndPointPathMap.ethGql,
-    api: EndPointPathMap.ethApi,
+    api: {
+      default: EndPointPathMap.ethApi,
+      tokenApi: EndPointPathMap.ethTokens,
+    },
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -23,8 +25,10 @@ export const ChainConfigs = [
   {
     name: "Sepolia",
     logo: SepoliaLogo,
-    api: EndPointPathMap.sepoliaApi,
-    gqlApi: EndPointPathMap.sepoliaGql,
+    api: {
+      default: EndPointPathMap.sepoliaApi,
+      tokenApi: EndPointPathMap.sepoliaTokens,
+    },
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -37,8 +41,10 @@ export const ChainConfigs = [
   {
     name: "OP Mainnet",
     logo: OptimismLogo,
-    api: EndPointPathMap.opApi,
-    gqlApi: EndPointPathMap.opGql,
+    api: {
+      default: EndPointPathMap.opApi,
+      tokenApi: EndPointPathMap.opTokens,
+    },
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -51,8 +57,10 @@ export const ChainConfigs = [
   {
     name: "Base",
     logo: BaseLogo,
-    api: EndPointPathMap.baseApi,
-    gqlApi: EndPointPathMap.baseGql,
+    api: {
+      default: EndPointPathMap.baseApi,
+      tokenApi: EndPointPathMap.baseTokens,
+    },
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
@@ -69,9 +77,9 @@ export function getChainLogo(chainName: string) {
 }
 
 export function getChainApiPath(chainName: string) {
-  return ChainConfigs.find((c) => c.name === chainName)?.api;
+  return ChainConfigs.find((c) => c.name === chainName)?.api.default;
 }
 
-export function getChainGqlApiPath(chainName: string) {
-  return ChainConfigs.find((c) => c.name === chainName)?.gqlApi;
+export function getChainTokenApiPath(chainName: string) {
+  return ChainConfigs.find((c) => c.name === chainName)?.api.tokenApi;
 }
