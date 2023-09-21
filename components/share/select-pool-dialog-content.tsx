@@ -17,18 +17,25 @@ import type { IPool } from "@/lib/types/pool";
 import { Skeleton } from "../ui/skeleton";
 import { range } from "lodash";
 import Empty from "./empty";
-import usePools from "@/lib/hooks/use-pools";
-import { useTokensInfo } from "@/lib/hooks/use-token-info";
-import usePoolsAPY, { IPoolAPY } from "@/lib/hooks/use-pools-apy";
+import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
+import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 
-export default function SelectPoolDialogContent() {
+export default function SelectPoolDialogContent({
+  isLoading,
+  pools,
+  poolAPYs,
+  pool,
+  setPool,
+}: {
+  isLoading: boolean;
+  pools: Array<IPool> | null;
+  poolAPYs: Record<string, IPoolAPY>;
+  pool: IPool | null;
+  setPool: (_p: IPool | null) => void;
+}) {
   const [isAuto, setIsAuto] = useState(false);
   const [sortBy, setSortBy] = useState("Num");
   const [searchStr, setSearchStr] = useState("");
-  const [activePool, setActivePool] = useState<IPool | null>(null);
-
-  const { pools, isLoading } = usePools();
-  const { poolAPYs } = usePoolsAPY(pools);
 
   const filteredPools = useMemo<Array<IPool>>((): Array<IPool> => {
     if (!pools) return [];
@@ -59,18 +66,18 @@ export default function SelectPoolDialogContent() {
     }
 
     return fPools;
-  }, [sortBy, searchStr, pools]);
+  }, [sortBy, searchStr, pools, poolAPYs]);
 
   const handleAuto = () => {
     if (isAuto) return;
 
-    setActivePool(null);
+    setPool(null);
     setIsAuto(true);
   };
 
   const handleSelectPool = (pool: IPool) => {
     setIsAuto(false);
-    setActivePool(pool);
+    setPool(pool);
   };
 
   return (
@@ -149,7 +156,7 @@ export default function SelectPoolDialogContent() {
                   key={p.poolId}
                   pool={p}
                   poolAPY={poolAPYs[p.poolId]}
-                  isSelected={activePool?.poolId === p.poolId}
+                  isSelected={pool?.poolId === p.poolId}
                   onClick={() => handleSelectPool(p)}
                 />
               ))}
@@ -184,10 +191,7 @@ function PoolRow({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const [baseToken, quoteToken] = useTokensInfo([
-    pool.baseToken,
-    pool.quoteToken,
-  ]);
+  const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
 
   return (
     <div
@@ -205,14 +209,14 @@ function PoolRow({
           <SecondText>{quoteToken?.symbol} </SecondText>
         </div>
         <div className="flex flex-col items-end justify-between">
-          <TitleText>1~{pool.maxleverage}×</TitleText>
+          <TitleText>1~{leverage}×</TitleText>
           <SecondText>Leverage</SecondText>
         </div>
         <div className="flex flex-col items-end justify-between">
-          {poolAPY?.isLoading ? (
+          {!poolAPY || poolAPY?.isLoading ? (
             <Skeleton className="h-5 w-[38px]" />
           ) : (
-            <TitleText>{poolAPY.value}%</TitleText>
+            <TitleText>{poolAPY?.value}%</TitleText>
           )}
           <SecondText>APY</SecondText>
         </div>

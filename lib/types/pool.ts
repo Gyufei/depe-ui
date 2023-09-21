@@ -1,8 +1,15 @@
 import { AddressType } from "./address";
 
+export enum EPoolStatus {
+  genesis,
+  running,
+  liquidating,
+  ended,
+}
+
 export interface IPool {
   poolId: string;
-  poolStatus: string;
+  poolStatus: EPoolStatus;
   poolAddr: AddressType;
 
   durationDays: string;

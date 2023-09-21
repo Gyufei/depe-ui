@@ -4,8 +4,27 @@ import SepoliaLogo from "/public/icons/sepolia.svg";
 import OptimismLogo from "/public/icons/optimism.svg";
 
 import { EndPointPathMap } from "./PathMap";
+import { AddressType } from "./types/address";
 
-export const ChainConfigs = [
+interface IChainConfig {
+  name: string;
+  logo: string;
+  api: {
+    default: string;
+    tokenApi: string;
+  };
+  marginTokens: Array<AddressType>;
+  contract: {
+    UniswapV3Quoter: AddressType;
+    UniswapV3Router: AddressType;
+    IPIBone: AddressType;
+    PriceOracle: AddressType;
+    DepePoolManager: AddressType;
+    DepePositionManager: AddressType;
+  };
+}
+
+export const ChainConfigs: Array<IChainConfig> = [
   {
     name: "Ethereum",
     logo: EthereumLogo,
@@ -19,7 +38,7 @@ export const ChainConfigs = [
     ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
-      UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
+      UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
       IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
       PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
       DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
@@ -39,7 +58,7 @@ export const ChainConfigs = [
     ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
-      UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
+      UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
       IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
       PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
       DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
@@ -59,7 +78,7 @@ export const ChainConfigs = [
     ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
-      UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
+      UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
       IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
       PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
       DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
@@ -79,7 +98,7 @@ export const ChainConfigs = [
     ],
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
-      UnisawpV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
+      UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
       IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
       PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
       DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
@@ -90,14 +109,6 @@ export const ChainConfigs = [
 
 export function getChainLogo(chainName: string) {
   return ChainConfigs.find((c) => c.name === chainName)?.logo;
-}
-
-export function getChainApiPath(chainName: string) {
-  return ChainConfigs.find((c) => c.name === chainName)?.api.default;
-}
-
-export function getChainTokenApiPath(chainName: string) {
-  return ChainConfigs.find((c) => c.name === chainName)?.api.tokenApi;
 }
 
 export function getChainMarginTokens(chainName: string) {

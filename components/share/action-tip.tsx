@@ -36,7 +36,7 @@ export default function ActionTip({
     error: {
       bg: "#F8DEDA",
       border: "#DEA69C",
-      icon: "D42C1F",
+      icon: "#D42C1F",
     },
   };
 
@@ -44,7 +44,7 @@ export default function ActionTip({
     <>
       {message ? (
         <div
-          className="fixed bottom-6 flex items-center gap-x-2 rounded-md border px-5 py-3"
+          className="bottom-6 mt-4 flex items-center gap-x-2 rounded-md border px-5 py-3"
           style={{
             borderColor: colorMap[type].border,
             backgroundColor: colorMap[type].bg,
@@ -53,10 +53,24 @@ export default function ActionTip({
           {((type) => {
             switch (type) {
               case "success":
-                return <CheckCircle2 className="h-6 w-6" />;
+                return (
+                  <CheckCircle2
+                    style={{
+                      color: colorMap[type].icon,
+                    }}
+                    className="h-6 w-6"
+                  />
+                );
               case "warning":
-                return <AlertCircle className="h-6 w-6" />;
-              default:
+                return (
+                  <AlertCircle
+                    style={{
+                      color: colorMap[type].icon,
+                    }}
+                    className="h-6 w-6"
+                  />
+                );
+              case "error":
                 return (
                   <XCircle
                     className="h-6 w-6"
@@ -65,9 +79,11 @@ export default function ActionTip({
                     }}
                   />
                 );
+              default:
+                return null;
             }
           })(type)}
-          <div className="text-title-color max-w-[500px]	 overflow-hidden text-ellipsis whitespace-nowrap leading-6">
+          <div className="text-title-color max-w-[340px]	 overflow-hidden text-ellipsis whitespace-nowrap leading-6">
             {message}
           </div>
         </div>

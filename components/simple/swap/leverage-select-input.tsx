@@ -1,9 +1,10 @@
 import useOnclickOutside from "react-cool-onclickoutside";
-
 import { useStrNum } from "@/lib/hooks/use-str-num";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
+import { SLeverageAtom } from "@/lib/states/swap";
+import { useAtom } from "jotai";
 
 export default function LeverageSelectInput({
   className,
@@ -11,10 +12,14 @@ export default function LeverageSelectInput({
   className?: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentLeverage, setCurrentLeverage] = useState(5);
+  const [currentLeverage, setCurrentLeverage] = useAtom(SLeverageAtom);
   const [inputLeverage, setInputLeverage] = useStrNum("5");
 
   const leverageOptions = [5, 10, 15, 20, 25];
+
+  useEffect(() => {
+    setCurrentLeverage(leverageOptions[0]);
+  }, []);
 
   const inputBlur = () => {
     if (inputLeverage && !isNaN(Number(inputLeverage))) {

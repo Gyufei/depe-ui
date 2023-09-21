@@ -2,42 +2,17 @@
 
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import PanelLeaderButton from "../../share/panel-leader-button";
-import InputPanel from "../../share/input-panel";
-import { useEffect, useState } from "react";
 import PoolSelect from "./pool-select";
 import NFTCheck from "./nft-check";
-import FormBtnWithWallet from "../../share/form-btn";
 import SwapSetting from "./swap-setting";
 import OrderOverview from "./order-overview";
 import LeverageSelectInput from "./leverage-select-input";
-import ActionTip, { IActionType } from "../../share/action-tip";
-import { IToken } from "@/lib/types/token";
-import { useTokens } from "@/lib/hooks/use-tokens";
+import BaseTokenInput from "./base-token-input";
+import QuoteTokenInput from "./quote-token-input";
+import ConfirmBtn from "./confirm-btn";
 
 export default function Swap() {
   const { isActivePanel, setPanelActive } = useActivePanel("Swap");
-
-  const { marginTokens, notMarginTokens } = useTokens();
-  const [token1, setToken1] = useState<IToken | null>(null);
-  const [token2, setToken2] = useState<IToken | null>(null);
-
-  useEffect(() => {
-    if (marginTokens?.length) {
-      setToken1(marginTokens[0]);
-    }
-
-    if (notMarginTokens?.length) {
-      setToken2(notMarginTokens[0]);
-    }
-  }, [marginTokens, notMarginTokens]);
-
-  const [value1, setValue1] = useState("");
-  const [value2, setValue2] = useState("");
-
-  const [sendTxResult, setSendTxResult] = useState<{
-    type: IActionType;
-    message: string;
-  } | null>();
 
   return (
     <div onClick={setPanelActive} className="flex flex-col">
@@ -53,37 +28,17 @@ export default function Swap() {
         className="c-shadow-panel w-[480px]"
       >
         <div className="flex flex-col">
-          <InputPanel
-            isStableToken={true}
-            isActive={isActivePanel}
-            token={token1}
-            setToken={setToken1}
-            value={value1}
-            setValue={setValue1}
-          />
+          <BaseTokenInput />
           <div className="relative h-3 px-[68px]">
             <LeverageSelectInput className="relative -top-[20px] mx-auto" />
           </div>
-          <InputPanel
-            isActive={isActivePanel}
-            token={token2}
-            setToken={setToken2}
-            value={value2}
-            setValue={setValue2}
-          />
+          <QuoteTokenInput />
           <div className="mt-[26px] mb-[23px] flex items-center justify-between">
             <PoolSelect />
             <NFTCheck />
           </div>
-          <FormBtnWithWallet isActive={isActivePanel}>
-            Confirm
-          </FormBtnWithWallet>
 
-          <ActionTip
-            type={sendTxResult?.type || "success"}
-            handleClose={() => setSendTxResult(null)}
-            message={sendTxResult?.message || null}
-          />
+          <ConfirmBtn />
         </div>
       </div>
 

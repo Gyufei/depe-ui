@@ -23,25 +23,45 @@ export const PoolsDoc = (poolStatus: number | string): string => gql`
   }
 `;
 
-export const PoolDoc = (poolAddr: AddressType): string => gql`
-  query {
-    pool(poolAddr: "${poolAddr}") {
-      poolId
-      poolAddr
-      durationDays
-      creator
-      baseToken
-      quoteToken
-      dpToken
-      maxleverage
-      maxCapacity
-      tradingFeeRate
-      fundingFeeRate
-      poolStatus
-      poolCreateTimes
-    }
+export const PoolDoc = ({
+  poolId,
+  poolAddr,
+}: {
+  poolId?: string;
+  poolAddr?: AddressType;
+}): string => {
+  let params = "";
+  if (!poolId && !poolAddr) {
+    return "";
   }
-`;
+
+  if (poolId) {
+    params = `poolId: "${poolId}"`;
+  }
+  if (poolAddr) {
+    params = `poolAddr: "${poolAddr}"`;
+  }
+
+  return gql`
+    query {
+      pool(${params}) {
+        poolId
+        poolAddr
+        durationDays
+        creator
+        baseToken
+        quoteToken
+        dpToken
+        maxleverage
+        maxCapacity
+        tradingFeeRate
+        fundingFeeRate
+        poolStatus
+        poolCreateTimes
+      }
+    }
+  `;
+};
 
 export const PoolHistory = (account: AddressType): string => gql`
   query {

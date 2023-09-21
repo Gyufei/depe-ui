@@ -6,8 +6,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Checkbox } from "../../ui/checkbox";
+import { useAtom } from "jotai";
+import { SMintNftFlagAtom } from "@/lib/states/swap";
 
 export default function NFTCheck() {
+  const [nft, setNft] = useAtom(SMintNftFlagAtom);
+
   return (
     <div className="flex items-center">
       <label
@@ -26,7 +30,12 @@ export default function NFTCheck() {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <Checkbox id="nft" className="ml-[10px]" />
+      <Checkbox
+        id="nft"
+        checked={nft}
+        onCheckedChange={(v) => setNft(!!v)}
+        className="ml-[10px]"
+      />
     </div>
   );
 }

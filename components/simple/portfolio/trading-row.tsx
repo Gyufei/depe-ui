@@ -21,32 +21,53 @@ import TradeDialogContent from "./trade-dialog-content";
 import PositionDialogContent from "./position-dialog-content";
 import TransferDialogContent from "./transfer-dialog-content";
 import { APYText, OperationPopRow, SecondText, TitleText } from "./row-common";
+import { IPosition } from "@/lib/types/position";
+import { usePool } from "@/lib/hooks/use-pool";
+import { usePositionFormat } from "@/lib/hooks/use-position-format";
 
-export function TradingRow({ isLast }: { isLast: boolean }) {
+export function TradingRow({
+  position,
+  isLast,
+}: {
+  position: IPosition;
+  isLast: boolean;
+}) {
   const [popOpen, setPopOpen] = useState(false);
-
   const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
   const [positionDialogOpen, setPositionDialogOpen] = useState(false);
 
+  const { pool } = usePool({
+    poolAddr: position.dpPoolAddr,
+  });
+
+  const { baseToken, quoteToken, leverage, size, marginAmount } =
+    usePositionFormat(position, pool);
+
   return (
     <div className="flex pl-2 pt-[10px] pr-6">
-      <TokenPairImage className="mt-1" />
+      <TokenPairImage
+        img1={quoteToken?.logoURI || ""}
+        img2={baseToken?.logoURI || ""}
+        className="mt-1"
+      />
       <div
         data-state={isLast ? "last" : ""}
         className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
         <div className="flex flex-1 flex-col">
           <TitleText># 100</TitleText>
-          <SecondText>DOGE(20✕)</SecondText>
+          <SecondText>
+            {quoteToken?.symbol}({leverage}✕)
+          </SecondText>
         </div>
         <div className="flex flex-col items-end pr-[28px]">
           <div className="flex items-center text-lg leading-7 text-black">
-            1000
+            {size}
             <Image
               width={16}
               height={16}
-              src="/icons/dev/DOGE.svg"
+              src={quoteToken?.logoURI || ""}
               alt="token"
               className="ml-1"
             ></Image>
@@ -59,11 +80,11 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
         </div>
         <div className="flex flex-col items-end">
           <div className="flex items-center text-lg leading-7 text-black">
-            11K
+            {marginAmount}
             <Image
               width={16}
               height={16}
-              src="/icons/dev/USDT.svg"
+              src={baseToken?.logoURI || ""}
               alt="token"
               className="ml-1"
             ></Image>
@@ -89,8 +110,8 @@ export function TradingRow({ isLast }: { isLast: boolean }) {
                 </DialogTrigger>
                 <DialogContent className="w-[480px]">
                   <DialogGimp />
-                  <DialogTitle>Position Info (5×)</DialogTitle>
-                  <PositionDialogContent />
+                  <DialogTitle>Position Info ({leverage}×)</DialogTitle>
+                  <PositionDialogContent position={position} pool={pool} />
                 </DialogContent>
               </Dialog>
 

@@ -4,6 +4,66 @@ import FormBtnWithWallet from "../../share/form-btn";
 import SwitchTab from "../../share/switch-tab";
 import InputPanel from "../../share/input-panel";
 import { IPool } from "@/lib/types/pool";
+import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+
+export default function FarmingDialogContent({ pool }: { pool: IPool }) {
+  const [activeTab, setActiveTab] = useState("Deposit");
+
+  const { baseToken, leverage } = usePoolFormat(pool);
+  const [value, setValue] = useState("");
+
+  return (
+    <div className="flex flex-col items-stretch gap-y-6">
+      <div>
+        <RowContainer>
+          <FieldContainer>
+            <TitleText>Pool</TitleText>
+            <FieldText>#{pool.poolId}</FieldText>
+          </FieldContainer>
+          <FieldContainer className="items-end">
+            <TitleText>Leverage</TitleText>
+            <FieldText>1~{leverage}×</FieldText>
+          </FieldContainer>
+        </RowContainer>
+
+        <RowContainer>
+          <FieldContainer>
+            <TitleText>Current Farming</TitleText>
+            <FieldText>1000 USDT</FieldText>
+          </FieldContainer>
+          <FieldContainer className="items-end">
+            <TitleText>Profit</TitleText>
+            <FieldText>+300 USDT</FieldText>
+          </FieldContainer>
+        </RowContainer>
+      </div>
+
+      <div>
+        <SwitchTab
+          tabs={["Deposit", "Withdraw"]}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+        <InputPanel
+          isLoading={false}
+          tokens={[]}
+          showToken={false}
+          balance={"100"}
+          balanceText="Balance"
+          isJustToken={true}
+          isActive={true}
+          className="rounded-tl-none"
+          value={value}
+          setValue={setValue}
+          token={baseToken}
+          setToken={() => {}}
+        />
+      </div>
+
+      <FormBtnWithWallet>Confirm</FormBtnWithWallet>
+    </div>
+  );
+}
 
 function RowContainer({ children }: { children: ReactNode }) {
   return (
@@ -37,59 +97,4 @@ function TitleText({ children }: { children: ReactNode }) {
 
 function FieldText({ children }: { children: ReactNode }) {
   return <div className="text-xl leading-[19px] text-black">{children}</div>;
-}
-
-export default function FarmingDialogContent({ pool }: { pool: IPool }) {
-  const [token, setToken] = useState("DOGE");
-  const [value, setValue] = useState("");
-
-  const [activeTab, setActiveTab] = useState("Deposit");
-
-  return (
-    <div className="flex flex-col items-stretch gap-y-6">
-      <div>
-        <RowContainer>
-          <FieldContainer>
-            <TitleText>Pool</TitleText>
-            <FieldText>#{pool.poolId}</FieldText>
-          </FieldContainer>
-          <FieldContainer className="items-end">
-            <TitleText>Leverage</TitleText>
-            <FieldText>1~{pool.maxleverage}×</FieldText>
-          </FieldContainer>
-        </RowContainer>
-
-        <RowContainer>
-          <FieldContainer>
-            <TitleText>Current Farming</TitleText>
-            <FieldText>1000 USDT</FieldText>
-          </FieldContainer>
-          <FieldContainer className="items-end">
-            <TitleText>Profit</TitleText>
-            <FieldText>+300 USDT</FieldText>
-          </FieldContainer>
-        </RowContainer>
-      </div>
-
-      <div>
-        <SwitchTab
-          tabs={["Deposit", "Withdraw"]}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-        <InputPanel
-          showToken={false}
-          balanceText="Balance"
-          isActive={true}
-          className="rounded-tl-none"
-          value={value}
-          setValue={setValue}
-          token={token}
-          setToken={setToken}
-        />
-      </div>
-
-      <FormBtnWithWallet>Confirm</FormBtnWithWallet>
-    </div>
-  );
 }

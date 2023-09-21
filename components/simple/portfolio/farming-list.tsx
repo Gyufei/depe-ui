@@ -43,7 +43,7 @@ export function FarmingList({
                 pool={p}
                 poolAPY={poolAPYs[p.poolId]}
                 key={p.poolId}
-                isLast={i === pools.length}
+                isLast={i === pools.length - 1}
               />
             );
           })}

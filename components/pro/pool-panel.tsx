@@ -2,11 +2,11 @@ import Image from "next/image";
 
 import { IPool } from "@/lib/types/pool";
 import TokenPairImage from "../share/token-pair-image";
-import { useTokensInfo } from "@/lib/hooks/use-token-info";
 import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
 import { Skeleton } from "../ui/skeleton";
 import ExpirationIcon from "@/components/share/icons/expiration";
 import MakerIcon from "/public/icons/maker.svg";
+import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 
 function FieldRow({ children }: { children: React.ReactNode }) {
   return <div className="flex justify-between">{children}</div>;
@@ -35,10 +35,7 @@ export default function PoolPanel({
   pool: IPool;
   poolAPY: IPoolAPY;
 }) {
-  const [baseToken, quoteToken] = useTokensInfo([
-    pool.baseToken,
-    pool.quoteToken,
-  ]);
+  const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
 
   return (
     <div className="relative flex flex-col ">
@@ -81,7 +78,7 @@ export default function PoolPanel({
         <div className="flex flex-col gap-y-6 border-b border-[#eee] pb-6">
           <FieldRow>
             <TitleText>Leverage</TitleText>
-            <FieldText>1~{pool.maxleverage}×</FieldText>
+            <FieldText>1~{leverage}×</FieldText>
           </FieldRow>
           <FieldRow>
             <TitleText>Earn APY</TitleText>

@@ -4,6 +4,7 @@ import { TradingRow } from "./trading-row";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { range } from "lodash";
 import { ListContainer } from "./list-container";
+import { usePositions } from "@/lib/hooks/use-positions";
 
 export function TradingList({
   isActivePanel,
@@ -12,7 +13,7 @@ export function TradingList({
   isActivePanel: boolean;
   className?: string;
 }) {
-  const isLoading = false;
+  const { positions, isLoading } = usePositions();
 
   return (
     <ListContainer
@@ -29,8 +30,14 @@ export function TradingList({
         </div>
       ) : (
         <ScrollArea className="h-[140px]">
-          {[1, 2, 3, 4, 5, 6].map((i: number) => {
-            return <TradingRow key={i} isLast={i === 6} />;
+          {positions.map((pos, i) => {
+            return (
+              <TradingRow
+                key={pos.positionAddr}
+                position={pos}
+                isLast={i === positions.length - 1}
+              />
+            );
           })}
           <ScrollBar />
         </ScrollArea>

@@ -8,6 +8,8 @@ export function useGqlRequest<T = any>(doc: string): SWRResponse<T, any, any> {
   const { gqlEndPoint } = useEndPoint();
 
   const fetchGql = async ([document, endPoint]: [string, string]) => {
+    if (!document || !endPoint) return null;
+
     const gqlClient = new GraphQLClient(endPoint || "", {
       method: `GET`,
       fetch: plainFetcher,

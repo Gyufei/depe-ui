@@ -1,21 +1,20 @@
 import { useMemo } from "react";
-import { usePublicClient } from "wagmi";
-import { getChainApiPath, getChainTokenApiPath } from "../chain-configs";
+import { useChainConfig } from "./use-chain-config";
 
 export function useEndPoint() {
-  const { chain } = usePublicClient();
+  const { chainConfig } = useChainConfig();
 
   const apiEndPoint = useMemo(() => {
-    return chain?.name ? getChainApiPath(chain.name) : null;
-  }, [chain]);
+    return chainConfig?.api.default;
+  }, [chainConfig]);
 
   const gqlEndPoint = useMemo(() => {
-    return chain?.name ? getChainApiPath(chain.name) + "/graphql" : null;
-  }, [chain]);
+    return apiEndPoint + "/graphql";
+  }, [apiEndPoint]);
 
   const tokenEndPoint = useMemo(() => {
-    return chain?.name ? getChainTokenApiPath(chain.name) : null;
-  }, [chain]);
+    return chainConfig?.api.tokenApi;
+  }, [chainConfig]);
 
   return {
     apiEndPoint,

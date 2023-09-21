@@ -3,11 +3,12 @@ import type { IToken } from "../types/token";
 import type { AddressType } from "../types/address";
 
 export function useTokensInfo(
-  address: Array<AddressType>,
+  address: Array<AddressType | null>,
 ): Array<IToken | null> {
   const { data: tokens } = useTokens();
 
-  const getTokenInfo = (addr: AddressType) => {
+  const getTokenInfo = (addr: AddressType | null) => {
+    if (!addr) return null;
     if (!tokens?.length) return null;
 
     const tInfo = tokens.find((t) => t.address === addr);

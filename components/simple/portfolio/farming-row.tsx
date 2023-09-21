@@ -12,9 +12,9 @@ import FarmingDialogContent from "./farming-dialog-content";
 import DialogGimp from "../../share/dialog-gimp";
 import { APYText, SecondText, TitleText } from "./row-common";
 import type { IPool } from "@/lib/types/pool";
-import { useTokensInfo } from "@/lib/hooks/use-token-info";
 import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
 import { Skeleton } from "../../ui/skeleton";
+import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 
 export function FarmingRow({
   isLast,
@@ -27,10 +27,7 @@ export function FarmingRow({
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [baseToken, quoteToken] = useTokensInfo([
-    pool.baseToken,
-    pool.quoteToken,
-  ]);
+  const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
 
   return (
     <div className="flex pl-2 pt-[10px] pr-6">
@@ -48,7 +45,7 @@ export function FarmingRow({
           <SecondText>{quoteToken?.symbol || ""}</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[9%]">
-          <TitleText>1~{pool.maxleverage}×</TitleText>
+          <TitleText>1~{leverage}×</TitleText>
           <SecondText>Leverage</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[12%]">

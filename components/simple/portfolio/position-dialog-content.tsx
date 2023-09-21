@@ -12,21 +12,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Progress } from "../../ui/progress";
+import { IPool } from "@/lib/types/pool";
+import { IPosition } from "@/lib/types/position";
+import { usePositionFormat } from "@/lib/hooks/use-position-format";
 
-function TitleText({ children }: { children: ReactNode }) {
-  return (
-    <div className="mr-1 text-sm leading-[20px] text-gray">{children}</div>
-  );
-}
-
-function ContentText({ children }: { children: ReactNode }) {
-  return <div className="text-xl leading-[30px] text-black">{children}</div>;
-}
-
-export default function PositionDialogContent() {
-  const [token, setToken] = useState("USDT");
-  const [value, setValue] = useState("");
+export default function PositionDialogContent({
+  pool,
+  position,
+}: {
+  position: IPosition;
+  pool: IPool;
+}) {
   const [activeTab, setActiveTab] = useState("Append Margin");
+
+  const [value, setValue] = useState("");
+
+  const { baseToken, quoteToken, size, marginAmount, expiration } =
+    usePositionFormat(position, pool);
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -40,7 +42,9 @@ export default function PositionDialogContent() {
           </div>
 
           <div className="flex flex-col gap-y-2">
-            <TitleText>BUNNY/USD</TitleText>
+            <TitleText>
+              {quoteToken?.symbol}/{baseToken?.symbol}
+            </TitleText>
             <div className="flex flex-col gap-y-[4px]">
               <ContentText>$13.0497</ContentText>
               <Progress value={66} className="rotate-180" />
@@ -51,7 +55,7 @@ export default function PositionDialogContent() {
         <div className="mt-[9px] flex items-center justify-between border-b border-lightgray py-3">
           <div className="flex flex-col gap-y-2">
             <TitleText>Size</TitleText>
-            <ContentText>2</ContentText>
+            <ContentText>{size}</ContentText>
           </div>
 
           <div className="flex flex-col items-end gap-y-2">
@@ -72,16 +76,16 @@ export default function PositionDialogContent() {
                       <Image
                         width={20}
                         height={20}
-                        src={`/icons/dev/BNB.svg`}
+                        src={baseToken?.logoURI || ""}
                         alt="token"
                       ></Image>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>BNB</p>
+                      <p>{baseToken?.symbol}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <div className="ml-1">84.45</div>
+                <div className="ml-1">{marginAmount}</div>
               </div>
             </ContentText>
           </div>
@@ -96,7 +100,7 @@ export default function PositionDialogContent() {
                   src="/icons/clock.svg"
                   alt="expiration"
                 ></Image>
-                <div className="ml-2">23 d 5 h</div>
+                <div className="ml-2">{expiration}</div>
               </div>
             </ContentText>
           </div>
@@ -110,17 +114,28 @@ export default function PositionDialogContent() {
           setActiveTab={setActiveTab}
         />
         <InputPanel
+          balance={"100"}
           balanceText=""
           isActive={true}
+          isJustToken={true}
           className="rounded-tl-none"
           value={value}
           setValue={setValue}
-          token={token}
-          setToken={setToken}
+          token={baseToken}
         />
       </div>
 
       <FormBtnWithWallet className="flex-1">Confirm</FormBtnWithWallet>
     </div>
   );
+}
+
+function TitleText({ children }: { children: ReactNode }) {
+  return (
+    <div className="mr-1 text-sm leading-[20px] text-gray">{children}</div>
+  );
+}
+
+function ContentText({ children }: { children: ReactNode }) {
+  return <div className="text-xl leading-[30px] text-black">{children}</div>;
 }
