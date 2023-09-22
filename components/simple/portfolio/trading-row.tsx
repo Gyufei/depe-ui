@@ -125,7 +125,7 @@ export function TradingRow({
                 <DialogContent className="w-[480px]">
                   <DialogGimp />
                   <DialogTitle>Trade</DialogTitle>
-                  <TradeDialogContent />
+                  <TradeDialogContent position={position} pool={pool} />
                 </DialogContent>
               </Dialog>
 
@@ -141,7 +141,7 @@ export function TradingRow({
                 <DialogContent className="w-[480px]">
                   <DialogGimp />
                   <DialogTitle>Trade</DialogTitle>
-                  <TransferDialogContent />
+                  <TransferDialogContent position={position} />
                 </DialogContent>
               </Dialog>
             </PopoverContent>

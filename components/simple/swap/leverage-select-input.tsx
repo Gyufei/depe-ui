@@ -61,7 +61,7 @@ export default function LeverageSelectInput({
         </div>
       ) : (
         <ScrollArea className="flex h-full w-[296px] items-center gap-x-2 px-2">
-          <ScrollBar orientation="horizontal" className="h-1.5" />
+          <ScrollBar orientation="horizontal" className="h-0" />
           <div className="flex h-11 w-fit items-center gap-x-2 px-2">
             {leverageOptions.map((l) => (
               <button
@@ -74,8 +74,9 @@ export default function LeverageSelectInput({
             ))}
             <div className="relative">
               <input
-                className="flex h-8 w-[56px] rounded-lg border-2 border-black bg-white py-2 pl-3 pr-4 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-lightgray focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-8 w-[56px] text-right rounded-lg border-2 border-black bg-white py-2 pl-3 pr-5 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-lightgray focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 type="text"
+                placeholder="0"
                 value={inputLeverage}
                 onChange={(e) => setInputLeverage(e.target.value)}
                 onBlur={inputBlur}

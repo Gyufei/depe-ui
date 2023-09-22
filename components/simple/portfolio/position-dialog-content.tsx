@@ -24,9 +24,7 @@ export default function PositionDialogContent({
   pool: IPool;
 }) {
   const [activeTab, setActiveTab] = useState("Append Margin");
-
   const [value, setValue] = useState("");
-
   const { baseToken, quoteToken, size, marginAmount, expiration } =
     usePositionFormat(position, pool);
 

@@ -17,7 +17,6 @@ import InputPanel from "@/components/share/input-panel";
 import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { usePublicClient } from "wagmi";
-import { AddressType } from "@/lib/types/address";
 import { formatUnits, parseUnits } from "viem";
 
 export default function BaseTokenInput() {

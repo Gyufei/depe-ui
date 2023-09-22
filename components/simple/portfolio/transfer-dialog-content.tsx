@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import FormBtnWithWallet from "../../share/form-btn";
 import { Textarea } from "../../ui/textarea";
+import { IPosition } from "@/lib/types/position";
 
 function EmptyNFT() {
   return (
@@ -21,7 +22,12 @@ function EmptyNFT() {
   );
 }
 
-export default function TransferDialogContent() {
+export default function TransferDialogContent({
+  position,
+}: {
+  position: IPosition;
+}) {
+  console.log(position);
   const [hasNFT] = useState(false);
 
   return (

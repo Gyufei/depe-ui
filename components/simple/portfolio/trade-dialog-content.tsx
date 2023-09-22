@@ -13,23 +13,24 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DexSelect from "./dex-select";
+import { IPosition } from "@/lib/types/position";
+import { IPool } from "@/lib/types/pool";
+import { usePositionFormat } from "@/lib/hooks/use-position-format";
 
-function TitleText({ children }: { children: ReactNode }) {
-  return (
-    <div className="mr-1 text-sm leading-[20px] text-gray">{children}</div>
-  );
-}
-
-function ContentText({ children }: { children: ReactNode }) {
-  return (
-    <div className="mt-2 text-xl leading-[30px] text-black">{children}</div>
-  );
-}
-
-export default function TradeDialogContent() {
-  const [token, setToken] = useState("BUNNY");
+export default function TradeDialogContent({
+  pool,
+  position,
+}: {
+  position: IPosition;
+  pool: IPool;
+}) {
   const [value, setValue] = useState("");
   const [activeTab, setActiveTab] = useState("Increase Position");
+
+  const { baseToken, quoteToken, marginAmount } = usePositionFormat(
+    position,
+    pool,
+  );
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -51,7 +52,7 @@ export default function TradeDialogContent() {
             </div>
           </TitleText>
 
-          <ContentText>$13.56 per {token}</ContentText>
+          <ContentText>$13.56 per {quoteToken?.symbol}</ContentText>
         </div>
 
         <div className="flex flex-col py-3">
@@ -70,11 +71,11 @@ export default function TradeDialogContent() {
                     ></Image>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>BNB</p>
+                    <p>{baseToken?.symbol}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <div className="ml-1">84.45</div>
+              <div className="ml-1">{marginAmount}</div>
             </div>
           </ContentText>
         </div>
@@ -89,11 +90,12 @@ export default function TradeDialogContent() {
         <InputPanel
           balanceText=""
           isActive={true}
+          isJustToken={true}
           className="rounded-tl-none"
           value={value}
           setValue={setValue}
-          token={token}
-          setToken={setToken}
+          token={baseToken}
+          setToken={() => {}}
         />
       </div>
 
@@ -102,5 +104,17 @@ export default function TradeDialogContent() {
         <FormBtnWithWallet className="flex-1">Submit Order</FormBtnWithWallet>
       </div>
     </div>
+  );
+}
+
+function TitleText({ children }: { children: ReactNode }) {
+  return (
+    <div className="mr-1 text-sm leading-[20px] text-gray">{children}</div>
+  );
+}
+
+function ContentText({ children }: { children: ReactNode }) {
+  return (
+    <div className="mt-2 text-xl leading-[30px] text-black">{children}</div>
   );
 }

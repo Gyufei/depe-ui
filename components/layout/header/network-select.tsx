@@ -57,7 +57,7 @@ export default function NetworkSelect() {
             <Image
               width={40}
               height={40}
-              src={getChainLogo(chain.name)}
+              src={getChainLogo(chain.name) || ""}
               alt="current chain logo"
               className="c-image-shadow z-10"
             ></Image>
@@ -87,7 +87,7 @@ export default function NetworkSelect() {
             <Image
               width={24}
               height={24}
-              src={getChainLogo(c.name)}
+              src={getChainLogo(c.name) || ""}
               alt="chain logo"
               className="c-image-shadow z-10"
             />
