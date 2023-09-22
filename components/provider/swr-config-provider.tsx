@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "@/components/ui/use-toast";
 import { SWRConfig } from "swr";
 
 export default function SWRConfigProvider({
@@ -12,7 +11,7 @@ export default function SWRConfigProvider({
     <SWRConfig
       value={{
         onError: (error, key) => {
-          toast({
+          console.log({
             variant: "destructive",
             title: `Api: ${key}`,
             description: `${error.status}: ${error.info}`,
