@@ -5,15 +5,15 @@ import { useConnectModal } from "@/lib/hooks/use-connect";
 import { Loader2 } from "lucide-react";
 
 export default function FormBtnWithWallet({
-  isLoading,
+  isActive = true,
+  isLoading = false,
   children,
   className,
-  isActive = true,
   onClick,
   ...props
 }: {
-  isLoading?: boolean;
   isActive?: boolean;
+  isLoading?: boolean;
   children: ReactNode;
   className?: string;
   onClick?: () => void;
@@ -29,7 +29,7 @@ export default function FormBtnWithWallet({
     }
   };
 
-  const showText = isDisconnected
+  const btnText = isDisconnected
     ? "Connect Wallet"
     : isConnecting
     ? "Connecting..."
@@ -45,7 +45,7 @@ export default function FormBtnWithWallet({
       )}
       onClick={() => handleClick()}
     >
-      {showText}
+      {btnText}
       {isLoading && (
         <Loader2
           className={cn("text-primary ml-1 h-4 w-4 animate-spin", className)}

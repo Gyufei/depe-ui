@@ -1,6 +1,7 @@
 import BgLayout from "@/components/share/bg-layout";
 import BlockNumberTag from "@/components/share/block-number";
 import Header from "@/components/layout/header";
+import ActionTip from "@/components/share/action-tip";
 
 export default function HomeLayout({
   children,
@@ -14,6 +15,7 @@ export default function HomeLayout({
           <Header />
           {children}
         </div>
+        <ActionTip />
         <BlockNumberTag />
       </div>
     </BgLayout>

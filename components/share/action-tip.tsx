@@ -1,26 +1,23 @@
+"use client";
+
+import { GlobalMessageAtom } from "@/lib/states/global-message";
+import { useAtom } from "jotai";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
 import { useEffect } from "react";
 
-export type IActionType = "success" | "warning" | "error";
+export default function ActionTip() {
+  const [globalMessage, setGlobalMessage] = useAtom(GlobalMessageAtom);
+  const { type, message } = globalMessage || {};
 
-export default function ActionTip({
-  type,
-  message,
-  handleClose,
-}: {
-  type: IActionType;
-  message: string | null;
-  handleClose: () => void;
-}) {
   useEffect(() => {
-    if (message) {
+    if (globalMessage) {
       const d = setTimeout(() => {
-        handleClose();
+        setGlobalMessage(null);
       }, 5000);
 
       return () => clearTimeout(d);
     }
-  }, [message]);
+  }, [globalMessage, setGlobalMessage]);
 
   const colorMap = {
     success: {
@@ -42,9 +39,9 @@ export default function ActionTip({
 
   return (
     <>
-      {message ? (
+      {message && type ? (
         <div
-          className="bottom-6 mt-4 flex items-center gap-x-2 rounded-md border px-5 py-3"
+          className="fixed bottom-6 mt-4 flex items-center gap-x-2 rounded-md border px-5 py-3"
           style={{
             borderColor: colorMap[type].border,
             backgroundColor: colorMap[type].bg,

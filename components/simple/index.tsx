@@ -4,7 +4,7 @@ import Swap from "@/components/simple/swap";
 
 export default function Simple() {
   return (
-    <main className="grid grid-cols-3 space-x-12 pt-[72px]">
+    <main className="grid grid-cols-3 gap-x-12 pt-[72px]">
       <Portfolio />
       <Swap />
       <Farming />

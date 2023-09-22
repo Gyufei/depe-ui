@@ -58,7 +58,7 @@ export default function InputPanel({
     <div
       data-state={isActive ? "active" : "inactive"}
       className={cn(
-        "c-active-border flex h-[88px] rounded-xl border-2 px-4 transition-colors focus-within:bg-yellow",
+        "c-active-border input-panel flex h-[88px] rounded-xl border-2 px-4 transition-colors focus-within:bg-yellow",
         className,
       )}
     >
@@ -296,7 +296,7 @@ function BalanceDisplay({
 
   return (
     <div className="flex items-center justify-end">
-      <div className="mr-4 flex items-center text-sm leading-5 text-lightgray">
+      <div className="balance-text mr-4 flex items-center text-sm leading-5 text-lightgray">
         <div>{balanceText ? `${balanceText}:` : null}</div>
         {isLoading ? (
           <Skeleton className="ml-1 h-4 w-10" />
