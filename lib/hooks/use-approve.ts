@@ -15,6 +15,7 @@ import { useTokensInfo } from "@/lib/hooks/use-token-info";
 import { IUSDTABI } from "@/lib/abi/IUSDT";
 import { MAX_UNIT256 } from "@/lib/constant";
 import { GlobalMessageAtom } from "@/lib/states/global-message";
+import { parseUnits } from "viem";
 
 export default function useApprove(
   tokenAddress: AddressType | null,
@@ -47,9 +48,10 @@ export default function useApprove(
 
   const {
     data: callData,
-    isLoading: isCalling,
+    isLoading: isCallLoading,
     error: callError,
     isError: isCallError,
+    isSuccess: isCallSuccess,
     write: callAction,
   } = useContractWrite({
     address: tokenAddress!,
@@ -57,17 +59,17 @@ export default function useApprove(
     functionName: "approve",
   });
 
-  const handleApprove = () => {
-    if (!IPIBoneAddress || !tokenAddress) return;
+  const write = () => {
+    if (!IPIBoneAddress || !tokenAddress || !tokenInfo) return;
 
-    const amount = BigInt(tokenAmount || MAX_UNIT256);
+    const amount = parseUnits(tokenAmount || MAX_UNIT256, tokenInfo.decimals);
     callAction({
       args: [IPIBoneAddress, amount!],
     });
   };
 
   const {
-    // data: txResultData,
+    data: txData,
     error: txError,
     isError: isTxError,
     isLoading: isTxLoading,
@@ -114,9 +116,10 @@ export default function useApprove(
     allowance,
     isAllowanceLoading,
     shouldApprove,
-    approveData: callData,
-    isApproveLoading: isCalling || isTxLoading,
-    isApproveSuccess: isTxSuccess,
-    handleApprove,
+    data: txData,
+    error: callError || txError,
+    isLoading: isCallLoading || isTxLoading,
+    isSuccess: isCallSuccess && isTxSuccess,
+    write,
   };
 }

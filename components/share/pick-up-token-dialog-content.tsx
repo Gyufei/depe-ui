@@ -32,21 +32,29 @@ export default function PickUpTokenDialogContent({
         t.address.toLowerCase().includes(searchStr.toLowerCase())
       );
     });
-  }, [tokens, searchStr]);
+  }, [isLoading, tokens, searchStr]);
 
   return (
     <div className="flex flex-col items-stretch gap-y-4">
       <div className="mx-6 flex items-center rounded-xl border-2 border-black py-2 px-3 ">
         <div className="mr-1 flex h-6 w-6 items-center justify-center">
-          <Search className="h-4 w-4 text-black" />
+          {isLoading ? (
+            <Skeleton className="h-5 w-5" />
+          ) : (
+            <Search className="h-4 w-4 text-black" />
+          )}
         </div>
-        <input
-          value={searchStr}
-          onChange={(e) => setSearchStr(e.target.value)}
-          type="text"
-          className="flex-1 "
-          placeholder="Search for Symbol, Contract address"
-        />
+        {isLoading ? (
+          <Skeleton className="h-5 w-60" />
+        ) : (
+          <input
+            value={searchStr}
+            onChange={(e) => setSearchStr(e.target.value)}
+            type="text"
+            className="flex-1 "
+            placeholder="Search for Symbol, Contract address"
+          />
+        )}
       </div>
 
       <div className="pl-6 pr-2">
@@ -124,7 +132,7 @@ function SkeletonRow() {
   return (
     <div className="mt-[5px] flex cursor-pointer items-center rounded-xl border-2 border-black py-2 px-4 first:mt-0">
       <div className="flex items-center">
-        <Skeleton className="h-6 w-6 rounded-full" />
+        <Skeleton className="h-8 w-8 rounded-full" />
       </div>
       <div className="ml-3 flex flex-1 justify-between">
         <div className="flex flex-col">
@@ -132,7 +140,7 @@ function SkeletonRow() {
           <Skeleton className="h-[14px] w-20" />
         </div>
         <div className="flex items-center">
-          <Skeleton className="h-6 w-[72px] rounded-full" />
+          <Skeleton className="h-6 w-[72px]" />
         </div>
       </div>
     </div>

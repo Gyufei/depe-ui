@@ -82,58 +82,72 @@ export default function SelectPoolDialogContent({
 
   return (
     <>
-      <div
-        onClick={handleAuto}
-        data-check={isAuto ? "true" : "false"}
-        className="mx-6 cursor-pointer rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5 data-[check=true]:bg-blue"
-      >
-        Automatch
-      </div>
+      {isLoading ? (
+        <div className="mx-6 rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5">
+          <Skeleton className="h-5 w-[100px]" />
+        </div>
+      ) : (
+        <div
+          onClick={handleAuto}
+          data-check={isAuto ? "true" : "false"}
+          className="mx-6 cursor-pointer rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5 data-[check=true]:bg-blue"
+        >
+          Automatch
+        </div>
+      )}
 
       <div className="mt-1">
         <div className="flex items-center justify-between px-6">
-          <Popover>
-            <PopoverTrigger asChild>
-              <div className="flex cursor-pointer items-center outline-none">
-                <div className="mr-2 text-xs leading-[18px] text-lightgray">
-                  Order by
+          {isLoading ? (
+            <Skeleton className="h-5 w-[100px]" />
+          ) : (
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="flex cursor-pointer items-center outline-none">
+                  <div className="mr-2 text-xs leading-[18px] text-lightgray">
+                    Order by
+                  </div>
+                  <div className="c-font-text-65 mr-1 text-xs leading-[18px] text-[#11142d]">
+                    {sortBy}
+                  </div>
+                  <Image
+                    width={14}
+                    height={8}
+                    src={Triangle}
+                    alt="triangle"
+                    className="data-[state=open]:rotate-180"
+                  ></Image>
                 </div>
-                <div className="c-font-text-65 mr-1 text-xs leading-[18px] text-[#11142d]">
-                  {sortBy}
-                </div>
-                <Image
-                  width={14}
-                  height={8}
-                  src={Triangle}
-                  alt="triangle"
-                  className="data-[state=open]:rotate-180"
-                ></Image>
-              </div>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="flex w-[120px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
-            >
-              <Arrow className="fill-white" />
-              <SortPopRow onClick={() => setSortBy("Num")} text="Num" />
-              <SortPopRow onClick={() => setSortBy("APY")} text="APY" />
-              <SortPopRow
-                onClick={() => setSortBy("Leverage")}
-                text="Leverage"
-              />
-            </PopoverContent>
-          </Popover>
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                className="flex w-[120px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
+              >
+                <Arrow className="fill-white" />
+                <SortPopRow onClick={() => setSortBy("Num")} text="Num" />
+                <SortPopRow onClick={() => setSortBy("APY")} text="APY" />
+                <SortPopRow
+                  onClick={() => setSortBy("Leverage")}
+                  text="Leverage"
+                />
+              </PopoverContent>
+            </Popover>
+          )}
 
-          <div className="flex items-center border-b border-lightgray">
-            <input
-              type="text"
-              className="w-[100px] border-0"
-              value={searchStr}
-              onChange={(e) => setSearchStr(e.target.value)}
-              placeholder="Search"
-            />
-            <Search className="h-4 w-4 cursor-pointer text-lightgray" />
-          </div>
+          {isLoading ? (
+            <Skeleton className="h-5 w-[100px]" />
+          ) : (
+            <div className="flex items-center border-b border-lightgray">
+              <input
+                type="text"
+                className="w-[100px] border-0"
+                value={searchStr}
+                onChange={(e) => setSearchStr(e.target.value)}
+                placeholder="Search"
+              />
+              <Search className="h-4 w-4 cursor-pointer text-lightgray" />
+            </div>
+          )}
         </div>
 
         <div className="mt-3 pl-6 pr-2">
@@ -144,11 +158,13 @@ export default function SelectPoolDialogContent({
               })}
             </div>
           )}
+
           {!isLoading && !filteredPools.length && (
             <div className="flex h-[312px] items-center justify-center pr-4">
               <Empty />
             </div>
           )}
+
           {!isLoading && filteredPools.length > 0 && (
             <ScrollArea className="h-[312px] pr-4">
               {filteredPools.map((p) => (
@@ -225,7 +241,7 @@ function PoolRow({
   );
 }
 
-export function SkeletonRow() {
+function SkeletonRow() {
   return (
     <div className="mt-[6px] flex rounded-xl border-2 border-black py-2 px-4 first:mt-0">
       <div className="mt-1 h-8 w-8">

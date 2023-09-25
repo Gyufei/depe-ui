@@ -12,16 +12,20 @@ export default function ConfirmBtn() {
   const baseToken = useAtomValue(SBaseTokenAtom);
   const baseTokenAmount = useAtomValue(SBaseTokenAmountAtom);
 
-  const { shouldApprove, isAllowanceLoading, isApproveLoading, handleApprove } =
-    useApprove(baseToken?.address || null, baseTokenAmount);
+  const {
+    shouldApprove,
+    isAllowanceLoading,
+    isLoading: isApproveLoading,
+    write: handleApprove,
+  } = useApprove(baseToken?.address || null, baseTokenAmount);
 
-  const { isSwapLoading, handleSwap } = useSwap();
+  const { isLoading: isSwapLoading, write: swapAction } = useSwap();
 
   const handleBtnClick = () => {
     if (shouldApprove) {
       handleApprove();
     } else {
-      handleSwap();
+      swapAction();
     }
   };
 

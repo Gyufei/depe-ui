@@ -55,13 +55,13 @@ export function TradingRow({
         data-state={isLast ? "last" : ""}
         className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
-        <div className="flex flex-1 flex-col">
+        <div className="flex flex-col pr-6">
           <TitleText># 100</TitleText>
           <SecondText>
             {quoteToken?.symbol}({leverage}✕)
           </SecondText>
         </div>
-        <div className="flex flex-col items-end pr-[28px]">
+        <div className="flex flex-col items-end pr-6">
           <div className="flex items-center text-lg leading-7 text-black">
             {size}
             <Image
@@ -74,7 +74,7 @@ export function TradingRow({
           </div>
           <SecondText>Size</SecondText>
         </div>
-        <div className="flex flex-col items-end pr-[37px]">
+        <div className="flex flex-col items-end pr-6">
           <APYText apy={70} />
           <SecondText>P/L</SecondText>
         </div>

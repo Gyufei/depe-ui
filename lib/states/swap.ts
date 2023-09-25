@@ -4,9 +4,12 @@ import { IPool } from "../types/pool";
 
 export const SBaseTokenAtom = atom<IToken | null>(null);
 export const SQuoteTokenAtom = atom<IToken | null>(null);
+
 export const SBaseTokenAmountAtom = atom<string | null>(null);
 export const SQuoteTokenAmountAtom = atom<string | null>(null);
-export const SPoolAtom = atom<IPool | null>(null);
+export const SAmountInMaxAtom = atom<bigint | null>(null);
 
-export const SLeverageAtom = atom<number | null>(1);
+export const SSlippageAtom = atom<string>("0.5");
+export const SLeverageAtom = atom<number>(5);
 export const SMintNftFlagAtom = atom<boolean>(false);
+export const SPoolAtom = atom<IPool | null>(null);

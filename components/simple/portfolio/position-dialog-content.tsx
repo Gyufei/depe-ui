@@ -11,10 +11,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Progress } from "../../ui/progress";
 import { IPool } from "@/lib/types/pool";
 import { IPosition } from "@/lib/types/position";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
+import LoopProgress from "@/components/share/loop-progress";
 
 export default function PositionDialogContent({
   pool,
@@ -45,7 +45,7 @@ export default function PositionDialogContent({
             </TitleText>
             <div className="flex flex-col gap-y-[4px]">
               <ContentText>$13.0497</ContentText>
-              <Progress value={66} className="rotate-180" />
+              <LoopProgress className="rotate-180" />
             </div>
           </div>
         </div>

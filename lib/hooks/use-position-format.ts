@@ -10,11 +10,13 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
 
   const leverage = useMemo(() => Number(position.leverage) / 100, [position]);
 
-  const size = useMemo(
-    () =>
-      formatUnits(BigInt(position.positionSize), quoteToken?.decimals || 18),
-    [position, quoteToken?.decimals],
-  );
+  const size = useMemo(() => {
+    const sizeVal = formatUnits(
+      BigInt(position.positionSize),
+      quoteToken?.decimals || 18,
+    );
+    return formatNum(sizeVal);
+  }, [position, quoteToken?.decimals]);
 
   const marginAmount = useMemo(
     () =>

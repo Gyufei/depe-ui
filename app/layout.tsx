@@ -7,6 +7,9 @@ import JotaiProvider from "@/components/provider/jotai-provider";
 import SWRConfigProvider from "@/components/provider/swr-config-provider";
 import HomeLayout from "@/components/layout/home-layout";
 
+import NP from "number-precision";
+NP.enableBoundaryChecking(false);
+
 export const metadata = {
   title: "Depe",
   description: "",
@@ -23,9 +26,7 @@ export default async function RootLayout({
         <Web3ConnectProvider>
           <JotaiProvider>
             <SWRConfigProvider>
-              <HomeLayout>
-                {children}
-              </HomeLayout>
+              <HomeLayout>{children}</HomeLayout>
             </SWRConfigProvider>
           </JotaiProvider>
         </Web3ConnectProvider>

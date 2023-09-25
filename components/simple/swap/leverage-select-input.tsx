@@ -5,12 +5,16 @@ import { useEffect, useState } from "react";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { SLeverageAtom } from "@/lib/states/swap";
 import { useAtom } from "jotai";
+import { useTokens } from "@/lib/hooks/use-tokens";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LeverageSelectInput({
   className,
 }: {
   className?: string;
 }) {
+  const { isLoading: isTokenLoading } = useTokens();
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentLeverage, setCurrentLeverage] = useAtom(SLeverageAtom);
   const [inputLeverage, setInputLeverage] = useStrNum("5");
@@ -35,6 +39,11 @@ export default function LeverageSelectInput({
       };
   });
 
+  const handleExpand = () => {
+    if (isTokenLoading) return;
+    setIsExpanded(true);
+  };
+
   const handleClickLeverage = (l: number) => {
     setCurrentLeverage(l);
     setInputLeverage(l.toString());
@@ -54,10 +63,14 @@ export default function LeverageSelectInput({
     >
       {!isExpanded ? (
         <div
-          onClick={() => setIsExpanded(true)}
+          onClick={() => handleExpand()}
           className="flex h-12 w-12 cursor-pointer items-center justify-center text-sm leading-[18px] text-black"
         >
-          {currentLeverage}×
+          {isTokenLoading ? (
+            <Skeleton className="h-5 w-5" />
+          ) : (
+            <>{currentLeverage}×</>
+          )}
         </div>
       ) : (
         <ScrollArea className="flex h-full w-[296px] items-center gap-x-2 px-2">
@@ -74,7 +87,7 @@ export default function LeverageSelectInput({
             ))}
             <div className="relative">
               <input
-                className="flex h-8 w-[56px] text-right rounded-lg border-2 border-black bg-white py-2 pl-3 pr-5 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-lightgray focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-8 w-[56px] rounded-lg border-2 border-black bg-white py-2 pl-3 pr-5 text-right text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-lightgray focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 type="text"
                 placeholder="0"
                 value={inputLeverage}
