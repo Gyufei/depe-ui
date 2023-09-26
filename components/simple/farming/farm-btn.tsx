@@ -1,5 +1,9 @@
-import FormBtnWithWallet from "../../share/form-btn";
+import WithWalletBtn from "../../share/with-wallet-btn";
 
 export default function FarmBtn({ isActive }: { isActive: boolean }) {
-  return <FormBtnWithWallet isActive={isActive}>Farm it</FormBtnWithWallet>;
+  return (
+    <WithWalletBtn isActive={isActive} onClick={() => {}}>
+      Farm it
+    </WithWalletBtn>
+  );
 }

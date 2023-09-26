@@ -1,10 +1,12 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ReactNode, useState } from "react";
-import FormBtnWithWallet from "../../share/form-btn";
+import WithWalletBtn from "../../share/with-wallet-btn";
 import SwitchTab from "../../share/switch-tab";
 import InputPanel from "../../share/input-panel";
 import { IPool } from "@/lib/types/pool";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { TokenDisplay } from "@/components/share/input-panel-token-display";
+import BalanceDisplay from "@/components/share/balance-display";
 
 export default function FarmingDialogContent({ pool }: { pool: IPool }) {
   const [activeTab, setActiveTab] = useState("Deposit");
@@ -45,22 +47,23 @@ export default function FarmingDialogContent({ pool }: { pool: IPool }) {
           setActiveTab={setActiveTab}
         />
         <InputPanel
-          isLoading={false}
-          tokens={[]}
-          showToken={false}
-          balance={"100"}
-          balanceText="Balance"
-          isJustToken={true}
+          tokenDisplay={<TokenDisplay token={baseToken!} />}
+          balanceDisplay={
+            <BalanceDisplay
+              isLoading={false}
+              balance={"100"}
+              prefixText="Balance"
+              setMax={() => setValue("100")}
+            />
+          }
           isActive={true}
           className="rounded-tl-none"
           value={value}
           setValue={setValue}
-          token={baseToken}
-          setToken={() => {}}
         />
       </div>
 
-      <FormBtnWithWallet>Confirm</FormBtnWithWallet>
+      <WithWalletBtn onClick={() => {}}>Confirm</WithWalletBtn>
     </div>
   );
 }

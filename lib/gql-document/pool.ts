@@ -1,50 +1,40 @@
 import { gql } from "graphql-request";
-import { AddressType } from "../types/address";
+import { IGqlDocParam, convertKVsToParams } from "./helper";
 
-export const PoolsDoc = (poolStatus: number | string): string => gql`
-  query {
-    pools(poolStatus: "${poolStatus}") {
-      data {
-        poolId
-        poolAddr
-        durationDays
-        creator
-        baseToken
-        quoteToken
-        dpToken
-        maxleverage
-        maxCapacity
-        tradingFeeRate
-        fundingFeeRate
-        poolStatus
-        poolCreateTimes
-      }
-    }
-  }
-`;
-
-export const PoolDoc = ({
-  poolId,
-  poolAddr,
-}: {
-  poolId?: string;
-  poolAddr?: AddressType;
-}): string => {
-  let params = "";
-  if (!poolId && !poolAddr) {
-    return "";
-  }
-
-  if (poolId) {
-    params = `poolId: "${poolId}"`;
-  }
-  if (poolAddr) {
-    params = `poolAddr: "${poolAddr}"`;
-  }
+export const PoolsDoc = (params: Array<IGqlDocParam>): string => {
+  if (!params.length) return "";
+  const paramsStr = convertKVsToParams(params);
 
   return gql`
     query {
-      pool(${params}) {
+      pools(${paramsStr}) {
+        data {
+          poolId
+          poolAddr
+          durationDays
+          creator
+          baseToken
+          quoteToken
+          dpToken
+          maxleverage
+          maxCapacity
+          tradingFeeRate
+          fundingFeeRate
+          poolStatus
+          poolCreateTimes
+        }
+      }
+    }
+  `;
+};
+
+export const PoolDoc = (params: Array<IGqlDocParam>): string => {
+  if (!params.length) return "";
+  const paramsStr = convertKVsToParams(params);
+
+  return gql`
+    query {
+      pool(${paramsStr}) {
         poolId
         poolAddr
         durationDays
@@ -63,16 +53,50 @@ export const PoolDoc = ({
   `;
 };
 
-export const PoolHistory = (account: AddressType): string => gql`
-  query {
-    poolHistory(account: "${account}") {
-      data {
-        txHash
-        dpPoolAddr
-        account
-        amount
-        changeFlag
+export const PoolHistory = (params: Array<IGqlDocParam>): string => {
+  if (!params.length) return "";
+  const paramsStr = convertKVsToParams(params);
+
+  return gql`
+    query {
+      poolHistory(${paramsStr}) {
+        data {
+          txHash
+          dpPoolAddr
+          account
+          amount
+          changeFlag
+        }
       }
     }
-  }
-`;
+  `;
+};
+
+export const PoolAsset = (params: Array<IGqlDocParam>): string => {
+  if (!params.length) return "";
+  const paramsStr = convertKVsToParams(params);
+
+  return gql`
+    query {
+      poolAsset(${paramsStr}) {
+        data {
+          dpPoolAddr
+          amount
+        }
+      }
+    }
+  `;
+};
+
+export const PoolAPR = (params: Array<IGqlDocParam>): string => {
+  if (!params.length) return "";
+  const paramsStr = convertKVsToParams(params);
+
+  return gql`
+    query {
+      poolApr(${paramsStr}) {
+        apr
+      }
+    }
+  `;
+};

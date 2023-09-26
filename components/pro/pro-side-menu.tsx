@@ -4,7 +4,7 @@ import PoolsIcon from "@/components/share/icons/pools";
 import GovernanceIcon from "@/components/share/icons/governance";
 import AchievementsIcon from "@/components/share/icons/achievements";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 export default function ProSideMenu({ className }: { className?: string }) {
   const routePath = ["/pools", "/governance", "/achievements"];

@@ -1,7 +1,7 @@
-import { AddressType } from "./address";
+import { Address } from "viem";
 
 export interface IToken {
-  address: AddressType;
+  address: Address;
   [key: string]: any;
   name: string;
   symbol: string;

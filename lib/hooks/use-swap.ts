@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
-import { encodeAbiParameters, parseUnits } from "viem";
+import { parseUnits } from "viem";
 
 import {
   SAmountInMaxAtom,
@@ -13,8 +13,7 @@ import {
 } from "@/lib/states/swap";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { encodePath } from "@/lib/web3/utils";
-import { UNISWAP_FEES } from "../constant";
+import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
 import { useEffect } from "react";
 import { GlobalMessageAtom } from "../states/global-message";
 
@@ -56,16 +55,9 @@ export function useSwap() {
     )
       return;
 
-    const path = [quoteToken.address, baseToken.address];
-    const ePath = encodePath(path, UNISWAP_FEES);
-    const abiEncodedPath = encodeAbiParameters(
-      [
-        {
-          name: "extendedParamsBytes",
-          type: "bytes",
-        },
-      ],
-      [ePath],
+    const abiEncodedPath = encodeTxExtendedParamsBytes(
+      quoteToken.address,
+      baseToken.address,
     );
 
     const quoteAmount = parseUnits(quoteTokenAmount, quoteToken?.decimals);
@@ -75,7 +67,6 @@ export function useSwap() {
       chainConfig?.contract?.UniswapV3Router,
       quoteAmount,
       BigInt(leverage) * 100n,
-      // 575308765n,
       amountInMax,
       abiEncodedPath,
       mintNFTFlag,
@@ -107,10 +98,18 @@ export function useSwap() {
     if (isCallError || isTxError) {
       setGlobalMessage({
         type: "error",
-        message: txError?.message || "Fail: Some error occur",
+        message:
+          txError?.message || callError?.message || "Fail: Some error occur",
       });
     }
-  }, [isTxSuccess, isCallError, isTxError, txError, setGlobalMessage]);
+  }, [
+    isTxSuccess,
+    isCallError,
+    isTxError,
+    callError,
+    txError,
+    setGlobalMessage,
+  ]);
 
   return {
     data: txData,

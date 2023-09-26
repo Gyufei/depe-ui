@@ -11,8 +11,8 @@ export function SecondText({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function APYText({ apy }: { apy: number | null }) {
-  const isGreaterThanZero = apy && apy > 0;
+export function APYText({ apy }: { apy: string | null }) {
+  const isGreaterThanZero = apy && Number(apy) > 0;
 
   return (
     <div

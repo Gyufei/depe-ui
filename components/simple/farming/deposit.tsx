@@ -5,6 +5,7 @@ import { TitleText, ContentCon } from "./common";
 import { useAtomValue } from "jotai";
 import { FPoolAtom } from "@/lib/states/farming";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { TokenDisplay } from "@/components/share/input-panel-token-display";
 
 export function Deposit({ isActive }: { isActive: boolean }) {
   const [value1, setValue1] = useState("");
@@ -17,11 +18,9 @@ export function Deposit({ isActive }: { isActive: boolean }) {
       <TitleText>Deposit</TitleText>
       <ContentCon>
         <InputPanel
+          tokenDisplay={<TokenDisplay token={baseToken!} />}
           className="flex-1"
           isActive={isActive}
-          isJustToken={true}
-          token={baseToken}
-          setToken={() => {}}
           value={value1}
           setValue={setValue1}
         />

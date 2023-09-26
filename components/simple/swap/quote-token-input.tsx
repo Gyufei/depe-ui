@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { usePublicClient } from "wagmi";
+import { formatUnits, parseUnits, Address } from "viem";
 import { useDebouncedCallback } from "use-debounce";
 import NP from "number-precision";
 
@@ -19,12 +20,11 @@ import {
 } from "@/lib/states/swap";
 
 import InputPanel from "@/components/share/input-panel";
-import { formatUnits, parseUnits } from "viem";
-import { encodePath } from "@/lib/web3/utils";
-import { AddressType } from "@/lib/types/address";
+import { encodePath } from "@/lib/utils/web3";
 import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
 import { useSwapFeeParams } from "@/lib/hooks/use-swap-fee-params";
 import { UNISWAP_FEES } from "@/lib/constant";
+import { TokenSelectDisplay } from "@/components/share/input-panel-token-display";
 
 export default function QuoteTokenInput() {
   const { isActivePanel } = useActivePanel("Swap");
@@ -78,12 +78,11 @@ export default function QuoteTokenInput() {
 
   const calcAmountInMax = async (quoteV: string): Promise<bigint> => {
     const amount = parseUnits(quoteV, quoteToken!.decimals);
-    console.log(amount);
 
     const path = [quoteToken!.address, baseToken!.address];
     const encodedPath = encodePath(path, UNISWAP_FEES);
 
-    const toParam = chainConfig!.contract.UniswapV3Quoter as AddressType;
+    const toParam = chainConfig!.contract.UniswapV3Quoter as Address;
     const { result } = await publicClient.simulateContract({
       address: toParam,
       abi: UniswapQuoterABI,
@@ -106,12 +105,15 @@ export default function QuoteTokenInput() {
 
   return (
     <InputPanel
-      balanceText="Wallet Balance"
-      isLoading={tokenLoading}
+      tokenDisplay={
+        <TokenSelectDisplay
+          isLoading={tokenLoading}
+          tokens={notMarginTokens || []}
+          token={quoteToken!}
+          setToken={setQuoteToken}
+        />
+      }
       isActive={isActivePanel}
-      tokens={notMarginTokens || []}
-      token={quoteToken}
-      setToken={setQuoteToken}
       value={quoteTokenAmount || ""}
       setValue={handleValueChange}
     />

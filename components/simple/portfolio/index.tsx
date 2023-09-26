@@ -4,9 +4,21 @@ import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import PanelLeaderButton from "../../share/panel-leader-button";
 import { FarmingList } from "./farming-list";
 import { TradingList } from "./trading-list";
+import { usePositions } from "@/lib/hooks/use-positions";
+import Empty from "@/components/share/empty";
+import { useAccountPools } from "@/lib/hooks/use-account-pools";
 
 export default function Portfolio() {
   const { isActivePanel, setPanelActive } = useActivePanel("Portfolio");
+
+  const { data: pools, isLoading: isPoolsLoading } = useAccountPools();
+  const { data: positions, isLoading: isPositionsLoading } = usePositions();
+
+  const noData =
+    !isPoolsLoading &&
+    !isPositionsLoading &&
+    !pools.length &&
+    !positions.length;
 
   return (
     <div onClick={setPanelActive} className="flex flex-col">
@@ -15,10 +27,27 @@ export default function Portfolio() {
       </PanelLeaderButton>
       <div
         data-state={isActivePanel ? "active" : "inactive"}
-        className="c-shadow-panel h-[520px] w-[480px]"
+        className="c-shadow-panel h-fit w-[480px]"
       >
-        <FarmingList isActivePanel={isActivePanel} />
-        <TradingList className="mt-4" isActivePanel={isActivePanel} />
+        {noData ? (
+          <div className="flex h-[210px] items-center justify-center pr-4">
+            <Empty />
+          </div>
+        ) : (
+          <>
+            <FarmingList
+              isActivePanel={isActivePanel}
+              pools={pools}
+              isLoading={isPoolsLoading}
+            />
+            <TradingList
+              className="mt-4"
+              isActivePanel={isActivePanel}
+              positions={positions}
+              isLoading={isPositionsLoading}
+            />
+          </>
+        )}
       </div>
     </div>
   );

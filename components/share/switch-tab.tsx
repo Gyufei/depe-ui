@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ReactNode } from "react";
 
 function TabItem({
@@ -31,7 +31,7 @@ export default function SwitchTab({
   activeTab,
   setActiveTab,
 }: {
-  tabs: [string, string];
+  tabs: Array<string>;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }) {

@@ -1,16 +1,24 @@
-import { useMemo } from "react";
 import { PoolDoc } from "../gql-document/pool";
-import { useGqlRequest } from "./use-graphql";
+import { useGqlRequest } from "./use-graphql-request";
 import { IPool } from "../types/pool";
-import { AddressType } from "../types/address";
+import { Address } from "viem";
 
-export function usePool(params: { poolId?: string; poolAddr?: AddressType }) {
-  const { data: poolRes, isLoading } = useGqlRequest(PoolDoc(params));
+export function usePool(poolAddr?: Address) {
+  const poolRes = useGqlRequest(
+    PoolDoc(
+      poolAddr
+        ? [
+            {
+              key: "poolAddr",
+              value: poolAddr || "",
+            },
+          ]
+        : [],
+    ),
+  );
 
-  const pool: IPool = useMemo(() => {
-    const poolsData = poolRes?.pool || null;
-    return poolsData;
-  }, [poolRes]);
-
-  return { pool, isLoading };
+  return {
+    ...poolRes,
+    data: (poolRes?.data?.pool as IPool) || null,
+  };
 }

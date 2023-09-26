@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useSetAtom } from "jotai";
+import { Address, parseUnits } from "viem";
 
 import {
   erc20ABI,
@@ -10,15 +11,13 @@ import {
 } from "wagmi";
 
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
-import { AddressType } from "@/lib/types/address";
 import { useTokensInfo } from "@/lib/hooks/use-token-info";
 import { IUSDTABI } from "@/lib/abi/IUSDT";
 import { MAX_UNIT256 } from "@/lib/constant";
 import { GlobalMessageAtom } from "@/lib/states/global-message";
-import { parseUnits } from "viem";
 
-export default function useApprove(
-  tokenAddress: AddressType | null,
+export function useApprove(
+  tokenAddress: Address | null,
   tokenAmount: string | null,
 ) {
   const setGlobalMessage = useSetAtom(GlobalMessageAtom);
@@ -82,7 +81,7 @@ export default function useApprove(
     if (isTxSuccess) {
       setGlobalMessage({
         type: "success",
-        message: "Your funds have been staked in the pool.",
+        message: "Approve successfully",
       });
     }
 
@@ -109,7 +108,9 @@ export default function useApprove(
   ]);
 
   useEffect(() => {
-    getAllowance();
+    if (isTxSuccess) {
+      getAllowance();
+    }
   }, [isTxSuccess, getAllowance]);
 
   return {

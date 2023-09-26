@@ -16,7 +16,7 @@ export function usePoolFormat(pool: IPool | null) {
     [pool],
   );
 
-  const expiration = useMemo(() => {
+  const expirationFull = useMemo(() => {
     if (!pool) return null;
 
     const poolCreateTime = new Date(parseInt(pool.poolCreateTimes) * 1000);
@@ -34,15 +34,27 @@ export function usePoolFormat(pool: IPool | null) {
       format: ["days", "hours"],
     });
 
-    const rTime = readableTime.replace("days", "d").replace("hours", "h");
+    const rTime = readableTime
+      .replace("days", "Days")
+      .replace("hours", "Hours");
 
     return rTime;
   }, [pool]);
+
+  const expirationSimple = useMemo(() => {
+    if (!expirationFull) return null;
+
+    const rTime = expirationFull.replace("Days", "d").replace("Hours", "h");
+    return rTime;
+  }, [expirationFull]);
 
   return {
     baseToken,
     quoteToken,
     leverage,
-    expiration,
+    expiration: {
+      full: expirationFull,
+      simple: expirationSimple,
+    },
   };
 }

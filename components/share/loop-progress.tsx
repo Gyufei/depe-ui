@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 export default function LoopProgress({ className }: { className?: string }) {
   return (

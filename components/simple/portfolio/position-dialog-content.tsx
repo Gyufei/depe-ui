@@ -1,7 +1,7 @@
-import { ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 
-import FormBtnWithWallet from "../../share/form-btn";
+import WithWalletBtn from "../../share/with-wallet-btn";
 import SwitchTab from "../../share/switch-tab";
 import InputPanel from "../../share/input-panel";
 
@@ -15,6 +15,14 @@ import { IPool } from "@/lib/types/pool";
 import { IPosition } from "@/lib/types/position";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
 import LoopProgress from "@/components/share/loop-progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TokenDisplay } from "@/components/share/input-panel-token-display";
+import BalanceDisplay from "@/components/share/balance-display";
+import { useTokenBalance } from "@/lib/hooks/use-token-balance";
+import { useAppendMargin } from "@/lib/hooks/use-append-margin";
+import WithApproveBtn from "@/components/share/with-approve-btn";
+import { parseUnits } from "viem";
+import { useWithdrawMargin } from "@/lib/hooks/use-withdraw-margin";
 
 export default function PositionDialogContent({
   pool,
@@ -24,9 +32,92 @@ export default function PositionDialogContent({
   pool: IPool;
 }) {
   const [activeTab, setActiveTab] = useState("Append Margin");
-  const [value, setValue] = useState("");
-  const { baseToken, quoteToken, size, marginAmount, expiration } =
-    usePositionFormat(position, pool);
+  const [appendVal, setAppendVal] = useState("");
+  const [withdrawVal, setWithdrawVal] = useState("");
+
+  const {
+    baseToken,
+    quoteToken,
+    size,
+    marginAmount,
+    expiration,
+    openPrice,
+    currentPriceRes,
+    pnlAmount,
+    pnlPercent,
+  } = usePositionFormat(position, pool);
+
+  const { data: balanceObj, isLoading: isBalanceLoading } = useTokenBalance(
+    baseToken?.address || null,
+  );
+
+  const { isLoading: isAppendLoading, write: appendAction } = useAppendMargin(
+    pool.poolAddr,
+    position.positionAddr,
+  );
+
+  const { isLoading: isWithdrawLoading, write: withdrawAction } =
+    useWithdrawMargin(pool.poolAddr, position.positionAddr);
+
+  const [aBtnText, setABtnText] = useState("Confirm");
+  const [isABtnDisabled, setIsABtnDisabled] = useState(false);
+
+  const [wBtnText, setWBtnText] = useState("Confirm");
+  const [isWBtnDisabled, setIsWBtnDisabled] = useState(false);
+
+  const tabs: [string, string] = ["Append Margin", "Withdraw Margin"];
+
+  const TokenDisplayComp = useMemo<ReactElement>(() => {
+    return <TokenDisplay token={baseToken!} />;
+  }, [baseToken]);
+
+  const handleABtnClick = () => {
+    const amount = parseUnits(appendVal, baseToken?.decimals || 18);
+    appendAction(amount);
+  };
+
+  const handleWBtnClick = () => {
+    const amount = parseUnits(withdrawVal, baseToken?.decimals || 18);
+    withdrawAction(amount);
+  };
+
+  useEffect(() => {
+    if (!baseToken?.address) {
+      setIsABtnDisabled(true);
+      return;
+    }
+
+    if (!appendVal) {
+      setIsABtnDisabled(true);
+      return;
+    }
+
+    setIsABtnDisabled(false);
+    setABtnText("Confirm");
+  }, [baseToken, appendVal, balanceObj]);
+
+  useEffect(() => {
+    if (!baseToken?.address) {
+      setIsWBtnDisabled(true);
+      return;
+    }
+
+    if (!withdrawVal) {
+      setIsWBtnDisabled(true);
+      return;
+    }
+
+    if (Number(withdrawVal) > Number(marginAmount)) {
+      setIsWBtnDisabled(true);
+      setWBtnText(`Insufficient Margin`);
+      return;
+    }
+
+    setIsWBtnDisabled(false);
+    setWBtnText("Confirm");
+  }, [baseToken, withdrawVal, marginAmount]);
+  
+  console.log(pnlPercent);
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -34,9 +125,16 @@ export default function PositionDialogContent({
         <div className="flex justify-between rounded-xl border-2 border-black p-4">
           <div className="flex flex-col gap-y-3">
             <TitleText>P/L</TitleText>
-            <div className="text-[28px] leading-[34px] text-red">
-              -$0.48 (-0.21%)
-            </div>
+            {currentPriceRes.isLoading || !pnlAmount.value ? (
+              <>
+                <Skeleton className="h-8 w-[200px]" />
+              </>
+            ) : (
+              <PlText
+                profit={pnlAmount.formatted!}
+                percent={pnlPercent.formatted}
+              />
+            )}
           </div>
 
           <div className="flex flex-col gap-y-2">
@@ -44,8 +142,17 @@ export default function PositionDialogContent({
               {quoteToken?.symbol}/{baseToken?.symbol}
             </TitleText>
             <div className="flex flex-col gap-y-[4px]">
-              <ContentText>$13.0497</ContentText>
-              <LoopProgress className="rotate-180" />
+              {currentPriceRes.isLoading ? (
+                <>
+                  <Skeleton className="h-5 w-[100px]" />
+                  <Skeleton className="h-1 w-[100px]" />
+                </>
+              ) : (
+                <>
+                  <ContentText>${currentPriceRes.dataFormatted}</ContentText>
+                  <LoopProgress className="rotate-180" />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -53,12 +160,12 @@ export default function PositionDialogContent({
         <div className="mt-[9px] flex items-center justify-between border-b border-lightgray py-3">
           <div className="flex flex-col gap-y-2">
             <TitleText>Size</TitleText>
-            <ContentText>{size}</ContentText>
+            <ContentText>{size.formatted}</ContentText>
           </div>
 
           <div className="flex flex-col items-end gap-y-2">
             <TitleText>Avg. Open Price</TitleText>
-            <ContentText>$12.8063</ContentText>
+            <ContentText>${openPrice.formatted}</ContentText>
           </div>
         </div>
 
@@ -83,7 +190,7 @@ export default function PositionDialogContent({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <div className="ml-1">{marginAmount}</div>
+                <div className="ml-1">{marginAmount.formatted}</div>
               </div>
             </ContentText>
           </div>
@@ -98,7 +205,7 @@ export default function PositionDialogContent({
                   src="/icons/clock.svg"
                   alt="expiration"
                 ></Image>
-                <div className="ml-2">{expiration}</div>
+                <div className="ml-2">{expiration.simple}</div>
               </div>
             </ContentText>
           </div>
@@ -107,23 +214,84 @@ export default function PositionDialogContent({
 
       <div className="flex flex-col">
         <SwitchTab
-          tabs={["Append Margin", "Withdraw Margin"]}
+          tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
-        <InputPanel
-          balance={"100"}
-          balanceText=""
-          isActive={true}
-          isJustToken={true}
-          className="rounded-tl-none"
-          value={value}
-          setValue={setValue}
-          token={baseToken}
-        />
+        {activeTab === tabs[0] && (
+          <InputPanel
+            tokenDisplay={TokenDisplayComp}
+            balanceDisplay={
+              <BalanceDisplay
+                isLoading={isBalanceLoading}
+                balance={balanceObj?.formatted || null}
+                setMax={() => setAppendVal(balanceObj?.formatted || "")}
+              />
+            }
+            isActive={true}
+            className="rounded-tl-none"
+            value={appendVal}
+            setValue={setAppendVal}
+          />
+        )}
+        {activeTab === tabs[1] && (
+          <InputPanel
+            tokenDisplay={TokenDisplayComp}
+            balanceDisplay={
+              <BalanceDisplay
+                isLoading={false}
+                balance={marginAmount.formatted}
+                setMax={() => setWithdrawVal(marginAmount.value)}
+              />
+            }
+            isActive={true}
+            className="rounded-tl-none"
+            value={withdrawVal}
+            setValue={setWithdrawVal}
+          />
+        )}
       </div>
 
-      <FormBtnWithWallet className="flex-1">Confirm</FormBtnWithWallet>
+      {activeTab === tabs[0] && (
+        <WithApproveBtn
+          token={baseToken}
+          disabled={isABtnDisabled}
+          useAmount={appendVal}
+          amount={balanceObj?.formatted || "0"}
+          className="flex-1"
+          isLoading={isAppendLoading}
+          onClick={() => handleABtnClick()}
+        >
+          {aBtnText}
+        </WithApproveBtn>
+      )}
+
+      {activeTab === tabs[1] && (
+        <WithWalletBtn
+          isLoading={isWithdrawLoading}
+          disabled={isWBtnDisabled}
+          className="flex-1"
+          onClick={() => handleWBtnClick()}
+        >
+          {wBtnText}
+        </WithWalletBtn>
+      )}
+    </div>
+  );
+}
+
+function PlText({ profit, percent }: { profit: string; percent: string }) {
+  const isLoss = Number(profit) < 0;
+  const absProfit = Math.abs(Number(profit));
+  const absPercent = Math.abs(Number(percent));
+
+  return (
+    <div
+      data-state={isLoss ? "loss" : "profit"}
+      className="text-[28px] leading-[34px] data-[state=loss]:text-red data-[state=profit]:text-green"
+    >
+      {isLoss && "-"}${absProfit} ({isLoss && "-"}
+      {absPercent}%)
     </div>
   );
 }

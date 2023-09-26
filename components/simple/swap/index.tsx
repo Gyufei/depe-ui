@@ -9,7 +9,7 @@ import OrderOverview from "./order-overview";
 import LeverageSelectInput from "./leverage-select-input";
 import BaseTokenInput from "./base-token-input";
 import QuoteTokenInput from "./quote-token-input";
-import ConfirmBtn from "./confirm-btn";
+import SwapBtn from "./swap-btn";
 
 export default function Swap() {
   const { isActivePanel, setPanelActive } = useActivePanel("Swap");
@@ -30,7 +30,7 @@ export default function Swap() {
         <div className="flex flex-col">
           <BaseTokenInput />
           <div className="relative h-3 px-[68px]">
-            <LeverageSelectInput className="relative -top-[20px] mx-auto" />
+            <LeverageSelectInput className="relative -top-[18px] mx-auto" />
           </div>
           <QuoteTokenInput />
           <div className="mt-[26px] mb-[23px] flex items-center justify-between">
@@ -38,7 +38,7 @@ export default function Swap() {
             <NFTCheck />
           </div>
 
-          <ConfirmBtn />
+          <SwapBtn />
         </div>
       </div>
 

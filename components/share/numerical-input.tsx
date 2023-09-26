@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { cn, escapeRegExp } from "@/lib/utils";
+import { cn, escapeRegExp } from "@/lib/utils/utils";
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`); // match escaped "." characters via in a non-capturing group
 

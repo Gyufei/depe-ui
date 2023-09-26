@@ -12,20 +12,16 @@ import FarmingDialogContent from "./farming-dialog-content";
 import DialogGimp from "../../share/dialog-gimp";
 import { APYText, SecondText, TitleText } from "./row-common";
 import type { IPool } from "@/lib/types/pool";
-import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
 import { Skeleton } from "../../ui/skeleton";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
 
-export function FarmingRow({
-  isLast,
-  pool,
-  poolAPY,
-}: {
-  isLast: boolean;
-  pool: IPool;
-  poolAPY: IPoolAPY;
-}) {
+export function FarmingRow({ isLast, pool }: { isLast: boolean; pool: IPool }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
+    pool?.poolAddr || null,
+  );
 
   const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
 
@@ -49,10 +45,10 @@ export function FarmingRow({
           <SecondText>Leverage</SecondText>
         </div>
         <div className="flex flex-col items-end pr-[12%]">
-          {!poolAPY || poolAPY?.isLoading ? (
-            <Skeleton className="h-7 w-[50px]" />
+          {!poolAPY || isPoolAPYLoading ? (
+            <Skeleton className="mb-1 h-6 w-[50px]" />
           ) : (
-            <APYText apy={poolAPY?.value} />
+            <APYText apy={poolAPY} />
           )}
           <SecondText>APY</SecondText>
         </div>

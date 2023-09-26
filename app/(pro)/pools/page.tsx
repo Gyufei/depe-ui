@@ -1,12 +1,10 @@
 "use client";
 
-import usePools from "@/lib/hooks/use-pools";
+import { usePools } from "@/lib/hooks/use-pools";
 import PoolPanel from "@/components/pro/pool-panel";
-import usePoolsAPY from "@/lib/hooks/use-pools-apy";
 
 export default function Pools() {
-  const { pools, isLoading } = usePools();
-  const { poolAPYs } = usePoolsAPY(pools);
+  const { data: pools, isLoading } = usePools();
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -18,13 +16,7 @@ export default function Pools() {
         {isLoading && <div>Loading</div>}
         {!isLoading &&
           pools.length !== 0 &&
-          pools.map((pool) => (
-            <PoolPanel
-              key={pool.poolId}
-              pool={pool}
-              poolAPY={poolAPYs[pool.poolId]}
-            />
-          ))}
+          pools.map((pool) => <PoolPanel key={pool.poolId} pool={pool} />)}
       </div>
     </div>
   );

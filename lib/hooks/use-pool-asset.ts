@@ -1,0 +1,37 @@
+import { useMemo } from "react";
+import { PoolAsset } from "../gql-document/pool";
+import { useGqlRequest } from "./use-graphql-request";
+import { Address } from "viem";
+import { useAccount } from "wagmi";
+
+export interface IPoolAsset {
+  dpPoolAddr: Address;
+  amount: string;
+}
+
+export function usePoolAsset() {
+  const { address: account } = useAccount();
+  const res = useGqlRequest(
+    PoolAsset(account ? [{ key: "account", value: account }] : []),
+  );
+
+  const data = useMemo<Array<IPoolAsset>>(() => {
+    if (!res.data?.poolAsset?.data) return [];
+    return res.data?.poolAsset?.data || [];
+  }, [res.data?.poolAsset?.data]);
+
+  const dataMap = useMemo(() => {
+    if (!data.length) return {};
+
+    return data.reduce((acc, cur) => {
+      acc[cur.dpPoolAddr] = cur;
+      return acc;
+    }, {} as Record<Address, IPoolAsset>);
+  }, [data]);
+
+  return {
+    ...res,
+    data,
+    dataMap,
+  };
+}

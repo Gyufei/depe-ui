@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-import FormBtnWithWallet from "../../share/form-btn";
+import WithWalletBtn from "../../share/with-wallet-btn";
 import { Textarea } from "../../ui/textarea";
 import { IPosition } from "@/lib/types/position";
 
@@ -40,9 +40,9 @@ export default function TransferDialogContent({
       ) : (
         <EmptyNFT />
       )}
-      <FormBtnWithWallet className="flex-1">
+      <WithWalletBtn onClick={() => {}} className="flex-1">
         {hasNFT ? "Transfer Position NFT" : "Mint Position NFT"}
-      </FormBtnWithWallet>
+      </WithWalletBtn>
     </div>
   );
 }

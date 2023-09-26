@@ -9,13 +9,14 @@ import {
   SAmountInMaxAtom,
   SBaseTokenAmountAtom,
   SBaseTokenAtom,
+  SBaseTokenBalanceAtom,
   SLeverageAtom,
   SPoolAtom,
   SQuoteTokenAmountAtom,
   SQuoteTokenAtom,
   SSlippageAtom,
 } from "@/lib/states/swap";
-import { encodePath } from "@/lib/web3/utils";
+import { encodePath } from "@/lib/utils/web3";
 
 import InputPanel from "@/components/share/input-panel";
 import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
@@ -24,6 +25,9 @@ import { usePublicClient } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
 import { useSwapFeeParams } from "@/lib/hooks/use-swap-fee-params";
 import { UNISWAP_FEES } from "@/lib/constant";
+import { StableTokenSelectDisplay } from "@/components/share/input-panel-token-display";
+import BalanceDisplay from "@/components/share/balance-display";
+import { useTokenBalance } from "@/lib/hooks/use-token-balance";
 
 export default function BaseTokenInput() {
   const { isActivePanel } = useActivePanel("Swap");
@@ -31,7 +35,7 @@ export default function BaseTokenInput() {
   const publicClient = usePublicClient();
   const { chainConfig } = useChainConfig();
 
-  const { marginTokens, isLoading: tokenLoading } = useTokens();
+  const { marginTokens, isLoading: isTokenLoading } = useTokens();
 
   const { calcFeeParams } = useSwapFeeParams();
 
@@ -44,6 +48,15 @@ export default function BaseTokenInput() {
   const quoteToken = useAtomValue(SQuoteTokenAtom);
   const setQuoteTokenAmount = useSetAtom(SQuoteTokenAmountAtom);
   const setAmountInMax = useSetAtom(SAmountInMaxAtom);
+  const setBaseBalance = useSetAtom(SBaseTokenBalanceAtom);
+
+  const { data: balanceObj, isLoading: isBalanceLoading } = useTokenBalance(
+    baseToken?.address || null,
+  );
+
+  useEffect(() => {
+    setBaseBalance(balanceObj?.formatted || null);
+  }, [balanceObj?.formatted, setBaseBalance]);
 
   useEffect(() => {
     if (marginTokens?.length) {
@@ -101,13 +114,23 @@ export default function BaseTokenInput() {
 
   return (
     <InputPanel
-      balanceText="Wallet Balance"
-      isLoading={tokenLoading}
-      isStableToken={true}
+      tokenDisplay={
+        <StableTokenSelectDisplay
+          isLoading={isTokenLoading}
+          tokens={marginTokens || []}
+          token={baseToken!}
+          setToken={setBaseToken}
+        />
+      }
+      balanceDisplay={
+        <BalanceDisplay
+          isLoading={isBalanceLoading}
+          balance={balanceObj?.formatted || null}
+          prefixText="Wallet Balance"
+          setMax={() => handleValueChange(balanceObj?.formatted || "")}
+        />
+      }
       isActive={isActivePanel}
-      tokens={marginTokens || []}
-      token={baseToken}
-      setToken={setBaseToken}
       value={baseTokenAmount || ""}
       setValue={handleValueChange}
     />

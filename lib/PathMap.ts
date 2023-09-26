@@ -9,18 +9,19 @@ export function WithCDN(path: string) {
 }
 
 export const EndPointPathMap = {
-  ethApi: WithHost("/mainnet"),
+  // ethApi: WithHost("/mainnet"),
+  // opApi: WithHost("/op"),
+  // baseApi: WithHost("/base"),
+  ethApi: WithHost("/sepolia"),
   sepoliaApi: WithHost("/sepolia"),
-  opApi: WithHost("/op"),
-  baseApi: WithHost("/base"),
+  opApi: WithHost("/sepolia"),
+  baseApi: WithHost("/sepolia"),
 
-  ethGql: WithHost("/mainnet/graphql"),
-  sepoliaGql: WithHost("/sepolia/graphql"),
-  opGql: WithHost("/op/graphql"),
-  baseGql: WithHost("/base/graphql"),
-
-  ethTokens: WithCDN("/tokens/mainnet/tokenlist.json"),
+  // ethTokens: WithCDN("/tokens/mainnet/tokenlist.json"),
+  // opTokens: WithCDN("/tokens/op/tokenlist.json"),
+  // baseTokens: WithCDN("/tokens/base/tokenlist.json"),
+  ethTokens: WithCDN("/tokens/sepolia/tokenlist.json"),
+  opTokens: WithCDN("/tokens/sepolia/tokenlist.json"),
+  baseTokens: WithCDN("/tokens/sepolia/tokenlist.json"),
   sepoliaTokens: WithCDN("/tokens/sepolia/tokenlist.json"),
-  opTokens: WithCDN("/tokens/op/tokenlist.json"),
-  baseTokens: WithCDN("/tokens/base/tokenlist.json"),
 };

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Arrow } from "@radix-ui/react-popover";
 
@@ -17,25 +17,25 @@ import type { IPool } from "@/lib/types/pool";
 import { Skeleton } from "../ui/skeleton";
 import { range } from "lodash";
 import Empty from "./empty";
-import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
 
 export default function SelectPoolDialogContent({
   isLoading,
   pools,
-  poolAPYs,
   pool,
   setPool,
 }: {
   isLoading: boolean;
   pools: Array<IPool> | null;
-  poolAPYs: Record<string, IPoolAPY>;
   pool: IPool | null;
   setPool: (_p: IPool | null) => void;
 }) {
   const [isAuto, setIsAuto] = useState(false);
   const [sortBy, setSortBy] = useState("Num");
   const [searchStr, setSearchStr] = useState("");
+
+  const [poolAPYs, setPoolAPYs] = useState<Record<string, string>>({});
 
   const filteredPools = useMemo<Array<IPool>>((): Array<IPool> => {
     if (!pools) return [];
@@ -46,9 +46,9 @@ export default function SelectPoolDialogContent({
       sortedPools = pools.sort((a, b) => Number(a.poolId) - Number(b.poolId));
     } else if (sortBy === "APY") {
       sortedPools = pools.sort((a, b) => {
-        const aAPY = poolAPYs[a.poolId].value || 0;
-        const bAPY = poolAPYs[b.poolId].value || 0;
-        return aAPY - bAPY;
+        const aAPY = poolAPYs[a.poolId] || 0;
+        const bAPY = poolAPYs[b.poolId] || 0;
+        return Number(aAPY) - Number(bAPY);
       });
     } else if (sortBy === "Leverage") {
       sortedPools = pools.sort(
@@ -78,6 +78,17 @@ export default function SelectPoolDialogContent({
   const handleSelectPool = (pool: IPool) => {
     setIsAuto(false);
     setPool(pool);
+  };
+
+  const recordPoolAPY = (poolId: string) => {
+    return (poolAPY: string) => {
+      setPoolAPYs((prev: Record<string, string>) => {
+        return {
+          ...prev,
+          [poolId]: poolAPY,
+        };
+      });
+    };
   };
 
   return (
@@ -171,7 +182,7 @@ export default function SelectPoolDialogContent({
                 <PoolRow
                   key={p.poolId}
                   pool={p}
-                  poolAPY={poolAPYs[p.poolId]}
+                  recordAPY={recordPoolAPY(p.poolId)}
                   isSelected={pool?.poolId === p.poolId}
                   onClick={() => handleSelectPool(p)}
                 />
@@ -199,15 +210,23 @@ function SortPopRow({ onClick, text }: { onClick: () => void; text: string }) {
 function PoolRow({
   pool,
   isSelected,
-  poolAPY,
+  recordAPY,
   onClick,
 }: {
   pool: IPool;
-  poolAPY: IPoolAPY;
   isSelected: boolean;
+  recordAPY: (_a: any) => void;
   onClick: () => void;
 }) {
   const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
+
+  const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
+    pool?.poolAddr || null,
+  );
+
+  useEffect(() => {
+    recordAPY(poolAPY);
+  }, [poolAPY]);
 
   return (
     <div
@@ -229,10 +248,10 @@ function PoolRow({
           <SecondText>Leverage</SecondText>
         </div>
         <div className="flex flex-col items-end justify-between">
-          {!poolAPY || poolAPY?.isLoading ? (
+          {!poolAPY || isPoolAPYLoading ? (
             <Skeleton className="h-5 w-[38px]" />
           ) : (
-            <TitleText>{poolAPY?.value}%</TitleText>
+            <TitleText>{poolAPY}%</TitleText>
           )}
           <SecondText>APY</SecondText>
         </div>

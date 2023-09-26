@@ -37,11 +37,25 @@ export function TradingRow({
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
   const [positionDialogOpen, setPositionDialogOpen] = useState(false);
 
-  const { pool } = usePool({
-    poolAddr: position.dpPoolAddr,
-  });
+  const handlePositionDialog = (val: boolean) => {
+    setPositionDialogOpen(val);
+    if (!val) setPopOpen(false);
+  };
 
-  const { baseToken, quoteToken, leverage, size, marginAmount } =
+  const handleTradeDialog = (val: boolean) => {
+    setTradeDialogOpen(val);
+    if (!val) setPopOpen(false);
+  };
+
+  const handleTransferDialog = (val: boolean) => {
+    setTransferDialogOpen(val);
+    if (!val) setPopOpen(false);
+  };
+  console.log(tradeDialogOpen);
+
+  const { data: pool } = usePool(position.dpPoolAddr);
+
+  const { baseToken, quoteToken, leverage, size, marginAmount, pnlPercent } =
     usePositionFormat(position, pool);
 
   return (
@@ -55,15 +69,15 @@ export function TradingRow({
         data-state={isLast ? "last" : ""}
         className="relative ml-3 flex flex-1 border-b border-lightgray pr-9 pb-[14px] data-[state=last]:border-0"
       >
-        <div className="flex flex-col pr-6">
+        <div className="flex w-[75px] flex-1  flex-col">
           <TitleText># 100</TitleText>
           <SecondText>
-            {quoteToken?.symbol}({leverage}✕)
+            {quoteToken?.symbol}({leverage}×)
           </SecondText>
         </div>
-        <div className="flex flex-col items-end pr-6">
+        <div className="flex w-[82px] flex-col items-end pr-4">
           <div className="flex items-center text-lg leading-7 text-black">
-            {size}
+            {size.formatted}
             <Image
               width={16}
               height={16}
@@ -74,13 +88,13 @@ export function TradingRow({
           </div>
           <SecondText>Size</SecondText>
         </div>
-        <div className="flex flex-col items-end pr-6">
-          <APYText apy={70} />
+        <div className="flex flex-col items-end pr-4">
+          <APYText apy={pnlPercent.formatted} />
           <SecondText>P/L</SecondText>
         </div>
-        <div className="flex flex-col items-end">
+        <div className="flex w-[70px] flex-col items-end">
           <div className="flex items-center text-lg leading-7 text-black">
-            {marginAmount}
+            {marginAmount.formatted}
             <Image
               width={16}
               height={16}
@@ -103,7 +117,7 @@ export function TradingRow({
               <Arrow className="fill-white" />
               <Dialog
                 open={positionDialogOpen}
-                onOpenChange={(isOpen) => setPositionDialogOpen(isOpen)}
+                onOpenChange={(isOpen) => handlePositionDialog(isOpen)}
               >
                 <DialogTrigger asChild>
                   <OperationPopRow>Info</OperationPopRow>
@@ -117,7 +131,7 @@ export function TradingRow({
 
               <Dialog
                 open={tradeDialogOpen}
-                onOpenChange={(isOpen) => setTradeDialogOpen(isOpen)}
+                onOpenChange={(isOpen) => handleTradeDialog(isOpen)}
               >
                 <DialogTrigger asChild>
                   <OperationPopRow>Trade</OperationPopRow>
@@ -133,7 +147,7 @@ export function TradingRow({
 
               <Dialog
                 open={transferDialogOpen}
-                onOpenChange={(isOpen) => setTransferDialogOpen(isOpen)}
+                onOpenChange={(isOpen) => handleTransferDialog(isOpen)}
               >
                 <DialogTrigger asChild>
                   <OperationPopRow>Transfer</OperationPopRow>

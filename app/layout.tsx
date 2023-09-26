@@ -1,14 +1,11 @@
 import "./globals.css";
 import { HaasGrotDisp, HaasGrotText } from "./fonts";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import Web3ConnectProvider from "@/components/provider/web3-connect-provider";
 import JotaiProvider from "@/components/provider/jotai-provider";
 import SWRConfigProvider from "@/components/provider/swr-config-provider";
 import HomeLayout from "@/components/layout/home-layout";
-
-import NP from "number-precision";
-NP.enableBoundaryChecking(false);
 
 export const metadata = {
   title: "Depe",

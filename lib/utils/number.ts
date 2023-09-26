@@ -1,3 +1,5 @@
+import NP from "number-precision";
+
 type NumberType = string | number;
 
 export function formatNum(num: NumberType, decimal = 2, unit = false): string {
@@ -120,8 +122,7 @@ export function toQuantity(amount: NumberType, price = 1) {
     if (Number(price) < 0.1) {
       return formatNum(amount, 0);
     } else {
-      // const target = NP.divide(1, Number(price));
-      const target = 1 / Number(price);
+      const target = NP.divide(1, Number(price));
       const precision = getAccuracy(target, 0);
       return formatNum(amount, precision);
     }
@@ -224,8 +225,7 @@ export function getFormatUnit(num: NumberType): {
   }
 
   const powNum = Math.pow(1000, unitIndex);
-  // result = NP.divide(result, powNum);
-  result = result / powNum;
+  result = NP.divide(result, powNum);
 
   return {
     number: result,

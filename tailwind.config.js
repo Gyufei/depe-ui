@@ -11,6 +11,7 @@ module.exports = {
         muted: "var(--color-muted)",
         black: "var(--color-black)",
         "black/90": "var(--color-black-90)",
+        "black/2": "var(--color-black-2)",
         yellow: "var(--color-yellow)",
         sky: "var(--color-sky)",
         blue: "var(--color-blue)",

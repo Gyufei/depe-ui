@@ -5,7 +5,7 @@ import { useAtom } from "jotai";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
 import { useEffect } from "react";
 
-export default function ActionTip() {
+export default function GlobalActionTip() {
   const [globalMessage, setGlobalMessage] = useAtom(GlobalMessageAtom);
   const { type, message } = globalMessage || {};
 
@@ -14,7 +14,6 @@ export default function ActionTip() {
       const d = setTimeout(() => {
         setGlobalMessage(null);
       }, 5000);
-
       return () => clearTimeout(d);
     }
   }, [globalMessage, setGlobalMessage]);
@@ -41,7 +40,7 @@ export default function ActionTip() {
     <>
       {message && type ? (
         <div
-          className="fixed bottom-6 mt-4 flex items-center gap-x-2 rounded-md border px-5 py-3"
+          className="fixed bottom-6 left-1/2 mt-4 flex -translate-x-1/2 items-center gap-x-2 rounded-md border px-5 py-3"
           style={{
             borderColor: colorMap[type].border,
             backgroundColor: colorMap[type].bg,

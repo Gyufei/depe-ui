@@ -4,7 +4,7 @@ import SepoliaLogo from "/public/icons/sepolia.svg";
 import OptimismLogo from "/public/icons/optimism.svg";
 
 import { EndPointPathMap } from "./PathMap";
-import { AddressType } from "./types/address";
+import { Address } from "viem";
 
 interface IChainConfig {
   name: string;
@@ -13,14 +13,14 @@ interface IChainConfig {
     default: string;
     tokenApi: string;
   };
-  marginTokens: Array<AddressType>;
+  marginTokens: Array<Address>;
   contract: {
-    UniswapV3Quoter: AddressType;
-    UniswapV3Router: AddressType;
-    IPIBone: AddressType;
-    PriceOracle: AddressType;
-    DepePoolManager: AddressType;
-    DepePositionManager: AddressType;
+    UniswapV3Quoter: Address;
+    UniswapV3Router: Address;
+    IPIBone: Address;
+    PriceOracle: Address;
+    DepePoolManager: Address;
+    DepePositionManager: Address;
   };
 }
 
@@ -39,10 +39,10 @@ export const ChainConfigs: Array<IChainConfig> = [
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
-      IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
-      PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
-      DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
-      DepePositionManager: "0x0507EfC997Ec2b12Cdd98143D9fB655D8D0b6C36",
+      PriceOracle: "0x6703587462eFFE4712C5458FB427b4AD42b73ac2",
+      IPIBone: "0x51bFb46a073D011720Ab6e6083C261631472Ae90",
+      DepePositionManager: "0xC9904D9581d92c4A47aFd01bd9EAb37925636E08",
+      DepePoolManager: "0x563730dE23BB3C66Df583c3602c72f614bF0170d",
     },
   },
   {
@@ -59,10 +59,10 @@ export const ChainConfigs: Array<IChainConfig> = [
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
-      IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
-      PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
-      DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
-      DepePositionManager: "0x0507EfC997Ec2b12Cdd98143D9fB655D8D0b6C36",
+      PriceOracle: "0x6703587462eFFE4712C5458FB427b4AD42b73ac2",
+      IPIBone: "0x51bFb46a073D011720Ab6e6083C261631472Ae90",
+      DepePositionManager: "0xC9904D9581d92c4A47aFd01bd9EAb37925636E08",
+      DepePoolManager: "0x563730dE23BB3C66Df583c3602c72f614bF0170d",
     },
   },
   {
@@ -79,10 +79,10 @@ export const ChainConfigs: Array<IChainConfig> = [
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
-      IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
-      PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
-      DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
-      DepePositionManager: "0x0507EfC997Ec2b12Cdd98143D9fB655D8D0b6C36",
+      PriceOracle: "0x6703587462eFFE4712C5458FB427b4AD42b73ac2",
+      IPIBone: "0x51bFb46a073D011720Ab6e6083C261631472Ae90",
+      DepePositionManager: "0xC9904D9581d92c4A47aFd01bd9EAb37925636E08",
+      DepePoolManager: "0x563730dE23BB3C66Df583c3602c72f614bF0170d",
     },
   },
   {
@@ -99,10 +99,10 @@ export const ChainConfigs: Array<IChainConfig> = [
     contract: {
       UniswapV3Quoter: "0xd6fA380B1e78b5d502EaB2D87A8C90f85CfFe9f7",
       UniswapV3Router: "0x99072cf13462c99b11757bC81e730A69837FD6d0",
-      IPIBone: "0x1dC6Ce581D4A5b0232dce7962b7105F76A848570",
-      PriceOracle: "0xF9D7fb8Fec1441cC5bD68b85Fa1bd8693e0b1Ed9",
-      DepePoolManager: "0xC120189a93cCdb9d41867958135218363279c741",
-      DepePositionManager: "0x0507EfC997Ec2b12Cdd98143D9fB655D8D0b6C36",
+      PriceOracle: "0x6703587462eFFE4712C5458FB427b4AD42b73ac2",
+      IPIBone: "0x51bFb46a073D011720Ab6e6083C261631472Ae90",
+      DepePositionManager: "0xC9904D9581d92c4A47aFd01bd9EAb37925636E08",
+      DepePoolManager: "0x563730dE23BB3C66Df583c3602c72f614bF0170d",
     },
   },
 ];

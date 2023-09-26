@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { HelpCircle } from "lucide-react";
 import Image from "next/image";
 
-import FormBtnWithWallet from "../../share/form-btn";
+import WithWalletBtn from "../../share/with-wallet-btn";
 import SwitchTab from "../../share/switch-tab";
 import InputPanel from "../../share/input-panel";
 
@@ -16,6 +16,9 @@ import DexSelect from "./dex-select";
 import { IPosition } from "@/lib/types/position";
 import { IPool } from "@/lib/types/pool";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
+import { TokenDisplay } from "@/components/share/input-panel-token-display";
+import BalanceDisplay from "@/components/share/balance-display";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TradeDialogContent({
   pool,
@@ -27,10 +30,8 @@ export default function TradeDialogContent({
   const [value, setValue] = useState("");
   const [activeTab, setActiveTab] = useState("Increase Position");
 
-  const { baseToken, quoteToken, marginAmount } = usePositionFormat(
-    position,
-    pool,
-  );
+  const { baseToken, quoteToken, marginAmount, currentPriceRes } =
+    usePositionFormat(position, pool);
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -52,7 +53,13 @@ export default function TradeDialogContent({
             </div>
           </TitleText>
 
-          <ContentText>$13.56 per {quoteToken?.symbol}</ContentText>
+          {currentPriceRes.isLoading ? (
+            <Skeleton className="h-[30px] w-[200px]" />
+          ) : (
+            <ContentText>
+              ${currentPriceRes.dataFormatted} per {quoteToken?.symbol}
+            </ContentText>
+          )}
         </div>
 
         <div className="flex flex-col py-3">
@@ -75,7 +82,7 @@ export default function TradeDialogContent({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <div className="ml-1">{marginAmount}</div>
+              <div className="ml-1">{marginAmount.formatted}</div>
             </div>
           </ContentText>
         </div>
@@ -88,20 +95,27 @@ export default function TradeDialogContent({
           setActiveTab={setActiveTab}
         />
         <InputPanel
-          balanceText=""
+          tokenDisplay={<TokenDisplay token={baseToken!} />}
+          balanceDisplay={
+            <BalanceDisplay
+              isLoading={false}
+              balance={marginAmount.formatted}
+              prefixText=""
+              setMax={() => setValue(marginAmount.value)}
+            />
+          }
           isActive={true}
-          isJustToken={true}
           className="rounded-tl-none"
           value={value}
           setValue={setValue}
-          token={baseToken}
-          setToken={() => {}}
         />
       </div>
 
       <div className="flex items-center space-x-4">
         <DexSelect />
-        <FormBtnWithWallet className="flex-1">Submit Order</FormBtnWithWallet>
+        <WithWalletBtn className="flex-1" onClick={() => {}}>
+          Submit Order
+        </WithWalletBtn>
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 import { useTokens } from "./use-tokens";
 import type { IToken } from "../types/token";
-import type { AddressType } from "../types/address";
+import type { Address } from "viem";
 
 export function useTokensInfo(
-  address: Array<AddressType | null>,
+  address: Array<Address | null>,
 ): Array<IToken | null> {
   const { data: tokens } = useTokens();
 
-  const getTokenInfo = (addr: AddressType | null) => {
+  const getTokenInfo = (addr: Address | null) => {
     if (!addr) return null;
     if (!tokens?.length) return null;
 

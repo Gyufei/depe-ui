@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { range } from "lodash";
 
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { truncateAddr } from "@/lib/utils";
+import { truncateAddr } from "@/lib/utils/web3";
 import { IToken } from "@/lib/types/token";
 import { Skeleton } from "../ui/skeleton";
 import { useMemo, useState } from "react";

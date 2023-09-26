@@ -2,11 +2,11 @@ import Image from "next/image";
 
 import { IPool } from "@/lib/types/pool";
 import TokenPairImage from "../share/token-pair-image";
-import { IPoolAPY } from "@/lib/hooks/use-pools-apy";
 import { Skeleton } from "../ui/skeleton";
 import ExpirationIcon from "@/components/share/icons/expiration";
 import MakerIcon from "/public/icons/maker.svg";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
 
 function FieldRow({ children }: { children: React.ReactNode }) {
   return <div className="flex justify-between">{children}</div>;
@@ -28,14 +28,11 @@ function FieldText({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function PoolPanel({
-  pool,
-  poolAPY,
-}: {
-  pool: IPool;
-  poolAPY: IPoolAPY;
-}) {
+export default function PoolPanel({ pool }: { pool: IPool }) {
   const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
+  const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
+    pool.poolAddr,
+  );
 
   return (
     <div className="relative flex flex-col ">
@@ -82,12 +79,12 @@ export default function PoolPanel({
           </FieldRow>
           <FieldRow>
             <TitleText>Earn APY</TitleText>
-            {poolAPY?.isLoading ? (
+            {!poolAPY || isPoolAPYLoading ? (
               <Skeleton className="h-5 w-10" />
             ) : (
               <FieldText>
-                {poolAPY?.value && poolAPY?.value > 0 ? "+" : "-"}
-                {poolAPY?.value}%
+                {poolAPY && Number(poolAPY) > 0 ? "+" : "-"}
+                {poolAPY}%
               </FieldText>
             )}
           </FieldRow>

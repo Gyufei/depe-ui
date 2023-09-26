@@ -1,4 +1,6 @@
-import { cn } from "@/lib/utils";
+import { SOrderOverViewAtom } from "@/lib/states/swap";
+import { cn } from "@/lib/utils/utils";
+import { useAtomValue } from "jotai";
 
 function DescRow({
   title,
@@ -14,18 +16,29 @@ function DescRow({
     </div>
   );
 }
+
 export default function OrderOverview({ className }: { className?: string }) {
+  const orderOverview = useAtomValue(SOrderOverViewAtom);
+  if (!orderOverview) return null;
+
   return (
-    <div className={cn("rounded-3xl bg-[#cff7e8] px-6 pt-6 pb-2", className)}>
+    <div
+      className={cn(
+        "rounded-3xl bg-black/2 px-6 pt-6 pb-2",
+        className,
+      )}
+    >
       <div className="c-font-title-65 mb-3 text-xl text-black">
         Order Overview
       </div>
       <div>
-        <DescRow title="Leverage">20×</DescRow>
-        <DescRow title="Expiration">3 Days 10 Hours</DescRow>
-        <DescRow title="Order Size">12.4K DOGE</DescRow>
-        <DescRow title="Excepted Entry Price">$2,250 per DOGE</DescRow>
-        <DescRow title="Est. Margin">10.0000 USDT</DescRow>
+        <DescRow title="Leverage">{orderOverview.leverage}</DescRow>
+        <DescRow title="Expiration">{orderOverview.expiration}</DescRow>
+        <DescRow title="Order Size">{orderOverview.orderSize}</DescRow>
+        <DescRow title="Excepted Entry Price">
+          {orderOverview.entryPrice}
+        </DescRow>
+        <DescRow title="Est. Margin">{orderOverview.marginAmount}</DescRow>
       </div>
     </div>
   );

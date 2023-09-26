@@ -7,28 +7,34 @@ import { FarmingRow } from "./farming-row";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { ListContainer } from "./list-container";
 import Empty from "../../share/empty";
-import usePools from "@/lib/hooks/use-pools";
-import usePoolsAPY from "@/lib/hooks/use-pools-apy";
+import { IPool } from "@/lib/types/pool";
+import { useMemo } from "react";
 
 export function FarmingList({
   isActivePanel,
   className,
+  isLoading,
+  pools,
 }: {
+  pools: Array<IPool>;
+  isLoading: boolean;
   isActivePanel: boolean;
   className?: string;
 }) {
-  const { pools, isLoading } = usePools();
-  const { poolAPYs } = usePoolsAPY(pools);
+  const title = useMemo(() => {
+    const postfix = pools.length > 0 ? `( ${pools.length} )` : "";
+    return `Farming ${postfix}`;
+  }, [pools]);
 
   return (
     <ListContainer
       isLoading={isLoading}
-      title="Farming"
+      title={title}
       isActivePanel={isActivePanel}
       className={className}
     >
       {isLoading && (
-        <div className="h-[210px]">
+        <div className="h-[212px]">
           {range(3).map((i: number) => {
             return <SkeletonRow key={i} />;
           })}
@@ -36,12 +42,11 @@ export function FarmingList({
       )}
 
       {!isLoading && pools.length > 0 && (
-        <ScrollArea className="h-[210px]">
+        <ScrollArea className="h-[212px]">
           {pools.map((p, i: number) => {
             return (
               <FarmingRow
                 pool={p}
-                poolAPY={poolAPYs[p.poolId]}
                 key={p.poolId}
                 isLast={i === pools.length - 1}
               />

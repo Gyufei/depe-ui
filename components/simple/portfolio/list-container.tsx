@@ -1,10 +1,13 @@
-"use client";
 import { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { Skeleton } from "../../ui/skeleton";
 
 export function ListContainer({
-  title, isActivePanel, children, className, isLoading,
+  title,
+  isActivePanel,
+  children,
+  className,
+  isLoading,
 }: {
   title: string;
   isActivePanel: boolean;

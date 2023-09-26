@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import Image from "next/image";
 
@@ -14,31 +14,24 @@ import SelectPoolDialogContent from "../../share/select-pool-dialog-content";
 
 import { TitleText, ContentCon } from "./common";
 import { FPoolAtom } from "@/lib/states/farming";
-import usePools from "@/lib/hooks/use-pools";
-import usePoolsAPY from "@/lib/hooks/use-pools-apy";
+import { usePools } from "@/lib/hooks/use-pools";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
 
 export function Pool({ isActive }: { isActive: boolean }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const [selectedPool, setSelectedPool] = useAtom(FPoolAtom);
+  const { data: pools, isLoading } = usePools();
 
-  const { pools, isLoading } = usePools();
-  const { poolAPYs } = usePoolsAPY(pools);
+  const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
+    selectedPool?.poolAddr || null,
+  );
 
   useEffect(() => {
     if (pools?.length) {
       setSelectedPool(pools[0]);
     }
   });
-
-  const poolAPY = useMemo(() => {
-    if (!selectedPool || !poolAPYs) {
-      return null;
-    }
-
-    return poolAPYs[selectedPool.poolId];
-  }, [selectedPool, poolAPYs]);
 
   return (
     <div>
@@ -49,14 +42,14 @@ export function Pool({ isActive }: { isActive: boolean }) {
             {poolAPY && (
               <>
                 <div className="mr-2 text-gray">Est. APY</div>
-                {poolAPY.isLoading ? (
+                {!poolAPY || isPoolAPYLoading ? (
                   <Skeleton className="h-4 w-10" />
                 ) : (
                   <div
                     data-state={isActive ? "active" : "inactive"}
                     className="text-black data-[state=active]:text-green"
                   >
-                    {poolAPY.value}%
+                    {poolAPY}%
                   </div>
                 )}
               </>
@@ -94,7 +87,6 @@ export function Pool({ isActive }: { isActive: boolean }) {
             <DialogTitle className="px-6 pt-6">Select Pool</DialogTitle>
             <SelectPoolDialogContent
               pools={pools}
-              poolAPYs={poolAPYs}
               isLoading={isLoading}
               pool={selectedPool}
               setPool={setSelectedPool}
