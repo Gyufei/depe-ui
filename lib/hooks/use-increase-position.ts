@@ -1,35 +1,29 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
 import { parseUnits } from "viem";
 
-import {
-  SAmountInMaxAtom,
-  SBaseTokenAtom,
-  SLeverageAtom,
-  SMintNftFlagAtom,
-  SPoolAtom,
-  SQuoteTokenAmountAtom,
-  SQuoteTokenAtom,
-} from "@/lib/states/swap";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
 import { useEffect } from "react";
 import { GlobalMessageAtom } from "../states/global-message";
+import { IPool } from "../types/pool";
+import { IPosition } from "../types/position";
+import { useTokensInfo } from "./use-token-info";
 
-export function useSwap() {
+export function useIncreasePosition(
+  pool: IPool,
+  position: IPosition,
+  amount: string,
+  aInMax: bigint,
+) {
   const { chainConfig } = useChainConfig();
-
   const setGlobalMessage = useSetAtom(GlobalMessageAtom);
-  const pool = useAtomValue(SPoolAtom);
-  const baseToken = useAtomValue(SBaseTokenAtom);
-  const quoteToken = useAtomValue(SQuoteTokenAtom);
-  const amountInMax = useAtomValue(SAmountInMaxAtom);
-  const quoteTokenAmount = useAtomValue(SQuoteTokenAmountAtom);
-  const leverage = useAtomValue(SLeverageAtom);
-  const mintNFTFlag = useAtomValue(SMintNftFlagAtom);
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+  const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;
+
+  const [quoteToken] = useTokensInfo([pool.quoteToken]);
 
   const {
     data: callData,
@@ -41,35 +35,26 @@ export function useSwap() {
   } = useContractWrite({
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
-    functionName: "openPosition",
+    functionName: "increasePosition",
   });
 
-  const handleSwap = () => {
-    if (
-      !pool ||
-      !amountInMax ||
-      !baseToken ||
-      !quoteToken ||
-      !quoteTokenAmount ||
-      !leverage
-    )
-      return;
+  const handleIncrease = () => {
+    if (!pool || !position || !quoteToken || !amount || !aInMax) return;
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
-      quoteToken.address,
-      baseToken.address,
+      pool.quoteToken,
+      pool.baseToken,
     );
 
-    const quoteAmount = parseUnits(quoteTokenAmount, quoteToken?.decimals);
+    const increaseSize = parseUnits(amount, quoteToken?.decimals);
 
     const TxArgs = [
       pool.poolAddr,
-      chainConfig?.contract?.UniswapV3Router,
-      quoteAmount,
-      BigInt(leverage) * 100n,
-      amountInMax,
+      position.positionAddr,
+      SwapRouterAddress,
+      increaseSize,
+      aInMax,
       abiEncodedPath,
-      mintNFTFlag,
     ];
 
     write({
@@ -117,6 +102,6 @@ export function useSwap() {
     isLoading: isCallLoading || isTxLoading,
     isSuccess: isCallSuccess && isTxSuccess,
     isError: isCallError || isTxError,
-    write: handleSwap,
+    write: handleIncrease,
   };
 }

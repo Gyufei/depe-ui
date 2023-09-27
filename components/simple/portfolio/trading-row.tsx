@@ -51,7 +51,6 @@ export function TradingRow({
     setTransferDialogOpen(val);
     if (!val) setPopOpen(false);
   };
-  console.log(tradeDialogOpen);
 
   const { data: pool } = usePool(position.dpPoolAddr);
 

@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { usePublicClient } from "wagmi";
-import { formatUnits, parseUnits, Address } from "viem";
 import { useDebouncedCallback } from "use-debounce";
-import NP from "number-precision";
 
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
@@ -21,19 +18,16 @@ import {
 
 import InputPanel from "@/components/share/input-panel";
 import { encodePath } from "@/lib/utils/web3";
-import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
-import { useSwapFeeParams } from "@/lib/hooks/use-swap-fee-params";
 import { UNISWAP_FEES } from "@/lib/constant";
 import { TokenSelectDisplay } from "@/components/share/input-panel-token-display";
+import { useSwapQuoteCalc } from "@/lib/hooks/use-swap-calc";
+import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 
 export default function QuoteTokenInput() {
   const { isActivePanel } = useActivePanel("Swap");
 
-  const publicClient = usePublicClient();
   const { chainConfig } = useChainConfig();
   const { notMarginTokens, isLoading: tokenLoading } = useTokens();
-
-  const { calcFeeParams } = useSwapFeeParams();
 
   const leverage = useAtomValue(SLeverageAtom);
   const slippage = useAtomValue(SSlippageAtom);
@@ -46,6 +40,9 @@ export default function QuoteTokenInput() {
   const baseToken = useAtomValue(SBaseTokenAtom);
   const setBaseTokenAmount = useSetAtom(SBaseTokenAmountAtom);
   const setAmountInMax = useSetAtom(SAmountInMaxAtom);
+
+  const { calcFeeParams, calcAmountInMax, calcBaseToken } = useSwapQuoteCalc();
+  const { tradingFeeRate } = usePoolFormat(pool);
 
   useEffect(() => {
     if (notMarginTokens?.length) {
@@ -69,38 +66,22 @@ export default function QuoteTokenInput() {
     if (!leverage) return;
     if (!pool) return;
 
-    const aInMax = await calcAmountInMax(quoteV);
-    const baseVal = calcBaseTokenValue(aInMax);
+    const ePath = encodePath(
+      [quoteToken!.address, baseToken!.address],
+      UNISWAP_FEES,
+    );
+    const aInMax = await calcAmountInMax(quoteV, quoteToken!.decimals, ePath);
+
+    const feeParams = calcFeeParams(leverage, slippage, tradingFeeRate!);
+    const baseVal = calcBaseToken(
+      aInMax,
+      baseToken!.decimals,
+      leverage,
+      feeParams,
+    );
 
     setAmountInMax(aInMax);
     setBaseTokenAmount(baseVal);
-  };
-
-  const calcAmountInMax = async (quoteV: string): Promise<bigint> => {
-    const amount = parseUnits(quoteV, quoteToken!.decimals);
-
-    const path = [quoteToken!.address, baseToken!.address];
-    const encodedPath = encodePath(path, UNISWAP_FEES);
-
-    const toParam = chainConfig!.contract.UniswapV3Quoter as Address;
-    const { result } = await publicClient.simulateContract({
-      address: toParam,
-      abi: UniswapQuoterABI,
-      functionName: "quoteExactOutput",
-      args: [encodedPath as any, amount as any],
-    });
-
-    return result;
-  };
-
-  const calcBaseTokenValue = (aInMax: bigint): string => {
-    const aInMaxAmount = formatUnits(aInMax, baseToken!.decimals);
-    const feeParams = calcFeeParams(leverage, slippage, pool!.tradingFeeRate);
-
-    const baseVal = NP.divide(NP.times(aInMaxAmount, feeParams), leverage);
-    const withUnitBaseVal = parseUnits(baseVal.toString(), baseToken!.decimals);
-    const formatBaseVal = formatUnits(withUnitBaseVal, baseToken!.decimals);
-    return formatBaseVal;
   };
 
   return (

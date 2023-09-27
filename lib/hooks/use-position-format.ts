@@ -8,7 +8,9 @@ import { usePoolFormat } from "./use-pool-format";
 import { useTokenPrice } from "./use-token-price";
 
 export function usePositionFormat(position: IPosition, pool: IPool) {
-  const { baseToken, quoteToken, expiration } = usePoolFormat(pool);
+  const positionPool = usePoolFormat(pool);
+  const { baseToken, quoteToken } = positionPool;
+
   const currentPriceRes = useTokenPrice(
     quoteToken?.address || null,
     quoteToken?.decimals,
@@ -57,16 +59,15 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
   const openPriceFormat = useMemo(() => formatNum(openPrice), [openPrice]);
 
   const pnlAmount = useMemo(() => {
-    if (!currentPriceRes.data) return "";
+    if (!currentPriceRes.data.value) return "";
 
-    const currentPrice = formatUnits(
-      currentPriceRes.data,
-      quoteToken?.decimals || 18,
+    const pnlA = NP.minus(
+      NP.times(currentPriceRes.data.value, size),
+      debtAmount,
     );
-    const pnlA = NP.minus(NP.times(currentPrice, size), debtAmount);
 
     return pnlA;
-  }, [currentPriceRes.data, size, debtAmount, quoteToken?.decimals]);
+  }, [currentPriceRes.data, size, debtAmount]);
 
   const pnlAmountFormat = useMemo(() => formatNum(pnlAmount), [pnlAmount]);
 
@@ -81,10 +82,8 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
   const pnlPercentFormat = useMemo(() => formatNum(pnlPercent), [pnlPercent]);
 
   return {
-    quoteToken,
-    baseToken,
+    ...positionPool,
     currentPriceRes,
-    expiration,
     leverage,
     size: {
       value: size,

@@ -8,8 +8,9 @@ import { useApprove } from "@/lib/hooks/use-approve";
 export default function WithApproveBtn({
   isActive = true,
   isLoading = false,
-  useAmount,
-  amount,
+  balanceAmount,
+  willUseAmount,
+  liquidityAmount,
   token,
   onClick,
   children,
@@ -19,8 +20,9 @@ export default function WithApproveBtn({
   isActive?: boolean;
 
   token: IToken | null;
-  useAmount: string;
-  amount: string;
+  balanceAmount: string;
+  willUseAmount: string;
+  liquidityAmount?: string;
 
   children: ReactNode;
   onClick: () => void;
@@ -30,7 +32,7 @@ export default function WithApproveBtn({
     isAllowanceLoading,
     isLoading: isApproveLoading,
     write: approveAction,
-  } = useApprove(token?.address || null, useAmount);
+  } = useApprove(token?.address || null, willUseAmount);
 
   const handleBtnClick = () => {
     if (shouldApprove) {
@@ -49,8 +51,17 @@ export default function WithApproveBtn({
       return;
     }
 
-    if (NP.minus(useAmount || 0, amount || 0) > 0) {
+    if (NP.minus(willUseAmount || 0, balanceAmount || 0) > 0) {
       setBtnText(`Insufficient ${token?.symbol} `);
+      setIsBtnDisabled(true);
+      return;
+    }
+
+    if (
+      liquidityAmount != undefined &&
+      NP.minus(willUseAmount || 0, liquidityAmount) > 0
+    ) {
+      setBtnText(`Insufficient liquidity`);
       setIsBtnDisabled(true);
       return;
     }
@@ -62,7 +73,14 @@ export default function WithApproveBtn({
 
     setBtnText(null);
     setIsBtnDisabled(false);
-  }, [isAllowanceLoading, useAmount, amount, token?.symbol, shouldApprove]);
+  }, [
+    isAllowanceLoading,
+    willUseAmount,
+    balanceAmount,
+    token?.symbol,
+    shouldApprove,
+    liquidityAmount,
+  ]);
 
   return (
     <WithWalletBtn

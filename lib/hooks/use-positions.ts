@@ -8,6 +8,7 @@ export function usePositions() {
 
   const positionsRes = useGqlRequest(
     // PositionsDoc(account ? [{ key: "trader", value: account }] : []),
+    // TODO:  remove
     PositionsDoc(
       account
         ? [

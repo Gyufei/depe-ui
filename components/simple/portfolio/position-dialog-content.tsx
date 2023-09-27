@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Image from "next/image";
 
 import WithWalletBtn from "../../share/with-wallet-btn";
@@ -31,7 +31,8 @@ export default function PositionDialogContent({
   position: IPosition;
   pool: IPool;
 }) {
-  const [activeTab, setActiveTab] = useState("Append Margin");
+  const tabs: [string, string] = ["Append Margin", "Withdraw Margin"];
+  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [appendVal, setAppendVal] = useState("");
   const [withdrawVal, setWithdrawVal] = useState("");
 
@@ -60,16 +61,10 @@ export default function PositionDialogContent({
     useWithdrawMargin(pool.poolAddr, position.positionAddr);
 
   const [aBtnText, setABtnText] = useState("Confirm");
-  const [isABtnDisabled, setIsABtnDisabled] = useState(false);
+  const [aBtnDisabled, setABtnDisabled] = useState(false);
 
   const [wBtnText, setWBtnText] = useState("Confirm");
-  const [isWBtnDisabled, setIsWBtnDisabled] = useState(false);
-
-  const tabs: [string, string] = ["Append Margin", "Withdraw Margin"];
-
-  const TokenDisplayComp = useMemo<ReactElement>(() => {
-    return <TokenDisplay token={baseToken!} />;
-  }, [baseToken]);
+  const [wBtnDisabled, setWBtnDisabled] = useState(false);
 
   const handleABtnClick = () => {
     const amount = parseUnits(appendVal, baseToken?.decimals || 18);
@@ -83,41 +78,39 @@ export default function PositionDialogContent({
 
   useEffect(() => {
     if (!baseToken?.address) {
-      setIsABtnDisabled(true);
+      setABtnDisabled(true);
       return;
     }
 
     if (!appendVal) {
-      setIsABtnDisabled(true);
+      setABtnDisabled(true);
       return;
     }
 
-    setIsABtnDisabled(false);
+    setABtnDisabled(false);
     setABtnText("Confirm");
   }, [baseToken, appendVal, balanceObj]);
 
   useEffect(() => {
     if (!baseToken?.address) {
-      setIsWBtnDisabled(true);
+      setWBtnDisabled(true);
       return;
     }
 
     if (!withdrawVal) {
-      setIsWBtnDisabled(true);
+      setWBtnDisabled(true);
       return;
     }
 
     if (Number(withdrawVal) > Number(marginAmount)) {
-      setIsWBtnDisabled(true);
+      setWBtnDisabled(true);
       setWBtnText(`Insufficient Margin`);
       return;
     }
 
-    setIsWBtnDisabled(false);
+    setWBtnDisabled(false);
     setWBtnText("Confirm");
   }, [baseToken, withdrawVal, marginAmount]);
-  
-  console.log(pnlPercent);
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -149,7 +142,7 @@ export default function PositionDialogContent({
                 </>
               ) : (
                 <>
-                  <ContentText>${currentPriceRes.dataFormatted}</ContentText>
+                  <ContentText>${currentPriceRes.data.formatted}</ContentText>
                   <LoopProgress className="rotate-180" />
                 </>
               )}
@@ -220,7 +213,7 @@ export default function PositionDialogContent({
         />
         {activeTab === tabs[0] && (
           <InputPanel
-            tokenDisplay={TokenDisplayComp}
+            tokenDisplay={<TokenDisplay token={baseToken!} />}
             balanceDisplay={
               <BalanceDisplay
                 isLoading={isBalanceLoading}
@@ -236,7 +229,7 @@ export default function PositionDialogContent({
         )}
         {activeTab === tabs[1] && (
           <InputPanel
-            tokenDisplay={TokenDisplayComp}
+            tokenDisplay={<TokenDisplay token={baseToken!} />}
             balanceDisplay={
               <BalanceDisplay
                 isLoading={false}
@@ -255,9 +248,9 @@ export default function PositionDialogContent({
       {activeTab === tabs[0] && (
         <WithApproveBtn
           token={baseToken}
-          disabled={isABtnDisabled}
-          useAmount={appendVal}
-          amount={balanceObj?.formatted || "0"}
+          disabled={aBtnDisabled}
+          willUseAmount={appendVal}
+          balanceAmount={balanceObj?.formatted || "0"}
           className="flex-1"
           isLoading={isAppendLoading}
           onClick={() => handleABtnClick()}
@@ -269,7 +262,7 @@ export default function PositionDialogContent({
       {activeTab === tabs[1] && (
         <WithWalletBtn
           isLoading={isWithdrawLoading}
-          disabled={isWBtnDisabled}
+          disabled={wBtnDisabled}
           className="flex-1"
           onClick={() => handleWBtnClick()}
         >

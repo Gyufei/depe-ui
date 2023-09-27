@@ -6,6 +6,7 @@ import Web3ConnectProvider from "@/components/provider/web3-connect-provider";
 import JotaiProvider from "@/components/provider/jotai-provider";
 import SWRConfigProvider from "@/components/provider/swr-config-provider";
 import HomeLayout from "@/components/layout/home-layout";
+import GlobalProvider from "@/components/provider/global-provider";
 
 export const metadata = {
   title: "Depe",
@@ -20,13 +21,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={cn(HaasGrotDisp.variable, HaasGrotText.variable)}>
-        <Web3ConnectProvider>
-          <JotaiProvider>
-            <SWRConfigProvider>
-              <HomeLayout>{children}</HomeLayout>
-            </SWRConfigProvider>
-          </JotaiProvider>
-        </Web3ConnectProvider>
+        <GlobalProvider>
+          <Web3ConnectProvider>
+            <JotaiProvider>
+              <SWRConfigProvider>
+                <HomeLayout>{children}</HomeLayout>
+              </SWRConfigProvider>
+            </JotaiProvider>
+          </Web3ConnectProvider>
+        </GlobalProvider>
       </body>
     </html>
   );

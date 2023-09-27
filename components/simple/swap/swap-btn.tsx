@@ -9,10 +9,13 @@ import {
   SBaseTokenAtom,
   SBaseTokenBalanceAtom,
   SPoolAtom,
+  SQuoteTokenAmountAtom,
+  SQuoteTokenAtom,
 } from "@/lib/states/swap";
 import { useOrderOverview } from "@/lib/hooks/use-order-overview";
 
 import WithApproveBtn from "@/components/share/with-approve-btn";
+import { usePoolRemainingTokenAmount } from "@/lib/hooks/use-pool-remaining-token-amount";
 
 export default function SwapBtn() {
   const { isActivePanel } = useActivePanel("Swap");
@@ -23,10 +26,13 @@ export default function SwapBtn() {
   const baseToken = useAtomValue(SBaseTokenAtom);
   const baseTokenAmount = useAtomValue(SBaseTokenAmountAtom);
   const baseTokenBalance = useAtomValue(SBaseTokenBalanceAtom);
+  const quoteToken = useAtomValue(SQuoteTokenAtom);
+  const quoteTokenAmount = useAtomValue(SQuoteTokenAmountAtom);
   const pool = useAtomValue(SPoolAtom);
 
   const { isLoading: isSwapLoading, write: swapAction } = useSwap();
   const { handleOrderOverviewDisplay } = useOrderOverview();
+  const { data: remainTokenAmount } = usePoolRemainingTokenAmount(pool);
 
   const handleBtnClick = () => {
     swapAction();
@@ -56,14 +62,18 @@ export default function SwapBtn() {
     baseTokenBalance,
     baseToken?.symbol,
     baseToken?.address,
+    quoteTokenAmount,
+    quoteToken?.symbol,
+    remainTokenAmount,
     pool,
   ]);
 
   return (
     <WithApproveBtn
       token={baseToken}
-      amount={baseTokenAmount || "0"}
-      useAmount={baseTokenAmount || "0"}
+      balanceAmount={baseTokenBalance || "0"}
+      willUseAmount={baseTokenAmount || "0"}
+      liquidityAmount={remainTokenAmount.value || undefined}
       isActive={isActivePanel}
       isLoading={isSwapLoading}
       disabled={isBtnDisabled}

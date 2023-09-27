@@ -22,17 +22,24 @@ export function useTokenPrice(
     enabled: !!tokenAddress,
   });
 
-  const dataFormatted = useMemo(() => {
-    if (!tokenAddress || !priceRes.data) return null;
-
+  const dataValue = useMemo(() => {
+    if (!tokenAddress || !priceRes.data) return;
     const unitVal = formatUnits(priceRes.data, decimals);
-    const fmtVal = formatNum(unitVal);
+    return unitVal;
+  }, [tokenAddress, priceRes.data, decimals]);
+
+  const dataFormatted = useMemo(() => {
+    if (!dataValue) return;
+    const fmtVal = formatNum(dataValue);
 
     return fmtVal;
-  }, [tokenAddress, decimals, priceRes.data]);
+  }, [dataValue]);
 
   return {
-    dataFormatted,
     ...priceRes,
+    data: {
+      value: dataValue,
+      formatted: dataFormatted,
+    },
   };
 }

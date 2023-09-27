@@ -7,10 +7,7 @@ import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useEffect } from "react";
 import { GlobalMessageAtom } from "../states/global-message";
 
-export function useAppendMargin(
-  poolAddr: Address,
-  positionAddr: Address
-) {
+export function useAppendMargin(poolAddr: Address, positionAddr: Address) {
   const { chainConfig } = useChainConfig();
 
   const setGlobalMessage = useSetAtom(GlobalMessageAtom);
@@ -26,7 +23,7 @@ export function useAppendMargin(
   } = useContractWrite({
     address: positionManagerAddress,
     abi: DepePositionManagerABI,
-    functionName: "increasePosition",
+    functionName: "increaseMargin",
   });
 
   const handleAppend = (amount: bigint) => {

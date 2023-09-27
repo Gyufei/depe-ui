@@ -1,7 +1,6 @@
+import NP from "number-precision";
 import { useMemo } from "react";
 import { addSeconds, formatDuration, intervalToDuration } from "date-fns";
-import { formatUnits } from "viem";
-
 import { IPool } from "../types/pool";
 import { useTokensInfo } from "./use-token-info";
 
@@ -12,8 +11,20 @@ export function usePoolFormat(pool: IPool | null) {
   ]);
 
   const leverage = useMemo(
-    () => (pool?.maxleverage ? formatUnits(BigInt(pool.maxleverage), 2) : null),
-    [pool],
+    () => (pool?.maxleverage ? NP.divide(pool.maxleverage, 100) : null),
+    [pool?.maxleverage],
+  );
+
+  const tradingFeeRate = useMemo(
+    () =>
+      pool?.tradingFeeRate ? NP.divide(pool.tradingFeeRate, 10 ** 6) : null,
+    [pool?.tradingFeeRate],
+  );
+
+  const fundingFeeRate = useMemo(
+    () =>
+      pool?.fundingFeeRate ? NP.divide(pool.fundingFeeRate, 10 ** 6) : null,
+    [pool?.fundingFeeRate],
   );
 
   const expirationFull = useMemo(() => {
@@ -52,9 +63,11 @@ export function usePoolFormat(pool: IPool | null) {
     baseToken,
     quoteToken,
     leverage,
+    tradingFeeRate,
     expiration: {
       full: expirationFull,
       simple: expirationSimple,
     },
+    fundingFeeRate,
   };
 }

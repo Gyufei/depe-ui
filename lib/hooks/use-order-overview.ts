@@ -22,7 +22,7 @@ export function useOrderOverview() {
   const quoteAmount = useAtomValue(SQuoteTokenAmountAtom);
   const setOrderOverview = useSetAtom(SOrderOverViewAtom);
 
-  const { dataFormatted: quotePrice } = useTokenPrice(
+  const { data: quotePrice } = useTokenPrice(
     quoteToken?.address || null,
     quoteToken?.decimals,
   );
@@ -37,7 +37,7 @@ export function useOrderOverview() {
       leverage: `${leverage}×`,
       expiration: expiration.full || "",
       orderSize: `${size} ${quoteToken?.symbol}`,
-      entryPrice: `$${quotePrice} per ${quoteToken?.symbol}`,
+      entryPrice: `$${quotePrice.formatted} per ${quoteToken?.symbol}`,
       marginAmount: `${margin} ${baseToken?.symbol}`,
     };
 

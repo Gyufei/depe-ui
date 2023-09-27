@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { HelpCircle } from "lucide-react";
 import Image from "next/image";
 
@@ -19,6 +19,9 @@ import { usePositionFormat } from "@/lib/hooks/use-position-format";
 import { TokenDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
 import { Skeleton } from "@/components/ui/skeleton";
+import WithApproveBtn from "@/components/share/with-approve-btn";
+import { useIncreasePositionInput } from "@/lib/hooks/use-increase-position-input";
+import { useDecreasePositionInput } from "@/lib/hooks/use-decrease-position-input";
 
 export default function TradeDialogContent({
   pool,
@@ -27,11 +30,44 @@ export default function TradeDialogContent({
   position: IPosition;
   pool: IPool;
 }) {
-  const [value, setValue] = useState("");
-  const [activeTab, setActiveTab] = useState("Increase Position");
+  const tabs = useMemo(() => ["Increase Position", "Decrease Position"], []);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
 
-  const { baseToken, quoteToken, marginAmount, currentPriceRes } =
-    usePositionFormat(position, pool);
+  const { baseToken, quoteToken, currentPriceRes, size } = usePositionFormat(
+    position,
+    pool,
+  );
+
+  const {
+    iBtnText,
+    iBtnLoading,
+    iBtnDisabled,
+    increaseVal,
+    increasePayout,
+    canIncreaseMax,
+    handleIBtnClick,
+    handleIncreaseValueChange,
+    remainTokenAmount,
+    balanceObj,
+  } = useIncreasePositionInput(pool, position);
+
+  const {
+    decreaseVal,
+    dBtnText,
+    dBtnDisabled,
+    dBtnLoading,
+    decreasePayout,
+    handleDecreaseValueChange,
+    handleDBtnClick,
+  } = useDecreasePositionInput(pool, position);
+
+  const marginPayout = useMemo(() => {
+    if (activeTab === tabs[0]) {
+      return increasePayout;
+    } else {
+      return decreasePayout;
+    }
+  }, [activeTab, increasePayout, decreasePayout, tabs]);
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -46,7 +82,7 @@ export default function TradeDialogContent({
                     <HelpCircle className="h-4 w-4 text-gray" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p></p>
+                    <p>Average price estimated for this order</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -57,7 +93,7 @@ export default function TradeDialogContent({
             <Skeleton className="h-[30px] w-[200px]" />
           ) : (
             <ContentText>
-              ${currentPriceRes.dataFormatted} per {quoteToken?.symbol}
+              ${currentPriceRes.data.formatted} per {quoteToken?.symbol}
             </ContentText>
           )}
         </div>
@@ -82,7 +118,7 @@ export default function TradeDialogContent({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <div className="ml-1">{marginAmount.formatted}</div>
+              <div className="ml-1">{marginPayout?.formatted || "--"}</div>
             </div>
           </ContentText>
         </div>
@@ -90,32 +126,75 @@ export default function TradeDialogContent({
 
       <div className="flex flex-col">
         <SwitchTab
-          tabs={["Increase Position", "Decrease Position"]}
+          tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
-        <InputPanel
-          tokenDisplay={<TokenDisplay token={baseToken!} />}
-          balanceDisplay={
-            <BalanceDisplay
-              isLoading={false}
-              balance={marginAmount.formatted}
-              prefixText=""
-              setMax={() => setValue(marginAmount.value)}
-            />
-          }
-          isActive={true}
-          className="rounded-tl-none"
-          value={value}
-          setValue={setValue}
-        />
+        {activeTab === tabs[0] && (
+          <InputPanel
+            tokenDisplay={<TokenDisplay token={quoteToken!} />}
+            balanceDisplay={
+              <BalanceDisplay
+                isLoading={!canIncreaseMax}
+                balance={canIncreaseMax?.formatted || "0"}
+                prefixText=""
+                setMax={() =>
+                  handleIncreaseValueChange(canIncreaseMax?.value || "0")
+                }
+              />
+            }
+            isActive={true}
+            className="rounded-tl-none"
+            value={increaseVal}
+            setValue={handleIncreaseValueChange}
+          />
+        )}
+        {activeTab === tabs[1] && (
+          <InputPanel
+            tokenDisplay={<TokenDisplay token={quoteToken!} />}
+            balanceDisplay={
+              <BalanceDisplay
+                isLoading={false}
+                balance={size.formatted}
+                prefixText=""
+                setMax={() => handleDecreaseValueChange(String(size.value))}
+              />
+            }
+            isActive={true}
+            className="rounded-tl-none"
+            value={decreaseVal}
+            setValue={handleDecreaseValueChange}
+          />
+        )}
       </div>
 
       <div className="flex items-center space-x-4">
         <DexSelect />
-        <WithWalletBtn className="flex-1" onClick={() => {}}>
-          Submit Order
-        </WithWalletBtn>
+        {activeTab === tabs[0] && (
+          <WithApproveBtn
+            className="flex-1"
+            token={baseToken}
+            isLoading={iBtnLoading}
+            balanceAmount={balanceObj?.value || "0"}
+            willUseAmount={increasePayout?.value || "0"}
+            liquidityAmount={remainTokenAmount.value || undefined}
+            disabled={iBtnDisabled}
+            onClick={handleIBtnClick}
+          >
+            {iBtnText}
+          </WithApproveBtn>
+        )}
+
+        {activeTab === tabs[1] && (
+          <WithWalletBtn
+            disabled={dBtnDisabled}
+            isLoading={dBtnLoading}
+            className="flex-1"
+            onClick={() => handleDBtnClick()}
+          >
+            {dBtnText}
+          </WithWalletBtn>
+        )}
       </div>
     </div>
   );

@@ -9,9 +9,9 @@ import { GlobalMessageAtom } from "../states/global-message";
 
 export function useWithdrawMargin(poolAddr: Address, positionAddr: Address) {
   const { chainConfig } = useChainConfig();
+  const positionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const setGlobalMessage = useSetAtom(GlobalMessageAtom);
-  const positionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const {
     data: callData,
