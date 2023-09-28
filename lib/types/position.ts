@@ -20,4 +20,5 @@ export interface IPosition {
   remnantAsset: string;
   updateTimestamp: string;
   positionStatus: EPositionStatus;
+  isNFT: boolean;
 }

@@ -1,22 +1,16 @@
 import NP from "number-precision";
-import { useSetAtom } from "jotai";
-import {
-  useContractWrite,
-  usePublicClient,
-  useWaitForTransaction,
-} from "wagmi";
+import { usePublicClient } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
 
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodePath, encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
-import { useEffect } from "react";
-import { GlobalMessageAtom } from "../states/global-message";
 import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
 import { useTokensInfo } from "./use-token-info";
 import { UniswapQuoterABI } from "../abi/UniswapQuoter";
 import { DEFAULT_SLIPPAGE, UNISWAP_FEES } from "../constant";
+import { useTxWrite } from "./use-tx-write";
 
 export function useDecreasePosition(
   pool: IPool,
@@ -25,7 +19,6 @@ export function useDecreasePosition(
 ) {
   const publicClient = usePublicClient();
   const { chainConfig } = useChainConfig();
-  const setGlobalMessage = useSetAtom(GlobalMessageAtom);
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
   const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;
@@ -34,6 +27,12 @@ export function useDecreasePosition(
     pool.baseToken,
     pool.quoteToken,
   ]);
+
+  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
+    address: PositionManagerAddress,
+    abi: DepePositionManagerABI,
+    functionName: "increasePosition",
+  });
 
   const getAmountOutMin = async (size: bigint) => {
     const QuoterAddress = chainConfig!.contract.UniswapV3Quoter;
@@ -60,20 +59,7 @@ export function useDecreasePosition(
     return aOutMinBig;
   };
 
-  const {
-    data: callData,
-    isLoading: isCallLoading,
-    isSuccess: isCallSuccess,
-    isError: isCallError,
-    error: callError,
-    write,
-  } = useContractWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "increasePosition",
-  });
-
-  const handleDecrease = async () => {
+  const writeAction = async () => {
     if (!pool || !position || !baseToken || !quoteToken || !amount) return;
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
@@ -98,46 +84,12 @@ export function useDecreasePosition(
     });
   };
 
-  const {
-    data: txData,
-    error: txError,
-    isError: isTxError,
-    isLoading: isTxLoading,
-    isSuccess: isTxSuccess,
-  } = useWaitForTransaction({
-    hash: callData?.hash,
-  });
-
-  useEffect(() => {
-    if (isTxSuccess) {
-      setGlobalMessage({
-        type: "success",
-        message: "Your funds have been staked in the pool.",
-      });
-    }
-
-    if (isCallError || isTxError) {
-      setGlobalMessage({
-        type: "error",
-        message:
-          txError?.message || callError?.message || "Fail: Some error occur",
-      });
-    }
-  }, [
-    isTxSuccess,
-    isCallError,
-    isTxError,
-    callError,
-    txError,
-    setGlobalMessage,
-  ]);
-
   return {
-    data: txData,
-    error: callError || txError,
-    isLoading: isCallLoading || isTxLoading,
-    isSuccess: isCallSuccess && isTxSuccess,
-    isError: isCallError || isTxError,
-    write: handleDecrease,
+    data,
+    error,
+    isLoading,
+    isSuccess,
+    isError,
+    write: writeAction,
   };
 }

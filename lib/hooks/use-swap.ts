@@ -1,5 +1,4 @@
-import { useAtomValue, useSetAtom } from "jotai";
-import { useContractWrite, useWaitForTransaction } from "wagmi";
+import { useAtomValue } from "jotai";
 import { parseUnits } from "viem";
 
 import {
@@ -14,13 +13,11 @@ import {
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
-import { useEffect } from "react";
-import { GlobalMessageAtom } from "../states/global-message";
+import { useTxWrite } from "./use-tx-write";
 
 export function useSwap() {
   const { chainConfig } = useChainConfig();
 
-  const setGlobalMessage = useSetAtom(GlobalMessageAtom);
   const pool = useAtomValue(SPoolAtom);
   const baseToken = useAtomValue(SBaseTokenAtom);
   const quoteToken = useAtomValue(SQuoteTokenAtom);
@@ -31,20 +28,13 @@ export function useSwap() {
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
-  const {
-    data: callData,
-    isLoading: isCallLoading,
-    isSuccess: isCallSuccess,
-    isError: isCallError,
-    error: callError,
-    write,
-  } = useContractWrite({
+  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "openPosition",
   });
 
-  const handleSwap = () => {
+  const writeAction = () => {
     if (
       !pool ||
       !amountInMax ||
@@ -77,46 +67,12 @@ export function useSwap() {
     });
   };
 
-  const {
-    data: txData,
-    error: txError,
-    isError: isTxError,
-    isLoading: isTxLoading,
-    isSuccess: isTxSuccess,
-  } = useWaitForTransaction({
-    hash: callData?.hash,
-  });
-
-  useEffect(() => {
-    if (isTxSuccess) {
-      setGlobalMessage({
-        type: "success",
-        message: "Your funds have been staked in the pool.",
-      });
-    }
-
-    if (isCallError || isTxError) {
-      setGlobalMessage({
-        type: "error",
-        message:
-          txError?.message || callError?.message || "Fail: Some error occur",
-      });
-    }
-  }, [
-    isTxSuccess,
-    isCallError,
-    isTxError,
-    callError,
-    txError,
-    setGlobalMessage,
-  ]);
-
   return {
-    data: txData,
-    error: callError || txError,
-    isLoading: isCallLoading || isTxLoading,
-    isSuccess: isCallSuccess && isTxSuccess,
-    isError: isCallError || isTxError,
-    write: handleSwap,
+    data,
+    error,
+    isLoading,
+    isSuccess,
+    isError,
+    write: writeAction,
   };
 }

@@ -21,10 +21,12 @@ export default function BalanceDisplay({
     <div className="flex items-center justify-end">
       <div className="balance-text mr-4 flex items-center text-sm leading-5 text-lightgray">
         {prefixText && <div>{prefixText}:</div>}
-        {isLoading && balance ? (
+        {isLoading || !balance ? (
           <Skeleton className="ml-1 h-4 w-10" />
         ) : (
-          <div className="ml-1">{formatNum(balance!)}</div>
+          <div className="ml-1">
+            {balance!.length > 5 ? formatNum(balance!) : balance}
+          </div>
         )}
       </div>
       <button

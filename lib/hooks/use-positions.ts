@@ -7,18 +7,7 @@ export function usePositions() {
   const { address: account } = useAccount();
 
   const positionsRes = useGqlRequest(
-    // PositionsDoc(account ? [{ key: "trader", value: account }] : []),
-    // TODO:  remove
-    PositionsDoc(
-      account
-        ? [
-            {
-              key: "trader",
-              value: "0xC9904D9581d92c4A47aFd01bd9EAb37925636E08",
-            },
-          ]
-        : [],
-    ),
+    PositionsDoc(account ? [{ key: "trader", value: account }] : []),
   );
 
   return {

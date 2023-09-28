@@ -154,7 +154,10 @@ export function TradingRow({
                 <DialogContent className="w-[480px]">
                   <DialogGimp />
                   <DialogTitle>Trade</DialogTitle>
-                  <TransferDialogContent position={position} />
+                  <TransferDialogContent
+                    position={position}
+                    onSuccess={() => handleTradeDialog(false)}
+                  />
                 </DialogContent>
               </Dialog>
             </PopoverContent>

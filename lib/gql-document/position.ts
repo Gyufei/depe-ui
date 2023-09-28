@@ -17,6 +17,7 @@ export const PositionsDoc = (params: Array<IGqlDocParam>): string => {
               debtAmount
               marginAmount
               apr 
+              isNFT
               pendingFundingFee
               remnantAsset
               updateTimestamp
@@ -45,6 +46,7 @@ export const PositionDoc = (params: Array<IGqlDocParam>): string => {
         remnantAsset
         updateTimestamp
         positionStatus
+        isNFT
       }
     }
 `;
