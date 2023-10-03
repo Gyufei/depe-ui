@@ -14,9 +14,9 @@ import SelectPoolDialogContent from "../../share/select-pool-dialog-content";
 
 import { TitleText, ContentCon } from "./common";
 import { FPoolAtom } from "@/lib/states/farming";
-import { usePools } from "@/lib/hooks/use-pools";
+import { usePools } from "@/lib/hooks/api/use-pools";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
+import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 
 export function Pool({ isActive }: { isActive: boolean }) {
   const [dialogOpen, setDialogOpen] = useState(false);

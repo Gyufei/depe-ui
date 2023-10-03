@@ -18,11 +18,11 @@ import LoopProgress from "@/components/share/loop-progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
-import { useTokenBalance } from "@/lib/hooks/use-token-balance";
-import { useAppendMargin } from "@/lib/hooks/use-append-margin";
+import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
+import { useAppendMargin } from "@/lib/hooks/contract/use-append-margin";
 import WithApproveBtn from "@/components/share/with-approve-btn";
 import { parseUnits } from "viem";
-import { useWithdrawMargin } from "@/lib/hooks/use-withdraw-margin";
+import { useWithdrawMargin } from "@/lib/hooks/contract/use-withdraw-margin";
 
 export default function PositionDialogContent({
   pool,

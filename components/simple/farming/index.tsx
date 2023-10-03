@@ -28,6 +28,7 @@ export default function Farming() {
           <MaxLeverage isActive={isActivePanel} />
           <Pool isActive={isActivePanel} />
           <Deposit isActive={isActivePanel} />
+
           <FarmBtn isActive={isActivePanel} />
         </div>
       </div>

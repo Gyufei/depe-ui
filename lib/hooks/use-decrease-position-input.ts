@@ -4,13 +4,13 @@ import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
 import { usePositionFormat } from "./use-position-format";
 import { formatNum } from "../utils/number";
-import { useDecreasePosition } from "./use-decrease-position";
+import { useDecreasePosition } from "./contract/use-decrease-position";
 
 export function useDecreasePositionInput(pool: IPool, position: IPosition) {
-  const [decreaseVal, setDecreaseVal] = useState("");
-  const [dBtnText, setDBtnText] = useState("Submit Order");
-  const [dBtnDisabled, setDBtnDisabled] = useState(false);
-  const [decreasePayout, setDecreasePayout] = useState<{
+  const [inputVal, setInputVal] = useState("");
+  const [btnText, setBtnText] = useState("Submit Order");
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
+  const [estPayout, setEstPayout] = useState<{
     value: string;
     formatted: string;
   } | null>(null);
@@ -20,27 +20,23 @@ export function useDecreasePositionInput(pool: IPool, position: IPosition) {
     pool,
   );
 
-  const { isLoading: dBtnLoading, write: decreaseAction } = useDecreasePosition(
-    pool,
-    position,
-    decreaseVal,
-  );
+  const { isLoading, write: writeAction } = useDecreasePosition(pool, position);
 
-  const handleDBtnClick = () => {
-    if (!decreaseVal) return;
-    if (dBtnLoading) return;
+  const handleBtnClick = () => {
+    if (!inputVal) return;
+    if (isLoading) return;
 
-    decreaseAction();
+    writeAction(inputVal);
   };
 
-  const handleDecreaseValueChange = (value: string) => {
-    setDecreaseVal(value);
+  const handleInputValChange = (value: string) => {
+    setInputVal(value);
 
-    const payout = calcDecreasePayout(value);
-    setDecreasePayout(payout);
+    const payout = calcEstPayout(value);
+    setEstPayout(payout);
   };
 
-  const calcDecreasePayout = (value: string) => {
+  const calcEstPayout = (value: string) => {
     if (!value) return null;
     if (!pool) return null;
 
@@ -58,28 +54,28 @@ export function useDecreasePositionInput(pool: IPool, position: IPosition) {
   };
 
   useEffect(() => {
-    if (!decreaseVal) {
-      setDBtnDisabled(true);
+    if (!inputVal) {
+      setIsBtnDisabled(true);
       return;
     }
 
-    if (NP.minus(decreaseVal, size.value) > 0) {
-      setDBtnDisabled(true);
-      setDBtnText(`Insufficient liquidity`);
+    if (NP.minus(inputVal, size.value) > 0) {
+      setIsBtnDisabled(true);
+      setBtnText(`Insufficient liquidity`);
       return;
     }
 
-    setDBtnDisabled(false);
-    setDBtnText("Submit Order");
-  }, [decreaseVal]);
+    setIsBtnDisabled(false);
+    setBtnText("Submit Order");
+  }, [inputVal, size.value]);
 
   return {
-    decreaseVal,
-    dBtnLoading,
-    dBtnText,
-    dBtnDisabled,
-    decreasePayout,
-    handleDecreaseValueChange,
-    handleDBtnClick,
+    inputVal,
+    isLoading,
+    btnText,
+    isBtnDisabled,
+    estPayout,
+    handleInputValChange,
+    handleBtnClick,
   };
 }

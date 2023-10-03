@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         muted: "var(--color-muted)",
+        hover: "var(--color-hover)",
         black: "var(--color-black)",
         "black/90": "var(--color-black-90)",
         "black/2": "var(--color-black-2)",

@@ -39,26 +39,26 @@ export default function TradeDialogContent({
   );
 
   const {
-    iBtnText,
-    iBtnLoading,
-    iBtnDisabled,
-    increaseVal,
-    increasePayout,
+    btnText: iBtnText,
+    isLoading: iBtnLoading,
+    isBtnDisabled: iBtnDisabled,
+    inputVal: increaseVal,
+    estPayout: increasePayout,
+    handleBtnClick: handleIBtnClick,
+    handleInputValChange: handleIncreaseValueChange,
+    poolTokenAmount,
     canIncreaseMax,
-    handleIBtnClick,
-    handleIncreaseValueChange,
-    remainTokenAmount,
-    balanceObj,
+    balanceData,
   } = useIncreasePositionInput(pool, position);
 
   const {
-    decreaseVal,
-    dBtnText,
-    dBtnDisabled,
-    dBtnLoading,
-    decreasePayout,
-    handleDecreaseValueChange,
-    handleDBtnClick,
+    inputVal: decreaseVal,
+    isLoading: dBtnLoading,
+    btnText: dBtnText,
+    isBtnDisabled: dBtnDisabled,
+    estPayout: decreasePayout,
+    handleInputValChange: handleDecreaseValueChange,
+    handleBtnClick: handleDBtnClick,
   } = useDecreasePositionInput(pool, position);
 
   const marginPayout = useMemo(() => {
@@ -175,9 +175,9 @@ export default function TradeDialogContent({
             className="flex-1"
             token={baseToken}
             isLoading={iBtnLoading}
-            balanceAmount={balanceObj?.value || "0"}
+            balanceAmount={balanceData?.value || "0"}
             willUseAmount={increasePayout?.value || "0"}
-            liquidityAmount={remainTokenAmount.value || undefined}
+            liquidityAmount={poolTokenAmount.value || undefined}
             disabled={iBtnDisabled}
             onClick={handleIBtnClick}
           >

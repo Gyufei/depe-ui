@@ -2,7 +2,7 @@ import useSWR, { SWRResponse } from "swr";
 
 import { GraphQLClient } from "graphql-request";
 import { useEndPoint } from "./use-endpoint";
-import { plainFetcher } from "../fetcher";
+import { plainFetcher } from "../../fetcher";
 
 export function useGqlRequest<T = any>(doc: string): SWRResponse<T, any, any> {
   const { gqlEndPoint } = useEndPoint();

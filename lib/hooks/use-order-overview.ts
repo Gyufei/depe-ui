@@ -8,7 +8,7 @@ import {
   SQuoteTokenAmountAtom,
   SQuoteTokenAtom,
 } from "../states/swap";
-import { useTokenPrice } from "./use-token-price";
+import { useTokenPrice } from "./contract/use-token-price";
 import { usePoolFormat } from "./use-pool-format";
 import { formatNum } from "../utils/number";
 

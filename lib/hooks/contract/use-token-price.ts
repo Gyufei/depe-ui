@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { useContractRead } from "wagmi";
 import { formatUnits, Address } from "viem";
 
-import { PriceOracleABI } from "../abi/PriceOracle";
-import { useChainConfig } from "./use-chain-config";
-import { formatNum } from "../utils/number";
+import { PriceOracleABI } from "../../abi/PriceOracle";
+import { useChainConfig } from "../use-chain-config";
+import { formatNum } from "../../utils/number";
 
 export function useTokenPrice(
   tokenAddress: Address | null,

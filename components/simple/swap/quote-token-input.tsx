@@ -4,7 +4,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
-import { useTokens } from "@/lib/hooks/use-tokens";
+import { useTokens } from "@/lib/hooks/api/use-tokens";
 import {
   SAmountInMaxAtom,
   SBaseTokenAmountAtom,

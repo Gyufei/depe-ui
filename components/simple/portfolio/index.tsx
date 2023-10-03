@@ -4,7 +4,7 @@ import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import PanelLeaderButton from "../../share/panel-leader-button";
 import { FarmingList } from "./farming-list";
 import { TradingList } from "./trading-list";
-import { usePositions } from "@/lib/hooks/use-positions";
+import { usePositions } from "@/lib/hooks/api/use-positions";
 import Empty from "@/components/share/empty";
 import { useAccountPools } from "@/lib/hooks/use-account-pools";
 

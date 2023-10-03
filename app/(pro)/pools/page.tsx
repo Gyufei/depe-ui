@@ -1,6 +1,6 @@
 "use client";
 
-import { usePools } from "@/lib/hooks/use-pools";
+import { usePools } from "@/lib/hooks/api/use-pools";
 import PoolPanel from "@/components/pro/pool-panel";
 
 export default function Pools() {

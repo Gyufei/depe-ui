@@ -1,17 +1,23 @@
-import { useState } from "react";
 import InputPanel from "@/components/share/input-panel";
 
 import { TitleText, ContentCon } from "./common";
-import { useAtomValue } from "jotai";
-import { FPoolAtom } from "@/lib/states/farming";
+import { useAtom, useAtomValue } from "jotai";
+import { FDepositAmountAtom, FPoolAtom } from "@/lib/states/farming";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { TokenDisplay } from "@/components/share/input-panel-token-display";
+import BalanceDisplay from "@/components/share/balance-display";
+import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
 
 export function Deposit({ isActive }: { isActive: boolean }) {
-  const [value1, setValue1] = useState("");
+  const [depositAmount, setDepositAmount] = useAtom(FDepositAmountAtom);
 
   const pool = useAtomValue(FPoolAtom);
   const { baseToken } = usePoolFormat(pool);
+
+  const { data: balanceData, isLoading: isBalanceLoading } = useTokenBalance(
+    baseToken?.address || null,
+  );
+  const baseTokenBalance = balanceData?.formatted || null;
 
   return (
     <div>
@@ -19,10 +25,18 @@ export function Deposit({ isActive }: { isActive: boolean }) {
       <ContentCon>
         <InputPanel
           tokenDisplay={<TokenDisplay token={baseToken!} />}
+          balanceDisplay={
+            <BalanceDisplay
+              isLoading={isBalanceLoading}
+              balance={baseTokenBalance}
+              prefixText="Balance"
+              setMax={() => setDepositAmount(balanceData?.value || "")}
+            />
+          }
           className="flex-1"
           isActive={isActive}
-          value={value1}
-          setValue={setValue1}
+          value={depositAmount || ""}
+          setValue={setDepositAmount}
         />
       </ContentCon>
     </div>

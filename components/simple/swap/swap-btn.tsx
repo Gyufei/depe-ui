@@ -3,11 +3,10 @@ import { useAtomValue } from "jotai";
 
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
 
-import { useSwap } from "@/lib/hooks/use-swap";
+import { useOpenPosition } from "@/lib/hooks/contract/use-open-position";
 import {
   SBaseTokenAmountAtom,
   SBaseTokenAtom,
-  SBaseTokenBalanceAtom,
   SPoolAtom,
   SQuoteTokenAmountAtom,
   SQuoteTokenAtom,
@@ -15,7 +14,8 @@ import {
 import { useOrderOverview } from "@/lib/hooks/use-order-overview";
 
 import WithApproveBtn from "@/components/share/with-approve-btn";
-import { usePoolRemainingTokenAmount } from "@/lib/hooks/use-pool-remaining-token-amount";
+import { usePoolRemainingTokenAmount } from "@/lib/hooks/contract/use-pool-remaining-token-amount";
+import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
 
 export default function SwapBtn() {
   const { isActivePanel } = useActivePanel("Swap");
@@ -25,14 +25,16 @@ export default function SwapBtn() {
 
   const baseToken = useAtomValue(SBaseTokenAtom);
   const baseTokenAmount = useAtomValue(SBaseTokenAmountAtom);
-  const baseTokenBalance = useAtomValue(SBaseTokenBalanceAtom);
   const quoteToken = useAtomValue(SQuoteTokenAtom);
   const quoteTokenAmount = useAtomValue(SQuoteTokenAmountAtom);
   const pool = useAtomValue(SPoolAtom);
 
-  const { isLoading: isSwapLoading, write: swapAction } = useSwap();
+  const { isLoading: isSwapLoading, write: swapAction } = useOpenPosition();
   const { handleOrderOverviewDisplay } = useOrderOverview();
   const { data: remainTokenAmount } = usePoolRemainingTokenAmount(pool);
+
+  const { data: balanceData } = useTokenBalance(baseToken?.address || null);
+  const baseTokenBalance = balanceData?.formatted || null;
 
   const handleBtnClick = () => {
     swapAction();

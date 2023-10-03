@@ -1,22 +1,23 @@
-import { Address } from "viem";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
-import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { useTxWrite } from "./use-tx-write";
 
-export function useAppendMargin(poolAddr: Address, positionAddr: Address) {
+import { useTxWrite } from "./use-tx-write";
+import { IPool } from "../../types/pool";
+import { DepePositionManagerABI } from "../../abi/DepePositionManager";
+
+export function usePoolWithdraw(poolAddr: IPool["poolAddr"] | null) {
   const { chainConfig } = useChainConfig();
-  const positionManagerAddress = chainConfig?.contract?.DepePositionManager;
+  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { data, error, isLoading, isSuccess, isError, write } = useTxWrite({
-    address: positionManagerAddress,
+    address: PositionManagerAddress,
     abi: DepePositionManagerABI,
-    functionName: "increaseMargin",
+    functionName: "withdraw",
   });
 
   const writeAction = (amount: bigint) => {
-    if (!poolAddr || !positionAddr) return;
+    if (!poolAddr || !amount) return;
 
-    const TxArgs = [poolAddr, positionAddr, amount];
+    const TxArgs = [poolAddr, amount];
 
     write({
       args: TxArgs as any,

@@ -6,7 +6,6 @@ import { IOrderOverview } from "../types/order-overview";
 export const SBaseTokenAtom = atom<IToken | null>(null);
 export const SQuoteTokenAtom = atom<IToken | null>(null);
 
-export const SBaseTokenBalanceAtom = atom<string | null>(null);
 export const SBaseTokenAmountAtom = atom<string | null>(null);
 export const SQuoteTokenAmountAtom = atom<string | null>(null);
 export const SAmountInMaxAtom = atom<bigint | null>(null);

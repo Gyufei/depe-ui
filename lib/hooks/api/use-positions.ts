@@ -1,6 +1,6 @@
-import { IPosition } from "../types/position";
+import { IPosition } from "../../types/position";
 import { useGqlRequest } from "./use-graphql-request";
-import { PositionsDoc } from "../gql-document/position";
+import { PositionsDoc } from "../../gql-document/position";
 import { useAccount } from "wagmi";
 
 export function usePositions() {

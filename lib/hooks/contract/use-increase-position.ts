@@ -3,17 +3,12 @@ import { parseUnits } from "viem";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
-import { IPool } from "../types/pool";
-import { IPosition } from "../types/position";
-import { useTokensInfo } from "./use-token-info";
+import { IPool } from "../../types/pool";
+import { IPosition } from "../../types/position";
+import { useTokensInfo } from "../use-token-info";
 import { useTxWrite } from "./use-tx-write";
 
-export function useIncreasePosition(
-  pool: IPool,
-  position: IPosition,
-  amount: string,
-  aInMax: bigint,
-) {
+export function useIncreasePosition(pool: IPool, position: IPosition) {
   const { chainConfig } = useChainConfig();
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
@@ -27,7 +22,7 @@ export function useIncreasePosition(
     functionName: "increasePosition",
   });
 
-  const writeAction = () => {
+  const writeAction = (amount: string, aInMax: bigint) => {
     if (!pool || !position || !quoteToken || !amount || !aInMax) return;
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(

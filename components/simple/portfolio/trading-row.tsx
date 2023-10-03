@@ -22,7 +22,7 @@ import PositionDialogContent from "./position-dialog-content";
 import TransferDialogContent from "./transfer-dialog-content";
 import { APYText, OperationPopRow, SecondText, TitleText } from "./row-common";
 import { IPosition } from "@/lib/types/position";
-import { usePool } from "@/lib/hooks/use-pool";
+import { usePool } from "@/lib/hooks/api/use-pool";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
 
 export function TradingRow({

@@ -3,12 +3,11 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
 import { useActivePanel } from "@/lib/hooks/use-active-panel";
-import { useTokens } from "@/lib/hooks/use-tokens";
+import { useTokens } from "@/lib/hooks/api/use-tokens";
 import {
   SAmountInMaxAtom,
   SBaseTokenAmountAtom,
   SBaseTokenAtom,
-  SBaseTokenBalanceAtom,
   SLeverageAtom,
   SPoolAtom,
   SQuoteTokenAmountAtom,
@@ -22,7 +21,7 @@ import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { UNISWAP_FEES } from "@/lib/constant";
 import { StableTokenSelectDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
-import { useTokenBalance } from "@/lib/hooks/use-token-balance";
+import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
 import { useSwapBaseCalc } from "@/lib/hooks/use-swap-calc";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 
@@ -42,17 +41,13 @@ export default function BaseTokenInput() {
   const quoteToken = useAtomValue(SQuoteTokenAtom);
   const setQuoteTokenAmount = useSetAtom(SQuoteTokenAmountAtom);
   const setAmountInMax = useSetAtom(SAmountInMaxAtom);
-  const setBaseBalance = useSetAtom(SBaseTokenBalanceAtom);
-
-  const { data: balanceObj, isLoading: isBalanceLoading } = useTokenBalance(
-    baseToken?.address || null,
-  );
 
   const { tradingFeeRate } = usePoolFormat(pool);
 
-  useEffect(() => {
-    setBaseBalance(balanceObj?.formatted || null);
-  }, [balanceObj?.formatted, setBaseBalance]);
+  const { data: balanceData, isLoading: isBalanceLoading } = useTokenBalance(
+    baseToken?.address || null,
+  );
+  const baseTokenBalance = balanceData?.formatted || null;
 
   useEffect(() => {
     if (marginTokens?.length) {
@@ -106,9 +101,9 @@ export default function BaseTokenInput() {
       balanceDisplay={
         <BalanceDisplay
           isLoading={isBalanceLoading}
-          balance={balanceObj?.formatted || null}
+          balance={baseTokenBalance || null}
           prefixText="Wallet Balance"
-          setMax={() => handleValueChange(balanceObj?.formatted || "")}
+          setMax={() => handleValueChange(balanceData?.value || "")}
         />
       }
       isActive={isActivePanel}

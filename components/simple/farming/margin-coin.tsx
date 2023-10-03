@@ -1,4 +1,4 @@
-import { useTokens } from "@/lib/hooks/use-tokens";
+import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { TitleText, ContentCon, OptionBtn, CoinIcon } from "./common";
 import { useAtom } from "jotai";
 import { FMarginTokenAtom } from "@/lib/states/farming";
@@ -34,7 +34,7 @@ export function MarginCoin({ isActive }: { isActive: boolean }) {
                 key={t.symbol}
                 isActive={isActive}
                 data-check={marginToken?.address === t.address}
-                className="data-[check=true]:bg-yellow"
+                className="hover:bg-hover data-[check=true]:bg-yellow"
                 onClick={() => setMarginToken(t)}
               >
                 <div className="flex items-center">

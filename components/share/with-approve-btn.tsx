@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes, ReactNode, useEffect, useState } from "react";
 
 import { IToken } from "@/lib/types/token";
 import WithWalletBtn from "./with-wallet-btn";
-import { useApprove } from "@/lib/hooks/use-approve";
+import { useApprove } from "@/lib/hooks/contract/use-approve";
 
 export default function WithApproveBtn({
   isActive = true,

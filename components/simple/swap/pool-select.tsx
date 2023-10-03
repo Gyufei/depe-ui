@@ -15,8 +15,8 @@ import DialogGimp from "../../share/dialog-gimp";
 import SelectPoolDialogContent from "../../share/select-pool-dialog-content";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SPoolAtom } from "@/lib/states/swap";
-import { usePools } from "@/lib/hooks/use-pools";
-import { useTokens } from "@/lib/hooks/use-tokens";
+import { usePools } from "@/lib/hooks/api/use-pools";
+import { useTokens } from "@/lib/hooks/api/use-tokens";
 
 export default function PoolSelect() {
   const [selectedPool, setSelectedPool] = useAtom(SPoolAtom);

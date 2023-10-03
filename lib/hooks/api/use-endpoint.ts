@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useChainConfig } from "./use-chain-config";
+import { useChainConfig } from "../use-chain-config";
 
 export function useEndPoint() {
   const { chainConfig } = useChainConfig();

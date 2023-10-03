@@ -1,9 +1,9 @@
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
-import { IPosition } from "../types/position";
-import { useChainConfig } from "./use-chain-config";
-import { DepePositionManagerABI } from "../abi/DepePositionManager";
+import { IPosition } from "../../types/position";
+import { useChainConfig } from "../use-chain-config";
+import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 
 export function useTransferNFT(position: IPosition) {

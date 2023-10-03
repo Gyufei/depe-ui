@@ -18,7 +18,7 @@ import { Skeleton } from "../ui/skeleton";
 import { range } from "lodash";
 import Empty from "./empty";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
-import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
+import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 
 export default function SelectPoolDialogContent({
   isLoading,

@@ -1,4 +1,4 @@
-import { useGqlRequest } from "@/lib/hooks/use-graphql-request";
+import { useGqlRequest } from "@/lib/hooks/api/use-graphql-request";
 import { PoolsDoc } from "@/lib/gql-document/pool";
 import type { IPool } from "@/lib/types/pool";
 

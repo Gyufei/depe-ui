@@ -1,5 +1,5 @@
-import { IPool } from "../types/pool";
-import { PoolAPR } from "../gql-document/pool";
+import { IPool } from "../../types/pool";
+import { PoolAPR } from "../../gql-document/pool";
 import { useGqlRequest } from "./use-graphql-request";
 
 export function usePoolAPY(poolAddr: IPool["poolAddr"] | null) {

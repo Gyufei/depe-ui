@@ -6,7 +6,7 @@ import { Skeleton } from "../ui/skeleton";
 import ExpirationIcon from "@/components/share/icons/expiration";
 import MakerIcon from "/public/icons/maker.svg";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
-import { usePoolAPY } from "@/lib/hooks/use-pool-apy";
+import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 
 function FieldRow({ children }: { children: React.ReactNode }) {
   return <div className="flex justify-between">{children}</div>;

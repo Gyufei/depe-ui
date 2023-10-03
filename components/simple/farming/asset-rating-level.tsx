@@ -18,7 +18,7 @@ export function AssetRatingLevel({ isActive }: { isActive: boolean }) {
         <OptionBtn
           isActive={isActive}
           data-check={levels[0] === activeLevel ? "true" : "false"}
-          className="data-[check=true]:border-green  data-[check=true]:text-green"
+          className="data-[check=true]:border-green  data-[check=true]:text-green data-[check=false]:hover:bg-hover"
           onClick={() => setActiveLevel(levels[0])}
         >
           <div className="relative w-[60px] text-center">
@@ -31,7 +31,7 @@ export function AssetRatingLevel({ isActive }: { isActive: boolean }) {
         <OptionBtn
           isActive={isActive}
           data-check={levels[1] === activeLevel ? "true" : "false"}
-          className="data-[check=true]:border-tan  data-[check=true]:text-tan"
+          className="data-[check=true]:border-tan  data-[check=true]:text-tan data-[check=false]:hover:bg-hover"
           onClick={() => setActiveLevel(levels[1])}
         >
           <div className="relative w-[60px] text-center">
@@ -44,7 +44,7 @@ export function AssetRatingLevel({ isActive }: { isActive: boolean }) {
         <OptionBtn
           isActive={isActive}
           data-check={levels[2] === activeLevel ? "true" : "false"}
-          className="data-[check=true]:border-red  data-[check=true]:text-red"
+          className="data-[check=true]:border-red  data-[check=true]:text-red data-[check=false]:hover:bg-hover"
           onClick={() => setActiveLevel(levels[2])}
         >
           <div className="relative w-[60px] text-center">

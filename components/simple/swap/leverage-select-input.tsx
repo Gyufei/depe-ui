@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { SLeverageAtom } from "@/lib/states/swap";
 import { useAtom } from "jotai";
-import { useTokens } from "@/lib/hooks/use-tokens";
+import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LeverageSelectInput({

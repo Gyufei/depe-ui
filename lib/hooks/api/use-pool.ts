@@ -1,6 +1,6 @@
-import { PoolDoc } from "../gql-document/pool";
+import { PoolDoc } from "../../gql-document/pool";
 import { useGqlRequest } from "./use-graphql-request";
-import { IPool } from "../types/pool";
+import { IPool } from "../../types/pool";
 import { Address } from "viem";
 
 export function usePool(poolAddr?: Address) {

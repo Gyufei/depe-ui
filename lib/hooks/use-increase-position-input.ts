@@ -4,20 +4,20 @@ import { usePositionFormat } from "./use-position-format";
 import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
 import { useSwapBaseCalc, useSwapQuoteCalc } from "./use-swap-calc";
-import { usePoolRemainingTokenAmount } from "./use-pool-remaining-token-amount";
+import { usePoolRemainingTokenAmount } from "./contract/use-pool-remaining-token-amount";
 import { encodePath } from "../utils/web3";
 import { DEFAULT_SLIPPAGE, UNISWAP_FEES } from "../constant";
 import { formatNum } from "../utils/number";
 import { useDebouncedCallback } from "use-debounce";
-import { useTokenBalance } from "./use-token-balance";
-import { useIncreasePosition } from "./use-increase-position";
+import { useTokenBalance } from "./contract/use-token-balance";
+import { useIncreasePosition } from "./contract/use-increase-position";
 
 export function useIncreasePositionInput(pool: IPool, position: IPosition) {
   const { chainConfig } = useChainConfig();
 
-  const [increaseVal, setIncreaseVal] = useState("");
-  const [iBtnText, setIBtnText] = useState("Submit Order");
-  const [iBtnDisabled, setIBtnDisabled] = useState(false);
+  const [inputVal, setInputVal] = useState("");
+  const [btnText, setBtnText] = useState("Submit Order");
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const { baseToken, quoteToken, leverage, tradingFeeRate } = usePositionFormat(
     position,
@@ -25,33 +25,28 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
   );
 
   const [amountInMax, setAmountInMax] = useState<bigint | null>(null);
-  const [increasePayout, setIncreasePayout] = useState<{
+  const [estPayout, setEstPayout] = useState<{
     value: string;
     formatted: string;
   } | null>(null);
 
-  const { isLoading: iBtnLoading, write: increaseAction } = useIncreasePosition(
-    pool,
-    position,
-    increaseVal,
-    amountInMax || BigInt(0),
-  );
+  const { isLoading, write } = useIncreasePosition(pool, position);
 
-  const { data: balanceObj } = useTokenBalance(baseToken?.address || null);
+  const { data: balanceData } = useTokenBalance(baseToken?.address || null);
   const { calcAmountInMax: calcBase, calcQuoteToken } = useSwapBaseCalc();
   const { calcFeeParams, calcAmountInMax, calcBaseToken } = useSwapQuoteCalc();
-  const { data: remainTokenAmount } = usePoolRemainingTokenAmount(pool);
+  const { data: poolTokenAmount } = usePoolRemainingTokenAmount(pool);
 
-  const handleIBtnClick = () => {
-    if (!increaseVal) return;
-    if (iBtnLoading) return;
+  const handleBtnClick = () => {
+    if (!inputVal) return;
+    if (isLoading) return;
     if (!amountInMax) return;
 
-    increaseAction();
+    write(inputVal, amountInMax);
   };
 
-  const handleIncreaseValueChange = (value: string) => {
-    setIncreaseVal(value);
+  const handleInputValChange = (value: string) => {
+    setInputVal(value);
     debounceCalcIncreasePayout(value);
   };
 
@@ -65,7 +60,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     if (!pool) return;
     if (!leverage) return;
     if (!baseToken || !quoteToken) return;
-    if (!remainTokenAmount.value) return;
+    if (!poolTokenAmount.value) return;
 
     async function getMax() {
       const feeParams = calcFeeParams(
@@ -74,7 +69,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
         tradingFeeRate!,
       );
       const aInMax = calcBase(
-        remainTokenAmount.value!,
+        poolTokenAmount.value!,
         baseToken!.decimals,
         leverage,
         feeParams,
@@ -100,7 +95,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     leverage,
     baseToken,
     quoteToken,
-    remainTokenAmount,
+    poolTokenAmount,
     calcBase,
     calcFeeParams,
     calcQuoteToken,
@@ -137,32 +132,32 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     );
 
     setAmountInMax(aInMax);
-    setIncreasePayout({
+    setEstPayout({
       value: baseVal,
       formatted: formatNum(baseVal),
     });
   };
 
   useEffect(() => {
-    if (!increaseVal) {
-      setIBtnDisabled(true);
+    if (!inputVal) {
+      setIsBtnDisabled(true);
       return;
     }
 
-    setIBtnDisabled(false);
-    setIBtnText("Submit Order");
-  }, [increaseVal]);
+    setIsBtnDisabled(false);
+    setBtnText("Submit Order");
+  }, [inputVal]);
 
   return {
-    iBtnText,
-    iBtnDisabled,
-    iBtnLoading,
-    increaseVal,
-    increasePayout,
+    btnText,
+    isBtnDisabled,
+    isLoading,
+    inputVal,
+    estPayout,
     canIncreaseMax,
-    handleIBtnClick,
-    handleIncreaseValueChange,
-    remainTokenAmount,
-    balanceObj,
+    handleBtnClick,
+    handleInputValChange,
+    poolTokenAmount,
+    balanceData,
   };
 }

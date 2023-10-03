@@ -20,7 +20,7 @@ export function MaxLeverage({ isActive }: { isActive: boolean }) {
             key={l}
             isActive={isActive}
             data-check={l === activeLeverage ? "true" : "false"}
-            className="data-[check=true]:bg-yellow"
+            className="hover:bg-hover data-[check=true]:bg-yellow"
             onClick={() => setActiveLevel(l)}
           >
             {l}×

@@ -5,7 +5,7 @@ import { IPool } from "../types/pool";
 import { formatNum } from "../utils/number";
 import { formatUnits } from "viem";
 import { usePoolFormat } from "./use-pool-format";
-import { useTokenPrice } from "./use-token-price";
+import { useTokenPrice } from "./contract/use-token-price";
 
 export function usePositionFormat(position: IPosition, pool: IPool) {
   const positionPool = usePoolFormat(pool);

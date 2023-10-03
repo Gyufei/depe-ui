@@ -6,10 +6,10 @@ import { useTxWrite } from "./use-tx-write";
 
 export function useWithdrawMargin(poolAddr: Address, positionAddr: Address) {
   const { chainConfig } = useChainConfig();
-  const positionManagerAddress = chainConfig?.contract?.DepePositionManager;
+  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: positionManagerAddress,
+    address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "decreaseMargin",
   });

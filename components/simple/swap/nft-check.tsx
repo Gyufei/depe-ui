@@ -8,7 +8,7 @@ import {
 import { Checkbox } from "../../ui/checkbox";
 import { useAtom } from "jotai";
 import { SMintNftFlagAtom } from "@/lib/states/swap";
-import { useTokens } from "@/lib/hooks/use-tokens";
+import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function NFTCheck() {

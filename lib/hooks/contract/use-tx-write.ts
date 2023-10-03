@@ -1,8 +1,7 @@
 import { useSetAtom } from "jotai";
-import { Address } from "viem";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
 import { useEffect } from "react";
-import { GlobalMessageAtom } from "../states/global-message";
+import { GlobalMessageAtom } from "../../states/global-message";
 
 export function useTxWrite({
   address,
@@ -11,12 +10,9 @@ export function useTxWrite({
   successTip,
   errorTip,
 }: {
-  address?: Address | undefined;
-  abi?: any;
-  functionName?: string;
   successTip?: string;
   errorTip?: string;
-}) {
+} & Parameters<typeof useContractWrite>[0]) {
   const setGlobalMessage = useSetAtom(GlobalMessageAtom);
 
   const {

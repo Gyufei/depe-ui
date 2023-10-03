@@ -15,7 +15,7 @@ import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
 import { useTxWrite } from "./use-tx-write";
 
-export function useSwap() {
+export function useOpenPosition() {
   const { chainConfig } = useChainConfig();
 
   const pool = useAtomValue(SPoolAtom);

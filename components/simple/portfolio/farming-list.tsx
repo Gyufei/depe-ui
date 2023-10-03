@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { range } from "lodash";
 
 import { SkeletonRow } from "./row-common";
@@ -8,7 +9,7 @@ import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { ListContainer } from "./list-container";
 import Empty from "../../share/empty";
 import { IPool } from "@/lib/types/pool";
-import { useMemo } from "react";
+import { usePoolAsset } from "@/lib/hooks/api/use-pool-asset";
 
 export function FarmingList({
   isActivePanel,
@@ -25,6 +26,9 @@ export function FarmingList({
     const postfix = pools.length > 0 ? `( ${pools.length} )` : "";
     return `Farming ${postfix}`;
   }, [pools]);
+
+  const { dataMap: poolAssetMap, isLoading: isPoolAssetLoading } =
+    usePoolAsset();
 
   return (
     <ListContainer
@@ -44,9 +48,15 @@ export function FarmingList({
       {!isLoading && pools.length > 0 && (
         <ScrollArea className="h-[212px]">
           {pools.map((p, i: number) => {
+            const asset = {
+              value: poolAssetMap[p.poolAddr]?.amount || null,
+              isLoading: isPoolAssetLoading,
+            };
+
             return (
               <FarmingRow
                 pool={p}
+                asset={asset}
                 key={p.poolId}
                 isLast={i === pools.length - 1}
               />
