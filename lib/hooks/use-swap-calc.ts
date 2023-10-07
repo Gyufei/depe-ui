@@ -5,22 +5,6 @@ import { usePublicClient } from "wagmi";
 import { useChainConfig } from "./use-chain-config";
 import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
 
-const calcFeeParams = (
-  leverage: number,
-  slippage: string,
-  tradingFeeRate: number,
-) => {
-  const slippageVal = NP.divide(slippage, 100);
-  const withLeverageFee = NP.times(tradingFeeRate, leverage);
-
-  const feeParams = NP.times(
-    NP.minus(1, slippageVal),
-    NP.plus(1, withLeverageFee),
-  );
-
-  return feeParams;
-};
-
 export function useSwapBaseCalc() {
   const { chainConfig } = useChainConfig();
   const publicClient = usePublicClient();
@@ -29,13 +13,29 @@ export function useSwapBaseCalc() {
     value: string,
     decimals: number,
     leverage: number,
-    feeParams: number,
-  ): bigint => {
+    slippage: string,
+    tradingFeeRate: number,
+  ): {
+    aInMax: bigint;
+    aInMaxWithSlippage: bigint;
+  } => {
     const amount = parseUnits(value, decimals);
     const withLeverageAmount = NP.times(amount.toString(), leverage);
 
-    const aInMax = NP.divide(withLeverageAmount, feeParams);
-    return BigInt(aInMax.toFixed());
+    const slippageVal = NP.divide(slippage, 100);
+    const withLeverageFee = NP.times(tradingFeeRate, leverage);
+
+    const aInMax = NP.divide(
+      NP.times(withLeverageAmount, NP.minus(1, slippageVal)),
+      NP.plus(1, withLeverageFee),
+    );
+
+    const aInMaxWithSlippage = NP.divide(aInMax, NP.minus(1, slippageVal));
+
+    return {
+      aInMax: BigInt(aInMax.toFixed()),
+      aInMaxWithSlippage: BigInt(aInMaxWithSlippage.toFixed()),
+    };
   };
 
   const calcQuoteToken = async (
@@ -56,7 +56,6 @@ export function useSwapBaseCalc() {
   };
 
   return {
-    calcFeeParams,
     calcAmountInMax,
     calcQuoteToken,
   };
@@ -70,8 +69,13 @@ export function useSwapQuoteCalc() {
     quoteV: string,
     decimals: number,
     ePath: string,
-  ): Promise<bigint> => {
+    slippage: string,
+  ): Promise<{
+    aInMax: bigint;
+    aInMaxWithSlippage: bigint;
+  }> => {
     const amount = parseUnits(quoteV, decimals);
+    const slippageVal = NP.divide(slippage, 100);
 
     const toParam = chainConfig!.contract.UniswapV3Quoter;
     const { result } = await publicClient.simulateContract({
@@ -81,25 +85,39 @@ export function useSwapQuoteCalc() {
       args: [ePath as any, amount as any],
     });
 
-    return result;
+    const aInMaxWithSlippage = NP.divide(
+      formatUnits(result, decimals),
+      NP.minus(1, slippageVal),
+    );
+
+    return {
+      aInMax: result,
+      aInMaxWithSlippage: BigInt(aInMaxWithSlippage.toFixed()),
+    };
   };
 
   const calcBaseToken = (
     aInMax: bigint,
     decimals: number,
     leverage: number,
-    feeParams: number,
+    slippage: string,
+    tradingFeeRate: number,
   ): string => {
+    const slippageVal = NP.divide(slippage, 100);
+    const withLeverageFee = NP.times(tradingFeeRate, leverage);
+
     const aInMaxAmount = formatUnits(aInMax, decimals);
 
-    const baseVal = NP.divide(NP.times(aInMaxAmount, feeParams), leverage);
+    const baseVal = NP.divide(
+      NP.times(aInMaxAmount, NP.plus(1, withLeverageFee)),
+      NP.times(NP.minus(1, slippageVal), leverage),
+    );
     const withUnitBaseVal = parseUnits(baseVal.toString(), decimals);
     const formatBaseVal = formatUnits(withUnitBaseVal, decimals);
     return formatBaseVal;
   };
 
   return {
-    calcFeeParams,
     calcAmountInMax,
     calcBaseToken,
   };

@@ -33,8 +33,9 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
   const { isLoading, write } = useIncreasePosition(pool, position);
 
   const { data: balanceData } = useTokenBalance(baseToken?.address || null);
-  const { calcAmountInMax: calcBase, calcQuoteToken } = useSwapBaseCalc();
-  const { calcFeeParams, calcAmountInMax, calcBaseToken } = useSwapQuoteCalc();
+  const { calcAmountInMax: calcBaseAInMax, calcQuoteToken } = useSwapBaseCalc();
+  const { calcAmountInMax: calcQuoteAInMax, calcBaseToken } =
+    useSwapQuoteCalc();
   const { data: poolTokenAmount } = usePoolRemainingTokenAmount(pool);
 
   const handleBtnClick = () => {
@@ -63,23 +64,23 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     if (!poolTokenAmount.value) return;
 
     async function getMax() {
-      const feeParams = calcFeeParams(
-        leverage,
-        DEFAULT_SLIPPAGE,
-        tradingFeeRate!,
-      );
-      const aInMax = calcBase(
+      const aInMaxRes = calcBaseAInMax(
         poolTokenAmount.value!,
         baseToken!.decimals,
         leverage,
-        feeParams,
+        DEFAULT_SLIPPAGE,
+        tradingFeeRate!,
       );
 
       const ePath = encodePath(
         [baseToken!.address, quoteToken!.address],
         UNISWAP_FEES,
       );
-      const max = await calcQuoteToken(aInMax, quoteToken!.decimals, ePath);
+      const max = await calcQuoteToken(
+        aInMaxRes.aInMax,
+        quoteToken!.decimals,
+        ePath,
+      );
       const maxFormatted = formatNum(max);
 
       setCanIncreaseMax({
@@ -96,8 +97,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     baseToken,
     quoteToken,
     poolTokenAmount,
-    calcBase,
-    calcFeeParams,
+    calcBaseAInMax,
     calcQuoteToken,
     tradingFeeRate,
   ]);
@@ -117,21 +117,22 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
       [quoteToken!.address, baseToken!.address],
       UNISWAP_FEES,
     );
-    const aInMax = await calcAmountInMax(quoteV, quoteToken!.decimals, ePath);
+    const aInMaxRes = await calcQuoteAInMax(
+      quoteV,
+      quoteToken!.decimals,
+      ePath,
+      DEFAULT_SLIPPAGE,
+    );
 
-    const feeParams = calcFeeParams(
+    const baseVal = calcBaseToken(
+      aInMaxRes.aInMax,
+      baseToken!.decimals,
       leverage,
       DEFAULT_SLIPPAGE,
       tradingFeeRate!,
     );
-    const baseVal = calcBaseToken(
-      aInMax,
-      baseToken!.decimals,
-      leverage,
-      feeParams,
-    );
 
-    setAmountInMax(aInMax);
+    setAmountInMax(aInMaxRes.aInMaxWithSlippage);
     setEstPayout({
       value: baseVal,
       formatted: formatNum(baseVal),

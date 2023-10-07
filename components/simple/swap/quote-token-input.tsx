@@ -41,7 +41,7 @@ export default function QuoteTokenInput() {
   const setBaseTokenAmount = useSetAtom(SBaseTokenAmountAtom);
   const setAmountInMax = useSetAtom(SAmountInMaxAtom);
 
-  const { calcFeeParams, calcAmountInMax, calcBaseToken } = useSwapQuoteCalc();
+  const { calcAmountInMax, calcBaseToken } = useSwapQuoteCalc();
   const { tradingFeeRate } = usePoolFormat(pool);
 
   useEffect(() => {
@@ -70,17 +70,22 @@ export default function QuoteTokenInput() {
       [quoteToken!.address, baseToken!.address],
       UNISWAP_FEES,
     );
-    const aInMax = await calcAmountInMax(quoteV, quoteToken!.decimals, ePath);
-
-    const feeParams = calcFeeParams(leverage, slippage, tradingFeeRate!);
-    const baseVal = calcBaseToken(
-      aInMax,
-      baseToken!.decimals,
-      leverage,
-      feeParams,
+    const aInMaxRes = await calcAmountInMax(
+      quoteV,
+      quoteToken!.decimals,
+      ePath,
+      slippage,
     );
 
-    setAmountInMax(aInMax);
+    const baseVal = calcBaseToken(
+      aInMaxRes.aInMax,
+      baseToken!.decimals,
+      leverage,
+      slippage,
+      tradingFeeRate!,
+    );
+
+    setAmountInMax(aInMaxRes.aInMaxWithSlippage);
     setBaseTokenAmount(baseVal);
   };
 

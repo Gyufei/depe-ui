@@ -30,7 +30,7 @@ export default function BaseTokenInput() {
   const isActivePanel = useContext(IsActivePanelContext);
 
   const { marginTokens, isLoading: isTokenLoading } = useTokens();
-  const { calcFeeParams, calcAmountInMax, calcQuoteToken } = useSwapBaseCalc();
+  const { calcAmountInMax, calcQuoteToken } = useSwapBaseCalc();
 
   const leverage = useAtomValue(SLeverageAtom);
   const slippage = useAtomValue(SSlippageAtom);
@@ -71,20 +71,24 @@ export default function BaseTokenInput() {
     if (!leverage) return;
     if (!pool) return;
 
-    const feeParams = calcFeeParams(leverage, slippage, tradingFeeRate!);
-    const aInMax = calcAmountInMax(
+    const aInMaxRes = calcAmountInMax(
       baseV,
       baseToken!.decimals,
       leverage,
-      feeParams,
+      slippage,
+      tradingFeeRate!,
     );
 
     const ePath = encodePath(
       [baseToken!.address, quoteToken!.address],
       UNISWAP_FEES,
     );
-    const quoteVal = await calcQuoteToken(aInMax, quoteToken!.decimals, ePath);
-    setAmountInMax(aInMax);
+    const quoteVal = await calcQuoteToken(
+      aInMaxRes.aInMax,
+      quoteToken!.decimals,
+      ePath,
+    );
+    setAmountInMax(aInMaxRes.aInMaxWithSlippage);
     setQuoteTokenAmount(quoteVal);
   };
 

@@ -29,7 +29,7 @@ export default function PoolSelect() {
     if (pools?.length) {
       setSelectedPool(pools[0]);
     }
-  });
+  }, [pools, setSelectedPool]);
 
   if (isTokenLoading) return <Skeleton className="h-6 w-[100px]" />;
 
