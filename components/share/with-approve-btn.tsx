@@ -52,7 +52,7 @@ export default function WithApproveBtn({
     }
 
     if (NP.minus(willUseAmount || 0, balanceAmount || 0) > 0) {
-      setBtnText(`Insufficient ${token?.symbol} `);
+      setBtnText(`Insufficient ${token?.symbol || ""} `);
       setIsBtnDisabled(true);
       return;
     }
@@ -67,7 +67,7 @@ export default function WithApproveBtn({
     }
 
     if (shouldApprove) {
-      setBtnText(`Approve ${token?.symbol}`);
+      setBtnText(`Approve ${token?.symbol || ""}`);
       return;
     }
 

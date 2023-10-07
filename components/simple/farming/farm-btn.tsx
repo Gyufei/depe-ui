@@ -1,13 +1,16 @@
 import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
 import { FDepositAmountAtom, FPoolAtom } from "@/lib/states/farming";
 import WithApproveBtn from "@/components/share/with-approve-btn";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolDeposit } from "@/lib/hooks/contract/use-pool-deposit";
 import { parseUnits } from "viem";
+import { IsActivePanelContext } from "../hover-active-panel";
 
-export default function FarmBtn({ isActive }: { isActive: boolean }) {
+export default function FarmBtn() {
+  const isActive = useContext(IsActivePanelContext);
+
   const pool = useAtomValue(FPoolAtom);
   const depositAmount = useAtomValue(FDepositAmountAtom);
 

@@ -1,23 +1,25 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { cn } from "@/lib/utils/utils";
+
 import { Skeleton } from "../../ui/skeleton";
+import { IsActivePanelContext } from "../hover-active-panel";
 
 export function ListContainer({
   title,
-  isActivePanel,
   children,
   className,
   isLoading,
 }: {
   title: string;
-  isActivePanel: boolean;
   isLoading: boolean;
   children: ReactNode;
   className?: string;
 }) {
+  const isActive = useContext(IsActivePanelContext);
+
   return (
     <div
-      data-state={isActivePanel ? "active" : "inactive"}
+      data-state={isActive ? "active" : "inactive"}
       className={cn("c-active-border rounded-xl border-2 p-2", className)}
     >
       {isLoading ? (

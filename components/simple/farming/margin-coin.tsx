@@ -1,12 +1,16 @@
+import { useContext, useEffect } from "react";
+import { useAtom } from "jotai";
+import { range } from "lodash";
+
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { TitleText, ContentCon, OptionBtn, CoinIcon } from "./common";
-import { useAtom } from "jotai";
 import { FMarginTokenAtom } from "@/lib/states/farming";
-import { range } from "lodash";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect } from "react";
+import { IsActivePanelContext } from "../hover-active-panel";
 
-export function MarginCoin({ isActive }: { isActive: boolean }) {
+export function MarginCoin() {
+  const isActive = useContext(IsActivePanelContext);
+
   const { marginTokens, isLoading } = useTokens();
   const [marginToken, setMarginToken] = useAtom(FMarginTokenAtom);
 

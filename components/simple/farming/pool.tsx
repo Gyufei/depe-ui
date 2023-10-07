@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import Image from "next/image";
 
@@ -17,8 +17,11 @@ import { FPoolAtom } from "@/lib/states/farming";
 import { usePools } from "@/lib/hooks/api/use-pools";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
+import { IsActivePanelContext } from "../hover-active-panel";
 
-export function Pool({ isActive }: { isActive: boolean }) {
+export function Pool() {
+  const isActive = useContext(IsActivePanelContext);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPool, setSelectedPool] = useAtom(FPoolAtom);
   const { data: pools, isLoading } = usePools();

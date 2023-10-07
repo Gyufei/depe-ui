@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Address, parseUnits } from "viem";
+import { Address, formatUnits } from "viem";
 
 import { erc20ABI, useAccount, useContractRead } from "wagmi";
 
@@ -20,7 +20,7 @@ export function useApprove(
   const IPIBoneAddress = chainConfig?.contract.IPIBone;
 
   const {
-    data: allowance,
+    data: allowanceValue,
     isLoading: isAllowanceLoading,
     refetch: getAllowance,
   } = useContractRead({
@@ -31,8 +31,14 @@ export function useApprove(
     enabled: !!(account && IPIBoneAddress && tokenAddress),
   });
 
+  const allowance = useMemo(() => {
+    if (!allowanceValue || !tokenInfo) return 0;
+
+    return formatUnits(allowanceValue, tokenInfo?.decimals);
+  }, [allowanceValue, tokenInfo]);
+
   const shouldApprove = useMemo(
-    () => allowance === 0n || Number(tokenAmount) > Number(allowance),
+    () => allowance === 0 || Number(tokenAmount) > Number(allowance),
     [allowance, tokenAmount],
   );
 
@@ -46,7 +52,14 @@ export function useApprove(
   const writeAction = () => {
     if (!IPIBoneAddress || !tokenAddress || !tokenInfo) return;
 
-    const amount = parseUnits(tokenAmount || MAX_UNIT256, tokenInfo.decimals);
+    let amountVal;
+    if (isUSDT) {
+      amountVal = allowance === 0 ? MAX_UNIT256 : 0;
+    } else {
+      amountVal = MAX_UNIT256;
+    }
+
+    const amount = BigInt(amountVal);
 
     write({
       args: [IPIBoneAddress, amount!],

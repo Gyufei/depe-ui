@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
-import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import {
   SAmountInMaxAtom,
@@ -24,10 +23,11 @@ import BalanceDisplay from "@/components/share/balance-display";
 import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
 import { useSwapBaseCalc } from "@/lib/hooks/use-swap-calc";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { IsActivePanelContext } from "../hover-active-panel";
 
 export default function BaseTokenInput() {
-  const { isActivePanel } = useActivePanel("Swap");
   const { chainConfig } = useChainConfig();
+  const isActivePanel = useContext(IsActivePanelContext);
 
   const { marginTokens, isLoading: isTokenLoading } = useTokens();
   const { calcFeeParams, calcAmountInMax, calcQuoteToken } = useSwapBaseCalc();

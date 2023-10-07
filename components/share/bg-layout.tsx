@@ -10,8 +10,8 @@ export default function BgLayout({ children }: { children: React.ReactNode }) {
       data-chain={chain?.name.replace(" ", "")}
       className="
       h-screen
-      w-screen overflow-x-auto
-      overflow-y-auto
+      w-screen overflow-y-auto
+      overflow-x-hidden
       bg-white
       data-[chain='OPMainnet']:bg-[#ffeeee] data-[chain='Ethereum']:bg-sky data-[chain='Sepolia']:bg-sky data-[chain='Base']:bg-[#e7f1ff]"
     >

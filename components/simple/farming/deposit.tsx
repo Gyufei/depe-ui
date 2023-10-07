@@ -7,8 +7,12 @@ import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { TokenDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
 import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
+import { useContext } from "react";
+import { IsActivePanelContext } from "../hover-active-panel";
 
-export function Deposit({ isActive }: { isActive: boolean }) {
+export function Deposit() {
+  const isActive = useContext(IsActivePanelContext);
+
   const [depositAmount, setDepositAmount] = useAtom(FDepositAmountAtom);
 
   const pool = useAtomValue(FPoolAtom);

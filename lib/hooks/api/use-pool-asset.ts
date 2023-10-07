@@ -12,18 +12,7 @@ export interface IPoolAsset {
 export function usePoolAsset() {
   const { address: account } = useAccount();
   const res = useGqlRequest(
-    // TODO: remove
-    // PoolAsset(account ? [{ key: "account", value: account }] : []),
-    PoolAsset(
-      account
-        ? [
-            {
-              key: "account",
-              value: "0xA186141aB6d63edBd95Dc284F31DcD41be2bb198",
-            },
-          ]
-        : [],
-    ),
+    PoolAsset(account ? [{ key: "account", value: account }] : []),
   );
 
   const data = useMemo<Array<IPoolAsset>>(() => {

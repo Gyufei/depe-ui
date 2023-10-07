@@ -1,9 +1,12 @@
 import { TitleText, ContentCon, OptionBtn } from "./common";
 import { useAtom } from "jotai";
 import { FRatingLevelAtom } from "@/lib/states/farming";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { IsActivePanelContext } from "../hover-active-panel";
 
-export function AssetRatingLevel({ isActive }: { isActive: boolean }) {
+export function AssetRatingLevel() {
+  const isActive = useContext(IsActivePanelContext);
+
   const levels = ["High", "Moderate", "Low"];
   const [activeLevel, setActiveLevel] = useAtom(FRatingLevelAtom);
 

@@ -10,8 +10,8 @@ export default function HomeLayout({
 }) {
   return (
     <BgLayout>
-      <div className="flex min-h-full min-w-[1600px] flex-col justify-between px-6 pb-6">
-        <div className="mx-auto w-[1556px]">
+      <div className="flex h-screen w-full flex-col justify-between px-6 pb-6">
+        <div className="relative h-full mx-auto w-full max-w-[1566px]">
           <Header />
           {children}
         </div>

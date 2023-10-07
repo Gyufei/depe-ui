@@ -1,15 +1,17 @@
 import { cn } from "@/lib/utils/utils";
+import { useContext } from "react";
+import { IsActivePanelContext } from "../simple/hover-active-panel";
 
 export default function PanelLeaderButton({
-  isActive,
   children,
   className,
 }: {
-  isActive: boolean;
   children: React.ReactNode;
   className?: string;
 }) {
+  const isActive = useContext(IsActivePanelContext);
   const activeState = isActive ? "active" : "inactive";
+
   return (
     <div
       data-state={activeState}

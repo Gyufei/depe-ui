@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAtomValue } from "jotai";
-
-import { useActivePanel } from "@/lib/hooks/use-active-panel";
 
 import { useOpenPosition } from "@/lib/hooks/contract/use-open-position";
 import {
@@ -16,9 +14,10 @@ import { useOrderOverview } from "@/lib/hooks/use-order-overview";
 import WithApproveBtn from "@/components/share/with-approve-btn";
 import { usePoolRemainingTokenAmount } from "@/lib/hooks/contract/use-pool-remaining-token-amount";
 import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
+import { IsActivePanelContext } from "../hover-active-panel";
 
 export default function SwapBtn() {
-  const { isActivePanel } = useActivePanel("Swap");
+  const isActive = useContext(IsActivePanelContext);
 
   const [btnText, setBtnText] = useState("Trade");
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
@@ -76,7 +75,7 @@ export default function SwapBtn() {
       balanceAmount={baseTokenBalance || "0"}
       willUseAmount={baseTokenAmount || "0"}
       liquidityAmount={remainTokenAmount.value || undefined}
-      isActive={isActivePanel}
+      isActive={isActive}
       isLoading={isSwapLoading}
       disabled={isBtnDisabled}
       onClick={handleBtnClick}

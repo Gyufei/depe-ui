@@ -12,14 +12,12 @@ import { IPool } from "@/lib/types/pool";
 import { usePoolAsset } from "@/lib/hooks/api/use-pool-asset";
 
 export function FarmingList({
-  isActivePanel,
   className,
   isLoading,
   pools,
 }: {
   pools: Array<IPool>;
   isLoading: boolean;
-  isActivePanel: boolean;
   className?: string;
 }) {
   const title = useMemo(() => {
@@ -31,12 +29,7 @@ export function FarmingList({
     usePoolAsset();
 
   return (
-    <ListContainer
-      isLoading={isLoading}
-      title={title}
-      isActivePanel={isActivePanel}
-      className={className}
-    >
+    <ListContainer isLoading={isLoading} title={title} className={className}>
       {isLoading && (
         <div className="h-[212px]">
           {range(3).map((i: number) => {

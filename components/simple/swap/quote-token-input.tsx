@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
-import { useActivePanel } from "@/lib/hooks/use-active-panel";
 import { useChainConfig } from "@/lib/hooks/use-chain-config";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import {
@@ -22,9 +21,10 @@ import { UNISWAP_FEES } from "@/lib/constant";
 import { TokenSelectDisplay } from "@/components/share/input-panel-token-display";
 import { useSwapQuoteCalc } from "@/lib/hooks/use-swap-calc";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
+import { IsActivePanelContext } from "../hover-active-panel";
 
 export default function QuoteTokenInput() {
-  const { isActivePanel } = useActivePanel("Swap");
+  const isActive = useContext(IsActivePanelContext);
 
   const { chainConfig } = useChainConfig();
   const { notMarginTokens, isLoading: tokenLoading } = useTokens();
@@ -94,7 +94,7 @@ export default function QuoteTokenInput() {
           setToken={setQuoteToken}
         />
       }
-      isActive={isActivePanel}
+      isActive={isActive}
       value={quoteTokenAmount || ""}
       setValue={handleValueChange}
     />

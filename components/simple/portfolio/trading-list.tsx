@@ -9,12 +9,10 @@ import { IPosition } from "@/lib/types/position";
 import { useMemo } from "react";
 
 export function TradingList({
-  isActivePanel,
   className,
   positions,
   isLoading,
 }: {
-  isActivePanel: boolean;
   className?: string;
   positions: Array<IPosition>;
   isLoading: boolean;
@@ -25,12 +23,7 @@ export function TradingList({
   }, [positions]);
 
   return (
-    <ListContainer
-      isLoading={isLoading}
-      title={title}
-      isActivePanel={isActivePanel}
-      className={className}
-    >
+    <ListContainer isLoading={isLoading} title={title} className={className}>
       {isLoading && (
         <div className="h-[212px]">
           {range(3).map((i: number) => {

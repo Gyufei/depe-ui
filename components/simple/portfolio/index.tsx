@@ -1,15 +1,24 @@
 "use client";
 
-import { useActivePanel } from "@/lib/hooks/use-active-panel";
+import { useContext } from "react";
 import PanelLeaderButton from "../../share/panel-leader-button";
 import { FarmingList } from "./farming-list";
 import { TradingList } from "./trading-list";
 import { usePositions } from "@/lib/hooks/api/use-positions";
 import Empty from "@/components/share/empty";
 import { useAccountPools } from "@/lib/hooks/use-account-pools";
+import HoverActivePanel, { IsActivePanelContext } from "../hover-active-panel";
 
 export default function Portfolio() {
-  const { isActivePanel, setPanelActive } = useActivePanel("Portfolio");
+  return (
+    <HoverActivePanel name="Portfolio">
+      <PortfolioBase />
+    </HoverActivePanel>
+  );
+}
+
+function PortfolioBase() {
+  const isActive = useContext(IsActivePanelContext);
 
   const { data: pools, isLoading: isPoolsLoading } = useAccountPools();
   const { data: positions, isLoading: isPositionsLoading } = usePositions();
@@ -21,12 +30,10 @@ export default function Portfolio() {
     !positions.length;
 
   return (
-    <div onClick={setPanelActive} className="flex flex-col">
-      <PanelLeaderButton className="bg-pink" isActive={isActivePanel}>
-        Portfolio
-      </PanelLeaderButton>
+    <>
+      <PanelLeaderButton className="bg-pink">Portfolio</PanelLeaderButton>
       <div
-        data-state={isActivePanel ? "active" : "inactive"}
+        data-state={isActive ? "active" : "inactive"}
         className="c-shadow-panel h-fit w-[480px]"
       >
         {noData ? (
@@ -35,20 +42,15 @@ export default function Portfolio() {
           </div>
         ) : (
           <>
-            <FarmingList
-              isActivePanel={isActivePanel}
-              pools={pools}
-              isLoading={isPoolsLoading}
-            />
+            <FarmingList pools={pools} isLoading={isPoolsLoading} />
             <TradingList
               className="mt-4"
-              isActivePanel={isActivePanel}
               positions={positions}
               isLoading={isPositionsLoading}
             />
           </>
         )}
       </div>
-    </div>
+    </>
   );
 }
