@@ -69,8 +69,10 @@ export default function HoverActivePanel({
   }, [handleSize]);
 
   useEffect(() => {
-    setIsRender(true);
-  }, []);
+    if (windowSize.width) {
+      setIsRender(true);
+    }
+  }, [windowSize]);
 
   const [isRender, setIsRender] = useState(false);
 
@@ -78,9 +80,11 @@ export default function HoverActivePanel({
     const conWidth = windowSize.width > 1566 ? 1566 : windowSize.width;
     const avgPartWidth = conWidth / 3;
 
+    const right3 = avgPartWidth > 480 ? 2 * avgPartWidth : conWidth - 480;
+
     if (orderNum === 1) return "0";
     if (orderNum === 2) return avgPartWidth + "px";
-    if (orderNum === 3) return 2 * avgPartWidth + "px";
+    if (orderNum === 3) return right3 + "px";
   }, [windowSize.width, orderNum]);
 
   return (

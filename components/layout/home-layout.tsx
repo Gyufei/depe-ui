@@ -10,11 +10,12 @@ export default function HomeLayout({
 }) {
   return (
     <BgLayout>
-      <div className="flex h-screen w-full flex-col justify-between px-6 pb-6">
-        <div className="relative h-full mx-auto w-full max-w-[1566px]">
+      <div className="flex w-full flex-col justify-between px-6 pb-6">
+        <div className="relative mx-auto w-full max-w-[1566px]">
           <Header />
           {children}
         </div>
+
         <GlobalActionTip />
         <BlockNumberTag />
       </div>

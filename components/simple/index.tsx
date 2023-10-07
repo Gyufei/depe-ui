@@ -4,7 +4,7 @@ import Swap from "@/components/simple/swap";
 
 export default function Simple() {
   return (
-    <main className="flex justify-between pt-[72px]">
+    <main className="flex min-h-[850px] justify-between pt-[72px]">
       <Portfolio />
       <Swap />
       <Farming />
