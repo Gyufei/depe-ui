@@ -23,14 +23,7 @@ export default function LeverageSelectInput({
 
   useEffect(() => {
     setCurrentLeverage(leverageOptions[0]);
-  }, [setCurrentLeverage, leverageOptions]);
-
-  const inputBlur = () => {
-    if (inputLeverage && !isNaN(Number(inputLeverage))) {
-      setCurrentLeverage(Number(inputLeverage));
-      setIsExpanded(false);
-    }
-  };
+  }, []);
 
   const ref = useOnclickOutside(() => {
     setIsExpanded(false),
@@ -48,6 +41,13 @@ export default function LeverageSelectInput({
     setCurrentLeverage(l);
     setInputLeverage(l.toString());
     setIsExpanded(false);
+  };
+
+  const handleInput = (l: string) => {
+    setInputLeverage(l);
+    if (l && !isNaN(Number(l))) {
+      setCurrentLeverage(Number(l));
+    }
   };
 
   return (
@@ -91,8 +91,7 @@ export default function LeverageSelectInput({
                 type="text"
                 placeholder="0"
                 value={inputLeverage}
-                onChange={(e) => setInputLeverage(e.target.value)}
-                onBlur={inputBlur}
+                onChange={(e) => handleInput(e.target.value)}
               />
               <span className="absolute top-[4px] right-[9px]">×</span>
             </div>

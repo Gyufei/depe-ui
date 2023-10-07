@@ -102,7 +102,7 @@ export default function HoverActivePanel({
           position: isRender ? "absolute" : "static",
           left: left ? left : "unset",
           order: orderNum,
-          zIndex: orderNum === 2 ? 100 : 10,
+          zIndex: orderNum === 2 ? 2 : 1,
           transform: orderNum !== 2 ? "scale(0.9)" : "scale(1)",
         }}
       >
