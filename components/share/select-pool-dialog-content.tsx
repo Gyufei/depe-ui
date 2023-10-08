@@ -24,12 +24,14 @@ export default function SelectPoolDialogContent({
   isLoading,
   pools,
   pool,
-  setPool,
+  onSelect,
+  onAutoPick,
 }: {
   isLoading: boolean;
   pools: Array<IPool> | null;
   pool: IPool | null;
-  setPool: (_p: IPool | null) => void;
+  onSelect: (_p: IPool | null) => void;
+  onAutoPick: () => void;
 }) {
   const [isAuto, setIsAuto] = useState(false);
   const [sortBy, setSortBy] = useState("Num");
@@ -71,13 +73,14 @@ export default function SelectPoolDialogContent({
   const handleAuto = () => {
     if (isAuto) return;
 
-    setPool(null);
+    onSelect(null);
     setIsAuto(true);
+    onAutoPick();
   };
 
   const handleSelectPool = (pool: IPool) => {
     setIsAuto(false);
-    setPool(pool);
+    onSelect(pool);
   };
 
   const recordPoolAPY = (poolId: string) => {

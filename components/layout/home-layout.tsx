@@ -15,10 +15,10 @@ export default function HomeLayout({
           <Header />
           {children}
         </div>
-
-        <GlobalActionTip />
-        <BlockNumberTag />
       </div>
+
+      <GlobalActionTip />
+      <BlockNumberTag />
     </BgLayout>
   );
 }

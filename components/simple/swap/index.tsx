@@ -1,7 +1,7 @@
 "use client";
 
 import PanelLeaderButton from "../../share/panel-leader-button";
-import PoolSelect from "./pool-select";
+import SwapPoolSelect from "../../share/swap-pool-select";
 import NFTCheck from "./nft-check";
 import SwapSetting from "./swap-setting";
 import OrderOverview from "./order-overview";
@@ -43,7 +43,7 @@ function SwapBase() {
           </div>
           <QuoteTokenInput />
           <div className="mt-[26px] mb-[23px] flex items-center justify-between">
-            <PoolSelect />
+            <SwapPoolSelect />
             <NFTCheck />
           </div>
 

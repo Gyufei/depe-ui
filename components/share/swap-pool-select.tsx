@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
 import PoolCircleIcon from "/public/icons/pools-circle.svg";
 import Triangle from "/public/icons/triangle.svg";
@@ -11,25 +11,41 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import DialogGimp from "../../share/dialog-gimp";
-import SelectPoolDialogContent from "../../share/select-pool-dialog-content";
+import DialogGimp from "./dialog-gimp";
+import SelectPoolDialogContent from "./select-pool-dialog-content";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SPoolAtom } from "@/lib/states/swap";
 import { usePools } from "@/lib/hooks/api/use-pools";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
+import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
+import { IPool } from "@/lib/types/pool";
 
-export default function PoolSelect() {
-  const [selectedPool, setSelectedPool] = useAtom(SPoolAtom);
-  const [dialogOpen, setDialogOpen] = useState(false);
-
+export default function SwapPoolSelect() {
   const { isLoading: isTokenLoading } = useTokens();
   const { data: pools, isLoading } = usePools();
 
+  const { swapPickPool, onSwapPoolSelected } = useSwapPickPool();
+
+  const selectedPool = useAtomValue(SPoolAtom);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const onPoolChange = (p: IPool | null) => {
+    if (!p) return;
+
+    onSwapPoolSelected(p);
+  };
+
+  const onAutoPick = useCallback(() => {
+    const p = swapPickPool();
+    p && onSwapPoolSelected(p);
+  }, [swapPickPool, onSwapPoolSelected]);
+
   useEffect(() => {
-    if (pools?.length) {
-      setSelectedPool(pools[0]);
+    if (pools?.length && !selectedPool) {
+      onAutoPick();
     }
-  }, [pools, setSelectedPool]);
+  }, [pools, selectedPool, onAutoPick]);
 
   if (isTokenLoading) return <Skeleton className="h-6 w-[100px]" />;
 
@@ -72,7 +88,8 @@ export default function PoolSelect() {
           pools={pools}
           isLoading={isLoading}
           pool={selectedPool}
-          setPool={setSelectedPool}
+          onSelect={onPoolChange}
+          onAutoPick={onAutoPick}
         />
       </DialogContent>
     </Dialog>

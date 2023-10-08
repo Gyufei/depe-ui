@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import Image from "next/image";
 
 import {
@@ -18,23 +18,39 @@ import { usePools } from "@/lib/hooks/api/use-pools";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 import { IsActivePanelContext } from "../hover-active-panel";
+import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
+import { IPool } from "@/lib/types/pool";
 
-export function Pool() {
+export function FarmingPoolSelect() {
   const isActive = useContext(IsActivePanelContext);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedPool, setSelectedPool] = useAtom(FPoolAtom);
   const { data: pools, isLoading } = usePools();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { farmingPickPool, onFarmingPoolSelected } = useFarmingMatchPool();
+
+  const selectedPool = useAtomValue(FPoolAtom);
 
   const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
     selectedPool?.poolAddr || null,
   );
 
   useEffect(() => {
-    if (pools?.length) {
-      setSelectedPool(pools[0]);
+    if (!selectedPool && pools?.length) {
+      farmingPickPool();
     }
-  });
+  }, [selectedPool, pools, farmingPickPool]);
+
+  const onPoolChange = (p: IPool | null) => {
+    if (!p) return;
+
+    onFarmingPoolSelected(p);
+  };
+
+  const onAutoPick = () => {
+    const p = farmingPickPool();
+    p && onFarmingPoolSelected(p);
+  };
 
   return (
     <div>
@@ -73,7 +89,9 @@ export function Pool() {
               <div className="flex items-center text-sm leading-[17px] text-black ">
                 <div className="mr-[14px]">Automatch</div>
                 <div className="rounded-full border border-black py-1 pl-4 pr-5">
-                  #{selectedPool?.poolId}
+                  {selectedPool?.poolId
+                    ? `#${selectedPool?.poolId}`
+                    : "No Match Pool"}
                 </div>
               </div>
               <Image
@@ -92,7 +110,8 @@ export function Pool() {
               pools={pools}
               isLoading={isLoading}
               pool={selectedPool}
-              setPool={setSelectedPool}
+              onSelect={onPoolChange}
+              onAutoPick={onAutoPick}
             />
           </DialogContent>
         </Dialog>

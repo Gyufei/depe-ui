@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -24,11 +24,14 @@ import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
 import { useSwapBaseCalc } from "@/lib/hooks/use-swap-calc";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { IsActivePanelContext } from "../hover-active-panel";
+import { IToken } from "@/lib/types/token";
+import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
 
 export default function BaseTokenInput() {
   const { chainConfig } = useChainConfig();
   const isActivePanel = useContext(IsActivePanelContext);
 
+  const { swapPickPool } = useSwapPickPool();
   const { marginTokens, isLoading: isTokenLoading } = useTokens();
   const { calcAmountInMax, calcQuoteToken } = useSwapBaseCalc();
 
@@ -49,11 +52,14 @@ export default function BaseTokenInput() {
   );
   const baseTokenBalance = balanceData?.formatted || null;
 
-  useEffect(() => {
-    if (marginTokens?.length) {
-      setBaseToken(marginTokens[0]);
-    }
-  }, [marginTokens, setBaseToken]);
+  const onTokenSelected = (t: IToken) => {
+    setBaseToken(() => {
+      swapPickPool({
+        baseToken: t,
+      });
+      return t;
+    });
+  };
 
   const handleValueChange = (value: string) => {
     setBaseTokenAmount(value);
@@ -99,7 +105,7 @@ export default function BaseTokenInput() {
           isLoading={isTokenLoading}
           tokens={marginTokens || []}
           token={baseToken!}
-          setToken={setBaseToken}
+          setToken={onTokenSelected}
         />
       }
       balanceDisplay={

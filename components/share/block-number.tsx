@@ -9,7 +9,7 @@ export default function BlockNumberTag() {
   return (
     <div
       data-status={status}
-      className="mt-8 flex items-center self-end rounded-3xl border-2 px-4 py-[6px] 
+      className="mt-8 fixed bottom-10 right-6 flex items-center self-end rounded-3xl border-2 px-4 py-[6px] 
       data-[status='success']:border-green data-[status='error']:border-red
       data-[status='loading']:border-tan data-[status='success']:text-green
       data-[status='error']:text-red data-[status='loading']:text-tan

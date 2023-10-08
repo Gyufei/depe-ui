@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -22,6 +22,8 @@ import { TokenSelectDisplay } from "@/components/share/input-panel-token-display
 import { useSwapQuoteCalc } from "@/lib/hooks/use-swap-calc";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { IsActivePanelContext } from "../hover-active-panel";
+import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
+import { IToken } from "@/lib/types/token";
 
 export default function QuoteTokenInput() {
   const isActive = useContext(IsActivePanelContext);
@@ -32,6 +34,8 @@ export default function QuoteTokenInput() {
   const leverage = useAtomValue(SLeverageAtom);
   const slippage = useAtomValue(SSlippageAtom);
   const pool = useAtomValue(SPoolAtom);
+
+  const { swapPickPool } = useSwapPickPool();
 
   const [quoteToken, setQuoteToken] = useAtom(SQuoteTokenAtom);
   const [quoteTokenAmount, setQuoteTokenAmount] = useAtom(
@@ -44,11 +48,15 @@ export default function QuoteTokenInput() {
   const { calcAmountInMax, calcBaseToken } = useSwapQuoteCalc();
   const { tradingFeeRate } = usePoolFormat(pool);
 
-  useEffect(() => {
-    if (notMarginTokens?.length) {
-      setQuoteToken(notMarginTokens[0]);
-    }
-  }, [notMarginTokens, setQuoteToken]);
+  const onTokenSelected = (t: IToken) => {
+    setQuoteToken(() => {
+      swapPickPool({
+        quoteToken: t,
+      });
+
+      return t;
+    });
+  };
 
   const handleValueChange = (value: string) => {
     setQuoteTokenAmount(value);
@@ -96,7 +104,7 @@ export default function QuoteTokenInput() {
           isLoading={tokenLoading}
           tokens={notMarginTokens || []}
           token={quoteToken!}
-          setToken={setQuoteToken}
+          setToken={onTokenSelected}
         />
       }
       isActive={isActive}

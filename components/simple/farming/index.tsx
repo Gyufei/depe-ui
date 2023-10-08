@@ -5,7 +5,7 @@ import PanelLeaderButton from "../../share/panel-leader-button";
 import { MarginCoin } from "./margin-coin";
 import { AssetRatingLevel } from "./asset-rating-level";
 import { MaxLeverage } from "./max-leverage";
-import { Pool } from "./pool";
+import { FarmingPoolSelect } from "./farming-pool-select";
 import { Deposit } from "./deposit";
 import FarmBtn from "./farm-btn";
 import HoverActivePanel, { IsActivePanelContext } from "../hover-active-panel";
@@ -32,7 +32,7 @@ function FarmingBase() {
           <MarginCoin />
           <AssetRatingLevel />
           <MaxLeverage />
-          <Pool />
+          <FarmingPoolSelect />
           <Deposit />
           <FarmBtn />
         </div>

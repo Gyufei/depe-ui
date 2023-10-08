@@ -34,13 +34,13 @@ const SlippageSwitch = React.forwardRef<
   return (
     <SwitchPrimitives.Root
       className={cn(
-        "peer relative inline-flex h-10 w-[152px] shrink-0 cursor-pointer items-center rounded-xl border-2 border-black p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50",
+        "peer relative inline-flex h-10 w-[152px] shrink-0 cursor-pointer items-center rounded-xl border-2 border-black p-[2px] transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
       ref={ref}
     >
-      <CheckText active={!props.checked} className="left-5">
+      <CheckText active={!props.checked} className="left-[23px]">
         Auto
       </CheckText>
       <CheckText active={props.checked} className="right-3">
@@ -48,7 +48,7 @@ const SlippageSwitch = React.forwardRef<
       </CheckText>
       <SwitchPrimitives.Thumb
         className={cn(
-          "pointer-events-none block h-8 w-[72px] rounded-lg bg-black shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-[70px] data-[state=unchecked]:translate-x-0",
+          "pointer-events-none block h-8 w-[72px] rounded-lg bg-black shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-[73px] data-[state=unchecked]:translate-x-0",
         )}
       />
     </SwitchPrimitives.Root>

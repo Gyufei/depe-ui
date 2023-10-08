@@ -127,7 +127,7 @@ export function toQuantity(amount: NumberType, price = 1) {
       return formatNum(amount, precision);
     }
   } catch (error) {
-    console.log("toQuantity", error);
+    console.error("toQuantity", error);
   }
 }
 
@@ -147,7 +147,7 @@ function getAccuracy(num: NumberType, length = 3) {
 
     return index;
   } catch (error) {
-    console.log(error, num, "length");
+    console.error(error, num, "length");
     return 0;
   }
 }

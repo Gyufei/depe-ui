@@ -7,12 +7,23 @@ import { TitleText, ContentCon, OptionBtn, CoinIcon } from "./common";
 import { FMarginTokenAtom } from "@/lib/states/farming";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IsActivePanelContext } from "../hover-active-panel";
+import { IToken } from "@/lib/types/token";
+import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
 
 export function MarginCoin() {
   const isActive = useContext(IsActivePanelContext);
 
   const { marginTokens, isLoading } = useTokens();
+  const { farmingPickPool } = useFarmingMatchPool();
+
   const [marginToken, setMarginToken] = useAtom(FMarginTokenAtom);
+
+  const handleChange = (t: IToken) => {
+    setMarginToken(() => {
+      farmingPickPool({ token: t });
+      return t;
+    });
+  };
 
   useEffect(() => {
     if (marginTokens?.length) {
@@ -39,7 +50,7 @@ export function MarginCoin() {
                 isActive={isActive}
                 data-check={marginToken?.address === t.address}
                 className="hover:bg-hover data-[check=true]:bg-yellow"
-                onClick={() => setMarginToken(t)}
+                onClick={() => handleChange(t)}
               >
                 <div className="flex items-center">
                   <CoinIcon src={t.logoURI} />

@@ -3,16 +3,26 @@ import { TitleText, ContentCon, OptionBtn } from "./common";
 import { useAtom } from "jotai";
 import { FLeverageAtom } from "@/lib/states/farming";
 import { IsActivePanelContext } from "../hover-active-panel";
+import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
 
 export function MaxLeverage() {
   const isActive = useContext(IsActivePanelContext);
 
+  const { farmingPickPool } = useFarmingMatchPool();
+
   const leverages = [5, 10, 20, 50];
-  const [activeLeverage, setActiveLevel] = useAtom(FLeverageAtom);
+  const [activeLeverage, setActiveLeverage] = useAtom(FLeverageAtom);
 
   useEffect(() => {
-    setActiveLevel(leverages[0]);
-  }, []);
+    setActiveLeverage(leverages[0]);
+  }, [setActiveLeverage]);
+
+  const handleChange = (l: number) => {
+    setActiveLeverage(() => {
+      farmingPickPool({ leverage: l });
+      return l;
+    });
+  };
 
   return (
     <div>
@@ -24,7 +34,7 @@ export function MaxLeverage() {
             isActive={isActive}
             data-check={l === activeLeverage ? "true" : "false"}
             className="hover:bg-hover data-[check=true]:bg-yellow"
-            onClick={() => setActiveLevel(l)}
+            onClick={() => handleChange(l)}
           >
             {l}×
           </OptionBtn>

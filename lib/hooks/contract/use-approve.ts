@@ -38,8 +38,10 @@ export function useApprove(
   }, [allowanceValue, tokenInfo]);
 
   const shouldApprove = useMemo(
-    () => allowance === 0 || Number(tokenAmount) > Number(allowance),
-    [allowance, tokenAmount],
+    () =>
+      tokenAddress &&
+      (allowance === 0 || Number(tokenAmount) > Number(allowance)),
+    [tokenAddress, allowance, tokenAmount],
   );
 
   const { data, isLoading, error, isError, isSuccess, write } = useTxWrite({

@@ -3,16 +3,28 @@ import { useAtom } from "jotai";
 import { FRatingLevelAtom } from "@/lib/states/farming";
 import { useContext, useEffect } from "react";
 import { IsActivePanelContext } from "../hover-active-panel";
+import { RATING_LEVELS } from "@/lib/constant";
+import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
 
 export function AssetRatingLevel() {
   const isActive = useContext(IsActivePanelContext);
 
-  const levels = ["High", "Moderate", "Low"];
+  const { farmingPickPool } = useFarmingMatchPool();
+
+  const levels = RATING_LEVELS;
   const [activeLevel, setActiveLevel] = useAtom(FRatingLevelAtom);
 
   useEffect(() => {
     setActiveLevel(levels[1]);
   }, []);
+
+  const handleChange = (level: (typeof RATING_LEVELS)[number]) => {
+    setActiveLevel(() => {
+      farmingPickPool({ level });
+
+      return level;
+    });
+  };
 
   return (
     <div>
@@ -22,7 +34,7 @@ export function AssetRatingLevel() {
           isActive={isActive}
           data-check={levels[0] === activeLevel ? "true" : "false"}
           className="data-[check=true]:border-green  data-[check=true]:text-green data-[check=false]:hover:bg-hover"
-          onClick={() => setActiveLevel(levels[0])}
+          onClick={() => handleChange(levels[0])}
         >
           <div className="relative w-[60px] text-center">
             <div className="relative z-10">{levels[0]}</div>
@@ -35,7 +47,7 @@ export function AssetRatingLevel() {
           isActive={isActive}
           data-check={levels[1] === activeLevel ? "true" : "false"}
           className="data-[check=true]:border-tan  data-[check=true]:text-tan data-[check=false]:hover:bg-hover"
-          onClick={() => setActiveLevel(levels[1])}
+          onClick={() => handleChange(levels[1])}
         >
           <div className="relative w-[60px] text-center">
             <div className="relative z-10">{levels[1]}</div>
@@ -48,7 +60,7 @@ export function AssetRatingLevel() {
           isActive={isActive}
           data-check={levels[2] === activeLevel ? "true" : "false"}
           className="data-[check=true]:border-red  data-[check=true]:text-red data-[check=false]:hover:bg-hover"
-          onClick={() => setActiveLevel(levels[2])}
+          onClick={() => handleChange(levels[2])}
         >
           <div className="relative w-[60px] text-center">
             <div className="relative z-10">{levels[2]}</div>

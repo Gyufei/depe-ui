@@ -1,12 +1,16 @@
+import NP from "number-precision";
+import { useMemo, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
+import { useAtom, useAtomValue } from "jotai";
+
 import { useStrNum } from "@/lib/hooks/use-str-num";
 import { cn } from "@/lib/utils/utils";
-import { useEffect, useMemo, useState } from "react";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
-import { SLeverageAtom } from "@/lib/states/swap";
-import { useAtom } from "jotai";
+import { SLeverageAtom, SPoolAtom } from "@/lib/states/swap";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { Skeleton } from "@/components/ui/skeleton";
+import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
+import { range } from "lodash";
 
 export default function LeverageSelectInput({
   className,
@@ -15,15 +19,22 @@ export default function LeverageSelectInput({
 }) {
   const { isLoading: isTokenLoading } = useTokens();
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { swapPickPool } = useSwapPickPool();
+
+  const pool = useAtomValue(SPoolAtom);
   const [currentLeverage, setCurrentLeverage] = useAtom(SLeverageAtom);
-  const [inputLeverage, setInputLeverage] = useStrNum("5");
 
-  const leverageOptions = useMemo(() => [5, 10, 15, 20, 25], []);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [inputLeverage, setInputLeverage] = useStrNum();
 
-  useEffect(() => {
-    setCurrentLeverage(leverageOptions[0]);
-  }, []);
+  const leverageOptions = useMemo(() => {
+    if (pool) {
+      const pLeverage = NP.divide(pool.maxleverage, 100);
+      return range(1, pLeverage);
+    }
+
+    return [5, 10, 15, 20, 25];
+  }, [pool]);
 
   const ref = useOnclickOutside(() => {
     setIsExpanded(false),
@@ -38,15 +49,22 @@ export default function LeverageSelectInput({
   };
 
   const handleClickLeverage = (l: number) => {
-    setCurrentLeverage(l);
-    setInputLeverage(l.toString());
+    setCurrentLeverage(() => {
+      if (!pool) {
+        swapPickPool({ leverage: l });
+      }
+      return l;
+    });
     setIsExpanded(false);
   };
 
   const handleInput = (l: string) => {
     setInputLeverage(l);
     if (l && !isNaN(Number(l))) {
-      setCurrentLeverage(Number(l));
+      setCurrentLeverage(() => {
+        swapPickPool({ leverage: Number(l) });
+        return Number(l);
+      });
     }
   };
 

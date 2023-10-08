@@ -26,6 +26,12 @@ export default function FarmBtn() {
   );
 
   useEffect(() => {
+    if (!pool) {
+      setBtnText("No match pool");
+      setIsBtnDisabled(true);
+      return;
+    }
+
     if (!baseTokenBalance) {
       setIsBtnDisabled(true);
       return;
@@ -33,12 +39,6 @@ export default function FarmBtn() {
 
     if (!depositAmount) {
       setIsBtnDisabled(true);
-    }
-
-    if (!pool) {
-      setBtnText("No match pool");
-      setIsBtnDisabled(true);
-      return;
     }
 
     setBtnText("Farm it");

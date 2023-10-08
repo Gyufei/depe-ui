@@ -41,6 +41,12 @@ export default function SwapBtn() {
   };
 
   useEffect(() => {
+    if (!pool) {
+      setBtnText("No match pool");
+      setIsBtnDisabled(true);
+      return;
+    }
+
     if (!baseTokenBalance) {
       setIsBtnDisabled(true);
       return;
@@ -48,12 +54,6 @@ export default function SwapBtn() {
 
     if (!baseTokenAmount) {
       setIsBtnDisabled(true);
-    }
-
-    if (!pool) {
-      setBtnText("No match pool");
-      setIsBtnDisabled(true);
-      return;
     }
 
     setBtnText("Trade");

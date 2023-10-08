@@ -7,14 +7,17 @@ export function usePoolAPY(poolAddr: IPool["poolAddr"] | null) {
   const res = useGqlRequest(
     PoolAPR(poolAddr ? [{ key: "poolAddr", value: poolAddr }] : []),
   );
-  
+
   const apyVal = useMemo(() => {
-    const apyNum = Number(res.data?.poolApr?.apr as string || 0);
+    const apr = res.data?.poolApr?.apr;
+    if (apr === "NaN") return "0";
+
+    const apyNum = Number(apr || 0);
     return String(apyNum);
-  }, [res?.data])
+  }, [res?.data]);
 
   return {
     ...res,
-    data: apyVal
+    data: apyVal,
   };
 }
