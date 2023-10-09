@@ -19,7 +19,7 @@ export default function ShareDialogContent({
   const { address: account } = useAccount();
 
   const {
-    baseToken,
+    quoteToken,
     leverage,
     pnlAmount,
     pnlPercent,
@@ -71,7 +71,7 @@ export default function ShareDialogContent({
             <div className="flex flex-col items-start">
               <LeverageAndToken
                 leverage={leverage}
-                token={baseToken?.symbol || ""}
+                token={quoteToken?.symbol || ""}
               ></LeverageAndToken>
               <Pnl
                 showAmount={showPnlAmount}
@@ -282,7 +282,7 @@ function OptionCon({
   };
 
   return (
-    <div className="w-[750px]">
+    <div>
       <div className="flex h-[28px] justify-between px-[34px]">
         <div className="w-6 border-x-4 border-black"></div>
         <div className="w-6 border-x-4 border-black"></div>
