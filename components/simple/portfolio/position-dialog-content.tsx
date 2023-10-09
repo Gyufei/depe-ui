@@ -283,8 +283,7 @@ function PlText({ profit, percent }: { profit: string; percent: string }) {
       data-state={isLoss ? "loss" : "profit"}
       className="text-[28px] leading-[34px] data-[state=loss]:text-red data-[state=profit]:text-green"
     >
-      {isLoss && "-"}${absProfit} ({isLoss && "-"}
-      {absPercent}%)
+      {isLoss && "-"}${absProfit} ({isLoss && "-"} {absPercent}%)
     </div>
   );
 }

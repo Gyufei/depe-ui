@@ -2,9 +2,9 @@ import { Address } from "viem";
 
 export enum EPositionStatus {
   genesis,
-  running,
+  open,
   liquidating,
-  ended,
+  closed,
 }
 
 export interface IPosition {

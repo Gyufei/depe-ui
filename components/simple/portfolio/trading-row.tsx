@@ -24,6 +24,7 @@ import { APYText, OperationPopRow, SecondText, TitleText } from "./row-common";
 import { IPosition } from "@/lib/types/position";
 import { usePool } from "@/lib/hooks/api/use-pool";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
+import ShareDialogContent from "./share-dialog-content";
 
 export function TradingRow({
   position,
@@ -35,6 +36,7 @@ export function TradingRow({
   const [popOpen, setPopOpen] = useState(false);
   const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
   const [transferDialogOpen, setTransferDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [positionDialogOpen, setPositionDialogOpen] = useState(false);
 
   const handlePositionDialog = (val: boolean) => {
@@ -49,6 +51,11 @@ export function TradingRow({
 
   const handleTransferDialog = (val: boolean) => {
     setTransferDialogOpen(val);
+    if (!val) setPopOpen(false);
+  };
+
+  const handleShareDialog = (val: boolean) => {
+    setShareDialogOpen(val);
     if (!val) setPopOpen(false);
   };
 
@@ -142,7 +149,20 @@ export function TradingRow({
                 </DialogContent>
               </Dialog>
 
-              <OperationPopRow>Share</OperationPopRow>
+              <Dialog
+                open={shareDialogOpen}
+                onOpenChange={(isOpen) => handleShareDialog(isOpen)}
+              >
+                <DialogTrigger asChild>
+                  <OperationPopRow>Share</OperationPopRow>
+                </DialogTrigger>
+                <DialogContent
+                  showClose={false}
+                  className="w-[750px] scale-50 gap-0 rounded-none border-0 p-0 shadow-none"
+                >
+                  <ShareDialogContent position={position} pool={pool} />
+                </DialogContent>
+              </Dialog>
 
               <Dialog
                 open={transferDialogOpen}

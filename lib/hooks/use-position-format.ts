@@ -6,6 +6,7 @@ import { formatNum } from "../utils/number";
 import { formatUnits } from "viem";
 import { usePoolFormat } from "./use-pool-format";
 import { useTokenPrice } from "./contract/use-token-price";
+import { format } from "date-fns";
 
 export function usePositionFormat(position: IPosition, pool: IPool) {
   const positionPool = usePoolFormat(pool);
@@ -42,6 +43,14 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     () => formatNum(marginAmount),
     [marginAmount],
   );
+
+  const openOn = useMemo(() => {
+    return new Date(Number(position.updateTimestamp) * 1000);
+  }, [position.updateTimestamp]);
+
+  const openOnFormat = useMemo(() => {
+    return format(openOn, "LLL dd, yyyy");
+  }, [openOn]);
 
   const debtAmount = useMemo(() => {
     const debt = NP.divide(
@@ -104,6 +113,10 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     pnlPercent: {
       value: pnlPercent,
       formatted: pnlPercentFormat,
+    },
+    openOn: {
+      value: openOn,
+      formatted: openOnFormat,
     },
   };
 }
