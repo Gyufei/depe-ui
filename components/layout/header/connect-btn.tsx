@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import AccountAvatar from "/public/icons/account-avatar.svg";
 import { Skeleton } from "../../ui/skeleton";
-import { useConnectModal } from "@/lib/hooks/use-connect";
+import { useConnectModal } from "@/lib/hooks/common/use-connect";
 
 export default function ConnectBtn() {
   const { shortAddress, openConnectModal, isDisconnected, isConnecting } =

@@ -5,6 +5,7 @@ import { IPool } from "../types/pool";
 import { RATING_LEVELS } from "../constant";
 import { IToken } from "../types/token";
 import { maxBy } from "lodash";
+import { getTokenRating } from "../token-rate";
 
 export function usePickPool() {
   const { data: tokens } = useTokens();
@@ -37,17 +38,20 @@ export function usePickPool() {
         if (!ratingLevel) return false;
 
         const quoteToken = tokens?.find((t) => pool.quoteToken === t.address);
-        const pRating = quoteToken?.rating || 20;
+        const pRating = getTokenRating(quoteToken?.ratingScore);
+        console.log(pRating);
+        if (!pRating) return false;
 
         if (ratingLevel === RATING_LEVELS[0]) {
-          return pRating < 30;
+          return pRating > 0;
         } else if (ratingLevel === RATING_LEVELS[1]) {
-          return pRating >= 30 && pRating < 60;
+          return pRating > 4;
         } else if (ratingLevel === RATING_LEVELS[2]) {
-          return pRating >= 60;
+          return pRating > 7;
         }
       })
       .map((p) => p.poolId);
+    if (ratingLevel && !ratingMatchArr.length) return null;
 
     const leverageMatchArr = pools
       .filter((pool) => {
@@ -101,14 +105,15 @@ export function usePickPool() {
     const quoteToken = tokens?.find(
       (t) => selectedPool.quoteToken === t.address,
     );
-    const pRating = quoteToken?.rating || 20;
 
+    const pRating = getTokenRating(quoteToken!.ratingScore) || 10;
     let ratingLevel: (typeof RATING_LEVELS)[number] | null = null;
-    if (pRating < 30) {
+
+    if (pRating < 4) {
       ratingLevel = RATING_LEVELS[0];
-    } else if (pRating >= 30 && pRating < 60) {
+    } else if (pRating >= 4 && pRating < 77) {
       ratingLevel = RATING_LEVELS[1];
-    } else if (pRating >= 60) {
+    } else if (pRating >= 7) {
       ratingLevel = RATING_LEVELS[2];
     }
 

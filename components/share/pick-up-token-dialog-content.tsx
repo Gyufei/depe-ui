@@ -7,6 +7,7 @@ import { truncateAddr } from "@/lib/utils/web3";
 import { IToken } from "@/lib/types/token";
 import { Skeleton } from "../ui/skeleton";
 import { useMemo, useState } from "react";
+import { getTokenRatingText } from "@/lib/token-rate";
 
 export default function PickUpTokenDialogContent({
   isLoading,
@@ -85,11 +86,15 @@ function TokenRow({
   isSelected,
   onClick,
 }: {
-  token: Record<string, any>;
+  token: IToken;
   isSelected: boolean;
   onClick: () => void;
 }) {
   const shortAddress = truncateAddr(token.address, { nPrefix: 8, nSuffix: 6 });
+  const rateLevel = useMemo(() => {
+    return getTokenRatingText(token.ratingScore);
+  }, [token.ratingScore]);
+
   return (
     <div
       onClick={onClick}
@@ -118,9 +123,7 @@ function TokenRow({
               src="/icons/flag.svg"
               alt="flag"
             ></Image>
-            <div className="ml-1 text-sm leading-[17px]">
-              {token?.rate || "AA+"}
-            </div>
+            <div className="ml-1 text-sm leading-[17px]">{`${rateLevel}+`}</div>
           </div>
         </div>
       </div>

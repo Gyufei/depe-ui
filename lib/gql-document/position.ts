@@ -9,20 +9,21 @@ export const PositionsDoc = (params: Array<IGqlDocParam>): string => {
     query {
       positions(${paramsStr}) {
       data { 
-              positionAddr
-              dpPoolAddr
-              trader 
-              leverage
-              positionSize
-              debtAmount
-              marginAmount
-              apr 
-              isNFT
-              pendingFundingFee
-              remnantAsset
-              updateTimestamp
-              positionStatus
-          }
+          positionAddr
+          dpPoolAddr
+          trader 
+          leverage
+          positionSize
+          debtAmount
+          marginAmount
+          apr 
+          isNFT
+          tokenId
+          pendingFundingFee
+          remnantAsset
+          updateTimestamp
+          positionStatus
+        }
       }
     }`;
 };
@@ -34,19 +35,20 @@ export const PositionDoc = (params: Array<IGqlDocParam>): string => {
   return gql`
     query {
       position(${paramsStr}) {
-        positionAddr
-        dpPoolAddr
-        trader
-        leverage
-        positionSize
-        debtAmount
-        marginAmount
-        apr
-        pendingFundingFee
-        remnantAsset
-        updateTimestamp
-        positionStatus
-        isNFT
+          positionAddr
+          dpPoolAddr
+          trader 
+          leverage
+          positionSize
+          debtAmount
+          marginAmount
+          apr 
+          isNFT
+          tokenId
+          pendingFundingFee
+          remnantAsset
+          updateTimestamp
+          positionStatus
       }
     }
 `;

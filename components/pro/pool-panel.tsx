@@ -103,11 +103,11 @@ export default function PoolPanel({ pool }: { pool: IPool }) {
           </FieldRow>
         </div>
 
-        <div className="flex justify-between pt-4">
+        <div className="flex items-center justify-between pt-4">
           <div className="c-font-title-65 text-xl leading-[30px]">
             # {pool.poolId}
           </div>
-          <button className="rounded-md border border-black px-14 py-2 leading-6 hover:contrast-50">
+          <button className="rounded-md border border-black px-10 py-2 leading-6 hover:contrast-50">
             Detail
           </button>
         </div>

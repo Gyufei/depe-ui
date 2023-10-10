@@ -1,6 +1,6 @@
 import { useWeb3Modal } from "@web3modal/react";
 import { useAccount } from "wagmi";
-import { truncateAddr } from "../utils/web3";
+import { truncateAddr } from "../../utils/web3";
 import { useMemo } from "react";
 
 export function useConnectModal() {

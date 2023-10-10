@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import {
   SAmountInMaxAtom,

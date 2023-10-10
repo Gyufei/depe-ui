@@ -203,7 +203,7 @@ function SortPopRow({ onClick, text }: { onClick: () => void; text: string }) {
   return (
     <div
       onClick={() => onClick()}
-      className="flex h-8 cursor-pointer items-center rounded-xl px-4 text-sm text-black hover:bg-[#f5f6f7]"
+      className="flex h-8 cursor-pointer items-center rounded-lg px-4 text-sm text-black hover:bg-[#f5f6f7]"
     >
       {text}
     </div>
@@ -241,7 +241,7 @@ function PoolRow({
         img1={quoteToken?.logoURI || ""}
         img2={baseToken?.logoURI || ""}
       />
-      <div className="ml-3 flex flex-1 items-center justify-between">
+      <div className="ml-3 flex flex-1 items-center justify-between pt-[2px]">
         <div className="flex flex-col justify-between">
           <TitleText>#{pool.poolId}</TitleText>
           <SecondText>{quoteToken?.symbol} </SecondText>

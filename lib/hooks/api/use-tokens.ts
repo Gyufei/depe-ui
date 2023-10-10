@@ -3,7 +3,7 @@ import fetcher from "../../fetcher";
 import type { IToken } from "../../types/token";
 import { useEndPoint } from "./use-endpoint";
 import { useMemo } from "react";
-import { useChainConfig } from "../use-chain-config";
+import { useChainConfig } from "../common/use-chain-config";
 
 export function useTokens() {
   const { chainConfig } = useChainConfig();

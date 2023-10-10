@@ -1,5 +1,5 @@
 import { IPosition } from "../../types/position";
-import { useChainConfig } from "../use-chain-config";
+import { useChainConfig } from "../common/use-chain-config";
 import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 
@@ -12,6 +12,7 @@ export function useMintPositionNft(position: IPosition) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "mintPosition",
+    actionName: "Mint",
   });
 
   const writeAction = () => {

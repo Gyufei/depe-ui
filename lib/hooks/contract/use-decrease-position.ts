@@ -2,12 +2,12 @@ import NP from "number-precision";
 import { usePublicClient } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodePath, encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
 import { IPool } from "../../types/pool";
 import { IPosition } from "../../types/position";
-import { useTokensInfo } from "../use-token-info";
+import { useTokensInfo } from "../api/use-token-info";
 import { UniswapQuoterABI } from "../../abi/UniswapQuoter";
 import { DEFAULT_SLIPPAGE, UNISWAP_FEES } from "../../constant";
 import { useTxWrite } from "./use-tx-write";
@@ -27,7 +27,8 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
-    functionName: "increasePosition",
+    functionName: "decreasePosition",
+    actionName: "DecreasePosition",
   });
 
   const getAmountOutMin = async (size: bigint) => {

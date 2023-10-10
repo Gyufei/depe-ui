@@ -16,7 +16,7 @@ import {
 import { encodePath } from "@/lib/utils/web3";
 
 import InputPanel from "@/components/share/input-panel";
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { UNISWAP_FEES } from "@/lib/constant";
 import { StableTokenSelectDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";

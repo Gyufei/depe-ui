@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useChainConfig } from "./use-chain-config";
+import { useChainConfig } from "./common/use-chain-config";
 import { usePositionFormat } from "./use-position-format";
 import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
@@ -43,7 +43,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     if (isLoading) return;
     if (!amountInMax) return;
 
-    write(inputVal, amountInMax);
+    write(inputVal, amountInMax, estPayout?.value || null);
   };
 
   const handleInputValChange = (value: string) => {

@@ -23,7 +23,9 @@ export default function SWRConfigProvider({
           console.log({
             variant: "destructive",
             title: `Api: ${key}`,
-            description: `${error.status}: ${error.info}`,
+            description: `${error.status || "error"}: ${
+              error.info || "Some Error Occurred"
+            }`,
           });
         },
       }}

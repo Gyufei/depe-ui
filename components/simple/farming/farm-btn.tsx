@@ -23,6 +23,7 @@ export default function FarmBtn() {
 
   const { isLoading: isDepositLoading, write: writeAction } = usePoolDeposit(
     pool?.poolAddr || null,
+    baseToken
   );
 
   useEffect(() => {

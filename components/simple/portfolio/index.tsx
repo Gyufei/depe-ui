@@ -6,7 +6,7 @@ import { FarmingList } from "./farming-list";
 import { TradingList } from "./trading-list";
 import { usePositions } from "@/lib/hooks/api/use-positions";
 import Empty from "@/components/share/empty";
-import { useAccountPools } from "@/lib/hooks/use-account-pools";
+import { useAccountPools } from "@/lib/hooks/api/use-account-pools";
 import HoverActivePanel, { IsActivePanelContext } from "../hover-active-panel";
 
 export default function Portfolio() {

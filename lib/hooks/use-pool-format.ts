@@ -2,7 +2,7 @@ import NP from "number-precision";
 import { useMemo } from "react";
 import { addSeconds, formatDuration, intervalToDuration } from "date-fns";
 import { IPool } from "../types/pool";
-import { useTokensInfo } from "./use-token-info";
+import { useTokensInfo } from "./api/use-token-info";
 
 export function usePoolFormat(pool: IPool | null) {
   const [baseToken, quoteToken] = useTokensInfo([

@@ -2,7 +2,7 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { IPosition } from "../../types/position";
-import { useChainConfig } from "../use-chain-config";
+import { useChainConfig } from "../common/use-chain-config";
 import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 
@@ -16,12 +16,13 @@ export function useTransferNFT(position: IPosition) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "transferFrom",
+    actionName: "TransferNFT",
   });
 
   const writeAction = (to: Address) => {
     if (!position?.isNFT || !to) return;
 
-    const nftTokenId = "3";
+    const nftTokenId = position.tokenId;
     const TxArgs = [account, to, nftTokenId];
 
     write({

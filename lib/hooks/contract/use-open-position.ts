@@ -1,5 +1,6 @@
+import { useMemo } from "react";
 import { useAtomValue } from "jotai";
-import { parseEther, parseUnits } from "viem";
+import { parseUnits } from "viem";
 
 import {
   SAmountInMaxAtom,
@@ -11,11 +12,11 @@ import {
   SQuoteTokenAmountAtom,
   SQuoteTokenAtom,
 } from "@/lib/states/swap";
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
 import { useTxWrite } from "./use-tx-write";
-import { useMemo } from "react";
+import { useSpecialToken } from "../use-eth-token";
 
 export function useOpenPosition() {
   const { chainConfig } = useChainConfig();
@@ -31,21 +32,18 @@ export function useOpenPosition() {
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
-  const extraParams = useMemo(() => {
-    if (baseToken?.symbol === "ETH" && baseTokenAmount) {
-      return {
-        value: parseEther(baseTokenAmount),
-      };
-    }
+  const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
 
-    return {} as any;
-  }, [baseToken, baseTokenAmount]);
+  const extraParams = useMemo(() => {
+    return getEthValueParams(baseToken, baseTokenAmount);
+  }, [baseToken, baseTokenAmount, getEthValueParams]);
 
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "openPosition",
     ...extraParams,
+    actionName: "OpenPosition",
   });
 
   const writeAction = () => {
@@ -70,7 +68,7 @@ export function useOpenPosition() {
       pool.poolAddr,
       chainConfig?.contract?.UniswapV3Router,
       quoteAmount,
-      BigInt(leverage) * 100n,
+      BigInt((leverage * 100).toFixed()),
       amountInMax,
       abiEncodedPath,
       mintNFTFlag,

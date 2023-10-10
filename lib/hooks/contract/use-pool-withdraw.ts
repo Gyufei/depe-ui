@@ -1,4 +1,4 @@
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 
 import { useTxWrite } from "./use-tx-write";
 import { IPool } from "../../types/pool";
@@ -12,6 +12,7 @@ export function usePoolWithdraw(poolAddr: IPool["poolAddr"] | null) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "withdraw",
+    actionName: "Withdraw",
   });
 
   const writeAction = (amount: bigint) => {

@@ -67,7 +67,7 @@ export default function SwapPoolSelect() {
                 src={PoolCircleIcon}
                 alt="pools"
               ></Image>
-              <div className="ml-1 mr-[14px] leading-[22px]">
+              <div className="ml-1 mr-[10px] leading-[22px]">
                 #{selectedPool.poolId}
               </div>
               <Image

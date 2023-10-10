@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/lib/utils/utils";
-import { useConnectModal } from "@/lib/hooks/use-connect";
+import { useConnectModal } from "@/lib/hooks/common/use-connect";
 import { Loader2 } from "lucide-react";
 
 export default function WithWalletBtn({

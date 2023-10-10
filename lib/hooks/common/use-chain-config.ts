@@ -1,5 +1,5 @@
 import { usePublicClient } from "wagmi";
-import { ChainConfigs } from "../chain-configs";
+import { ChainConfigs } from "../../chain-configs";
 import { useMemo } from "react";
 
 export function useChainConfig() {

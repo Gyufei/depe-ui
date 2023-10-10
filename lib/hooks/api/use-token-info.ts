@@ -1,5 +1,5 @@
-import { useTokens } from "./api/use-tokens";
-import type { IToken } from "../types/token";
+import { useTokens } from "./use-tokens";
+import type { IToken } from "../../types/token";
 import type { Address } from "viem";
 
 export function useTokensInfo(

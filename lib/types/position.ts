@@ -21,4 +21,5 @@ export interface IPosition {
   updateTimestamp: string;
   positionStatus: EPositionStatus;
   isNFT: boolean;
+  tokenId: string;
 }

@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { IPosition } from "../types/position";
 import { IPool } from "../types/pool";
 import { formatNum } from "../utils/number";
-import { formatUnits } from "viem";
 import { usePoolFormat } from "./use-pool-format";
 import { useTokenPrice } from "./contract/use-token-price";
 import { format } from "date-fns";
@@ -35,7 +34,10 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
   }, [size]);
 
   const marginAmount = useMemo(
-    () => formatUnits(BigInt(position.marginAmount), baseToken?.decimals || 18),
+    () =>
+      String(
+        NP.divide(position.marginAmount, 10 ** (baseToken?.decimals || 6)),
+      ),
     [position.marginAmount, baseToken?.decimals],
   );
 

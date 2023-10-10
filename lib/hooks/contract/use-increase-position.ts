@@ -1,12 +1,13 @@
 import { parseUnits } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
 import { IPool } from "../../types/pool";
 import { IPosition } from "../../types/position";
-import { useTokensInfo } from "../use-token-info";
+import { useTokensInfo } from "../api/use-token-info";
 import { useTxWrite } from "./use-tx-write";
+import { useSpecialToken } from "../use-eth-token";
 
 export function useIncreasePosition(pool: IPool, position: IPosition) {
   const { chainConfig } = useChainConfig();
@@ -14,16 +15,29 @@ export function useIncreasePosition(pool: IPool, position: IPosition) {
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
   const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;
 
-  const [quoteToken] = useTokensInfo([pool.quoteToken]);
+  const [baseToken, quoteToken] = useTokensInfo([
+    pool.baseToken,
+    pool.quoteToken,
+  ]);
+
+  const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
 
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "increasePosition",
+    actionName: "IncreasePosition",
   });
 
-  const writeAction = (amount: string, aInMax: bigint) => {
-    if (!pool || !position || !quoteToken || !amount || !aInMax) return;
+  const writeAction = (
+    amount: string,
+    aInMax: bigint,
+    estPayout: string | null,
+  ) => {
+    if (!pool || !position || !quoteToken || !amount || !aInMax || !estPayout)
+      return;
+
+    const extraParams = getEthValueParams(baseToken, estPayout);
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
       pool.quoteToken,
@@ -43,6 +57,7 @@ export function useIncreasePosition(pool: IPool, position: IPosition) {
 
     write({
       args: TxArgs as any,
+      ...extraParams,
     });
   };
 

@@ -15,6 +15,7 @@ export function usePoolDepositInput(pool: IPool) {
 
   const { isLoading: isLoading, write: writeAction } = usePoolDeposit(
     pool.poolAddr,
+    baseToken,
   );
 
   const handleBtnClick = () => {

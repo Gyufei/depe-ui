@@ -1,5 +1,6 @@
 "use client";
 
+import { useApiRefresh } from "@/lib/hooks/api/use-api-refresh";
 import { GlobalMessageAtom } from "@/lib/states/global-message";
 import { useAtom } from "jotai";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
@@ -17,6 +18,8 @@ export default function GlobalActionTip() {
       return () => clearTimeout(d);
     }
   }, [globalMessage, setGlobalMessage]);
+
+  useApiRefresh();
 
   const colorMap = {
     success: {

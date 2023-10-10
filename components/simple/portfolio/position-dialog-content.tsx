@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
 
 import WithWalletBtn from "../../share/with-wallet-btn";
@@ -18,11 +18,8 @@ import LoopProgress from "@/components/share/loop-progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TokenDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
-import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
-import { useAppendMargin } from "@/lib/hooks/contract/use-append-margin";
 import WithApproveBtn from "@/components/share/with-approve-btn";
-import { parseUnits } from "viem";
-import { useWithdrawMargin } from "@/lib/hooks/contract/use-withdraw-margin";
+import { useAppendMarginInput } from "@/lib/hooks/use-append-margin-input";
 
 export default function PositionDialogContent({
   pool,
@@ -33,8 +30,6 @@ export default function PositionDialogContent({
 }) {
   const tabs: [string, string] = ["Append Margin", "Withdraw Margin"];
   const [activeTab, setActiveTab] = useState(tabs[0]);
-  const [appendVal, setAppendVal] = useState("");
-  const [withdrawVal, setWithdrawVal] = useState("");
 
   const {
     baseToken,
@@ -48,69 +43,24 @@ export default function PositionDialogContent({
     pnlPercent,
   } = usePositionFormat(position, pool);
 
-  const { data: balanceObj, isLoading: isBalanceLoading } = useTokenBalance(
-    baseToken?.address || null,
-  );
+  const {
+    inputVal: appendVal,
+    isLoading: isAppendLoading,
+    isBtnDisabled: aBtnDisabled,
+    btnText: aBtnText,
+    handleBtnClick: handleABtnClick,
+    handleInputValChange: handleAInputValChange,
+    balanceData,
+  } = useAppendMarginInput(pool, position);
 
-  const { isLoading: isAppendLoading, write: appendAction } = useAppendMargin(
-    pool.poolAddr,
-    position.positionAddr,
-  );
-
-  const { isLoading: isWithdrawLoading, write: withdrawAction } =
-    useWithdrawMargin(pool.poolAddr, position.positionAddr);
-
-  const [aBtnText, setABtnText] = useState("Confirm");
-  const [aBtnDisabled, setABtnDisabled] = useState(false);
-
-  const [wBtnText, setWBtnText] = useState("Confirm");
-  const [wBtnDisabled, setWBtnDisabled] = useState(false);
-
-  const handleABtnClick = () => {
-    const amount = parseUnits(appendVal, baseToken?.decimals || 18);
-    appendAction(amount);
-  };
-
-  const handleWBtnClick = () => {
-    const amount = parseUnits(withdrawVal, baseToken?.decimals || 18);
-    withdrawAction(amount);
-  };
-
-  useEffect(() => {
-    if (!baseToken?.address) {
-      setABtnDisabled(true);
-      return;
-    }
-
-    if (!appendVal) {
-      setABtnDisabled(true);
-      return;
-    }
-
-    setABtnDisabled(false);
-    setABtnText("Confirm");
-  }, [baseToken, appendVal, balanceObj]);
-
-  useEffect(() => {
-    if (!baseToken?.address) {
-      setWBtnDisabled(true);
-      return;
-    }
-
-    if (!withdrawVal) {
-      setWBtnDisabled(true);
-      return;
-    }
-
-    if (Number(withdrawVal) > Number(marginAmount)) {
-      setWBtnDisabled(true);
-      setWBtnText(`Insufficient Margin`);
-      return;
-    }
-
-    setWBtnDisabled(false);
-    setWBtnText("Confirm");
-  }, [baseToken, withdrawVal, marginAmount]);
+  const {
+    inputVal: withdrawVal,
+    isLoading: isWithdrawLoading,
+    isBtnDisabled: wBtnDisabled,
+    btnText: wBtnText,
+    handleBtnClick: handleWBtnClick,
+    handleInputValChange: handleWInputValChange,
+  } = useAppendMarginInput(pool, position);
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -216,15 +166,17 @@ export default function PositionDialogContent({
             tokenDisplay={<TokenDisplay token={baseToken!} />}
             balanceDisplay={
               <BalanceDisplay
-                isLoading={isBalanceLoading}
-                balance={balanceObj?.formatted || null}
-                setMax={() => setAppendVal(balanceObj?.formatted || "")}
+                isLoading={balanceData?.isLoading || false}
+                balance={balanceData?.data?.formatted || null}
+                setMax={() =>
+                  handleAInputValChange(balanceData?.data?.value || "")
+                }
               />
             }
             isActive={true}
             className="rounded-tl-none"
             value={appendVal}
-            setValue={setAppendVal}
+            setValue={handleAInputValChange}
           />
         )}
         {activeTab === tabs[1] && (
@@ -234,13 +186,13 @@ export default function PositionDialogContent({
               <BalanceDisplay
                 isLoading={false}
                 balance={marginAmount.formatted}
-                setMax={() => setWithdrawVal(marginAmount.value)}
+                setMax={() => handleWInputValChange(marginAmount.value)}
               />
             }
             isActive={true}
             className="rounded-tl-none"
             value={withdrawVal}
-            setValue={setWithdrawVal}
+            setValue={handleWInputValChange}
           />
         )}
       </div>
@@ -250,7 +202,7 @@ export default function PositionDialogContent({
           token={baseToken}
           disabled={aBtnDisabled}
           willUseAmount={appendVal}
-          balanceAmount={balanceObj?.formatted || "0"}
+          balanceAmount={balanceData?.data?.formatted || "0"}
           className="flex-1"
           isLoading={isAppendLoading}
           onClick={() => handleABtnClick()}

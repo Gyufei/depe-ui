@@ -1,6 +1,6 @@
 import { Address } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 
@@ -12,6 +12,7 @@ export function useWithdrawMargin(poolAddr: Address, positionAddr: Address) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "decreaseMargin",
+    actionName: "WithdrawMargin",
   });
 
   const writeAction = (amount: bigint) => {

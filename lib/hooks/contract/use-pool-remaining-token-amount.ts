@@ -1,9 +1,9 @@
 import { useContractRead } from "wagmi";
 import { IPool } from "../../types/pool";
-import { useChainConfig } from "../use-chain-config";
+import { useChainConfig } from "../common/use-chain-config";
 import { formatUnits } from "viem";
 import { useMemo } from "react";
-import { useTokensInfo } from "../use-token-info";
+import { useTokensInfo } from "../api/use-token-info";
 import { formatNum } from "../../utils/number";
 import { DepePoolABI } from "../../abi/DepePool";
 

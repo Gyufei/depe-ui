@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { usePoolAsset } from "./api/use-pool-asset";
-import { usePools } from "./api/use-pools";
+import { usePoolAsset } from "./use-pool-asset";
+import { usePools } from "./use-pools";
 
 export function useAccountPools() {
   const { data: pools, isLoading: isPoolLoading } = usePools();

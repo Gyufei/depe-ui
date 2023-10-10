@@ -5,18 +5,17 @@ import { useContext, useEffect } from "react";
 import { IsActivePanelContext } from "../hover-active-panel";
 import { RATING_LEVELS } from "@/lib/constant";
 import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
+import { cn } from "@/lib/utils/utils";
 
 export function AssetRatingLevel() {
-  const isActive = useContext(IsActivePanelContext);
-
   const { farmingPickPool } = useFarmingMatchPool();
 
   const levels = RATING_LEVELS;
   const [activeLevel, setActiveLevel] = useAtom(FRatingLevelAtom);
 
   useEffect(() => {
-    setActiveLevel(levels[1]);
-  }, []);
+    setActiveLevel(levels[0]);
+  }, [setActiveLevel, levels]);
 
   const handleChange = (level: (typeof RATING_LEVELS)[number]) => {
     setActiveLevel(() => {
@@ -30,46 +29,98 @@ export function AssetRatingLevel() {
     <div>
       <TitleText>Asset Rating Level</TitleText>
       <ContentCon>
-        <OptionBtn
-          isActive={isActive}
-          data-check={levels[0] === activeLevel ? "true" : "false"}
-          className="data-[check=true]:border-green  data-[check=true]:text-green data-[check=false]:hover:bg-hover"
-          onClick={() => handleChange(levels[0])}
+        <LevelBtn
+          className="data-[check=true]:border-green  data-[check=true]:text-green"
+          level={levels[0]}
+          activeLevel={activeLevel}
+          handleChange={(e) => handleChange(e)}
         >
-          <div className="relative w-[60px] text-center">
-            <div className="relative z-10">{levels[0]}</div>
-            {levels[0] === activeLevel && (
-              <div className="absolute bottom-[1px] z-0 h-[6px] w-[60px] bg-[#ADEED3]"></div>
-            )}
-          </div>
-        </OptionBtn>
-        <OptionBtn
-          isActive={isActive}
-          data-check={levels[1] === activeLevel ? "true" : "false"}
-          className="data-[check=true]:border-tan  data-[check=true]:text-tan data-[check=false]:hover:bg-hover"
-          onClick={() => handleChange(levels[1])}
+          <BtnTextUnderline
+            style={{
+              background:
+                "linear-gradient(to right, rgba(173, 238, 211, 1), rgba(173, 238, 211, 0))",
+            }}
+          />
+        </LevelBtn>
+
+        <LevelBtn
+          className="data-[check=true]:border-tan  data-[check=true]:text-tan"
+          level={levels[1]}
+          activeLevel={activeLevel}
+          handleChange={(e) => handleChange(e)}
         >
-          <div className="relative w-[60px] text-center">
-            <div className="relative z-10">{levels[1]}</div>
-            {levels[1] === activeLevel && (
-              <div className="absolute bottom-[1px] z-0 h-[6px] w-[60px] bg-[#F0D270]"></div>
-            )}
-          </div>
-        </OptionBtn>
-        <OptionBtn
-          isActive={isActive}
-          data-check={levels[2] === activeLevel ? "true" : "false"}
-          className="data-[check=true]:border-red  data-[check=true]:text-red data-[check=false]:hover:bg-hover"
-          onClick={() => handleChange(levels[2])}
+          <BtnTextUnderline
+            style={{
+              background:
+                "linear-gradient(to right, rgba(240, 210, 112, 1), rgba(240, 210, 112, 0))",
+            }}
+          />
+        </LevelBtn>
+
+        <LevelBtn
+          className="data-[check=true]:border-red data-[check=true]:text-red"
+          level={levels[2]}
+          activeLevel={activeLevel}
+          handleChange={(e) => handleChange(e)}
         >
-          <div className="relative w-[60px] text-center">
-            <div className="relative z-10">{levels[2]}</div>
-            {levels[2] === activeLevel && (
-              <div className="absolute bottom-[1px] z-0  h-[6px] w-[60px] bg-[#FFC8C8]"></div>
-            )}
-          </div>
-        </OptionBtn>
+          <BtnTextUnderline
+            style={{
+              background:
+                "linear-gradient(to right, rgba(255, 200, 200, 1), rgba(255, 200, 200, 0))",
+            }}
+          />
+        </LevelBtn>
       </ContentCon>
     </div>
+  );
+}
+
+function LevelBtn({
+  level,
+  activeLevel,
+  handleChange,
+  children,
+  className,
+}: {
+  level: (typeof RATING_LEVELS)[number];
+  activeLevel: string | null;
+  handleChange: (level: string) => void;
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  const isActive = useContext(IsActivePanelContext);
+
+  const isCheck = level === activeLevel;
+
+  return (
+    <OptionBtn
+      isActive={isActive}
+      data-check={isCheck}
+      className={cn("data-[check=false]:hover:bg-hover", className)}
+      onClick={() => handleChange(level)}
+    >
+      <div className="relative w-[60px] text-center">
+        <div className="relative z-10">{level}</div>
+        {isCheck && children}
+      </div>
+    </OptionBtn>
+  );
+}
+
+function BtnTextUnderline({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <div
+      className={cn(
+        "absolute bottom-[1px] z-0 h-[6px] w-[60px] rounded-3xl bg-[#F0D270]",
+        className,
+      )}
+      style={style}
+    ></div>
   );
 }

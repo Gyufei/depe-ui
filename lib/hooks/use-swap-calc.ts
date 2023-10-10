@@ -2,7 +2,7 @@ import { formatUnits, parseUnits } from "viem";
 import NP from "number-precision";
 import { usePublicClient } from "wagmi";
 
-import { useChainConfig } from "./use-chain-config";
+import { useChainConfig } from "./common/use-chain-config";
 import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
 
 export function useSwapBaseCalc() {

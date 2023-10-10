@@ -1,13 +1,14 @@
 import { useEffect, useMemo } from "react";
-import { Address, formatUnits } from "viem";
+import { Address, formatUnits, parseUnits } from "viem";
 
 import { erc20ABI, useAccount, useContractRead } from "wagmi";
 
-import { useChainConfig } from "@/lib/hooks/use-chain-config";
-import { useTokensInfo } from "@/lib/hooks/use-token-info";
+import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useTokensInfo } from "@/lib/hooks/api/use-token-info";
 import { IUSDTABI } from "@/lib/abi/IUSDT";
 import { MAX_UNIT256 } from "@/lib/constant";
 import { useTxWrite } from "./use-tx-write";
+import { useSpecialToken } from "../use-eth-token";
 
 export function useApprove(
   tokenAddress: Address | null,
@@ -16,8 +17,16 @@ export function useApprove(
   const { address: account } = useAccount();
   const { chainConfig } = useChainConfig();
   const [tokenInfo] = useTokensInfo([tokenAddress]);
-  const isUSDT = tokenInfo?.symbol === "USDT";
   const IPIBoneAddress = chainConfig?.contract.IPIBone;
+
+  const { checkIsEth, checkIsUSDT } = useSpecialToken();
+  const isUSDT = useMemo(() => {
+    return checkIsUSDT(tokenInfo);
+  }, [tokenInfo, checkIsUSDT]);
+
+  const isEth = useMemo(() => {
+    return checkIsEth(tokenInfo);
+  }, [tokenInfo, checkIsEth]);
 
   const {
     data: allowanceValue,
@@ -37,12 +46,14 @@ export function useApprove(
     return formatUnits(allowanceValue, tokenInfo?.decimals);
   }, [allowanceValue, tokenInfo]);
 
-  const shouldApprove = useMemo(
-    () =>
+  const shouldApprove = useMemo(() => {
+    if (isEth) return false;
+
+    return (
       tokenAddress &&
-      (allowance === 0 || Number(tokenAmount) > Number(allowance)),
-    [tokenAddress, allowance, tokenAmount],
-  );
+      (allowance === 0 || Number(tokenAmount) > Number(allowance))
+    );
+  }, [tokenAddress, allowance, tokenAmount, isEth]);
 
   const { data, isLoading, error, isError, isSuccess, write } = useTxWrite({
     address: tokenAddress!,
@@ -56,12 +67,12 @@ export function useApprove(
 
     let amountVal;
     if (isUSDT) {
-      amountVal = allowance === 0 ? MAX_UNIT256 : 0;
+      amountVal = allowance === 0 ? MAX_UNIT256 : "0";
     } else {
       amountVal = MAX_UNIT256;
     }
 
-    const amount = BigInt(amountVal);
+    const amount = parseUnits(amountVal, tokenInfo.decimals);
 
     write({
       args: [IPIBoneAddress, amount!],

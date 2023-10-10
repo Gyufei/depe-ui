@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useAtom, useAtomValue } from "jotai";
 
-import { useStrNum } from "@/lib/hooks/use-str-num";
+import { useStrNum } from "@/lib/hooks/common/use-str-num";
 import { cn } from "@/lib/utils/utils";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { SLeverageAtom, SPoolAtom } from "@/lib/states/swap";
@@ -82,7 +82,7 @@ export default function LeverageSelectInput({
       {!isExpanded ? (
         <div
           onClick={() => handleExpand()}
-          className="flex h-12 w-12 cursor-pointer items-center justify-center text-sm leading-[18px] text-black"
+          className="flex h-12 w-12 cursor-pointer items-center justify-center pb-[3px] text-sm leading-[18px] text-black"
         >
           {isTokenLoading ? (
             <Skeleton className="h-5 w-5" />
