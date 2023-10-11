@@ -5,8 +5,8 @@ import WithWalletBtn from "../../share/with-wallet-btn";
 import { Textarea } from "../../ui/textarea";
 import { IPosition } from "@/lib/types/position";
 import { useMintPositionNft } from "@/lib/hooks/contract/use-mint-position-nft";
-import { isAddress } from "viem";
 import { useTransferNFT } from "@/lib/hooks/contract/use-transfer-nft";
+import { isAddress } from "viem";
 
 function EmptyNFT() {
   return (

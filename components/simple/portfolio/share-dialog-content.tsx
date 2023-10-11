@@ -36,7 +36,6 @@ export default function ShareDialogContent({
 
   async function handleDownload() {
     const shareDomNode = document.querySelector("#share-content");
-    console.log(shareDomNode);
     if (!shareDomNode) return;
 
     try {

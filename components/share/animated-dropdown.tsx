@@ -17,6 +17,7 @@ export default function AnimatedDropdown({
       velocity: 0.01,
     },
   });
+
   return (
     <animated.div
       style={{

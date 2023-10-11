@@ -39,7 +39,6 @@ export function usePickPool() {
 
         const quoteToken = tokens?.find((t) => pool.quoteToken === t.address);
         const pRating = getTokenRating(quoteToken?.ratingScore);
-        console.log(pRating);
         if (!pRating) return false;
 
         if (ratingLevel === RATING_LEVELS[0]) {
