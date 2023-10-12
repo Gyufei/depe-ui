@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Arrow } from "@radix-ui/react-popover";
 
@@ -83,16 +83,14 @@ export default function SelectPoolDialogContent({
     onSelect(pool);
   };
 
-  const recordPoolAPY = (poolId: string) => {
-    return (poolAPY: string) => {
-      setPoolAPYs((prev: Record<string, string>) => {
-        return {
-          ...prev,
-          [poolId]: poolAPY,
-        };
-      });
-    };
-  };
+  const recordPoolAPY = useCallback((poolId: string, poolAPY: string) => {
+    setPoolAPYs((prev: Record<string, string>) => {
+      return {
+        ...prev,
+        [poolId]: poolAPY,
+      };
+    });
+  }, []);
 
   return (
     <>
@@ -185,7 +183,7 @@ export default function SelectPoolDialogContent({
                 <PoolRow
                   key={p.poolId}
                   pool={p}
-                  recordAPY={recordPoolAPY(p.poolId)}
+                  recordAPY={(e) => recordPoolAPY(p.poolId, e)}
                   isSelected={pool?.poolId === p.poolId}
                   onClick={() => handleSelectPool(p)}
                 />
@@ -229,7 +227,7 @@ function PoolRow({
 
   useEffect(() => {
     recordAPY(poolAPY);
-  }, [poolAPY]);
+  }, [poolAPY, recordAPY]);
 
   return (
     <div

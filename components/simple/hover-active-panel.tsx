@@ -15,6 +15,7 @@ import {
 } from "@/lib/states/active-panel";
 import { useAtom } from "jotai";
 import { cloneDeep } from "lodash";
+import { useWindowSize } from "@/lib/hooks/common/use-window-size";
 
 export const IsActivePanelContext = createContext(false);
 
@@ -31,9 +32,36 @@ export default function HoverActivePanel({
   const [activePanel, setActivePanel] = useAtom(ActivePanelAtom);
   const [hoverPanel, setHoverPanel] = useAtom(HoverPanelAtom);
 
-  const isActivePanel = activePanel === name || hoverPanel === name;
+  const windowSize = useWindowSize();
+
+  const orderNum = useMemo(() => {
+    return orderArr.findIndex((t) => t === name) + 1;
+  }, [orderArr, name]);
+
+  const isBigScreen = useMemo(
+    () => !windowSize.width || windowSize.width > 1480,
+    [windowSize.width],
+  );
+
+  const isActivePanel =
+    isBigScreen || activePanel === name || hoverPanel === name;
+
+  const left = useMemo(() => {
+    if (isBigScreen) return "unset";
+
+    const conWidth = windowSize.width > 1566 ? 1566 : windowSize.width;
+    const avgPartWidth = conWidth / 3;
+
+    const right3 = avgPartWidth > 480 ? 2 * avgPartWidth : conWidth - 480;
+
+    if (orderNum === 1) return "0";
+    if (orderNum === 2) return avgPartWidth + "px";
+    if (orderNum === 3) return right3 + "px";
+  }, [windowSize.width, orderNum, isBigScreen]);
 
   const handleClickToActive = () => {
+    if (isBigScreen) return true;
+
     setActivePanel(name);
     if (orderArr && orderArr[1] === name) return;
 
@@ -44,48 +72,16 @@ export default function HoverActivePanel({
     return newOrder;
   };
 
-  const orderNum = useMemo(() => {
-    return orderArr.findIndex((t) => t === name) + 1;
-  }, [orderArr, name]);
+  const position = useMemo(() => {
+    if (isBigScreen) return "static";
 
-  const [windowSize, setWindowSize] = useState<{
-    width: number;
-    height: number;
-  }>({
-    width: 0,
-    height: 0,
-  });
+    return "absolute";
+  }, [isBigScreen]);
 
-  const handleSize = useCallback(() => {
-    setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  }, []);
-
-  useEffect(() => {
-    handleSize();
-    window.addEventListener("resize", handleSize);
-  }, [handleSize]);
-
-  useEffect(() => {
-    if (windowSize.width) {
-      setIsRender(true);
-    }
-  }, [windowSize]);
-
-  const [isRender, setIsRender] = useState(false);
-
-  const left = useMemo(() => {
-    const conWidth = windowSize.width > 1566 ? 1566 : windowSize.width;
-    const avgPartWidth = conWidth / 3;
-
-    const right3 = avgPartWidth > 480 ? 2 * avgPartWidth : conWidth - 480;
-
-    if (orderNum === 1) return "0";
-    if (orderNum === 2) return avgPartWidth + "px";
-    if (orderNum === 3) return right3 + "px";
-  }, [windowSize.width, orderNum]);
+  const transform = useMemo(() => {
+    if (isBigScreen) return "scale(1)";
+    return orderNum === 2 ? "scale(1)" : "scale(0.9)";
+  }, [isBigScreen, orderNum]);
 
   return (
     <IsActivePanelContext.Provider value={isActivePanel}>
@@ -99,14 +95,14 @@ export default function HoverActivePanel({
           className,
         )}
         style={{
-          position: isRender ? "absolute" : "static",
+          position,
           left: left ? left : "unset",
           order: orderNum,
           zIndex: orderNum === 2 ? 2 : 1,
-          transform: orderNum !== 2 ? "scale(0.9)" : "scale(1)",
+          transform,
         }}
       >
-        {activePanel !== name && (
+        {!isBigScreen && activePanel !== name && (
           <div
             className="inset-shadow absolute top-[44px] z-20 w-full rounded-3xl bg-white opacity-50 shadow-lg"
             style={{

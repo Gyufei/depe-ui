@@ -44,7 +44,6 @@ export function useApprove(
 
     return formatUnits(allowanceValue, tokenInfo?.decimals);
   }, [allowanceValue, tokenInfo]);
-  console.log(allowanceValue);
 
   const shouldApprove = useMemo(() => {
     if (isEth) return false;

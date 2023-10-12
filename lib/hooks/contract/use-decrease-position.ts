@@ -67,7 +67,6 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
 
     const decreaseSize = parseUnits(amount, quoteToken?.decimals);
     const aOutMin = await getAmountOutMin(decreaseSize);
-    console.log(decreaseSize, aOutMin);
 
     const TxArgs = [
       pool.poolAddr,

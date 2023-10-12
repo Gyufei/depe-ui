@@ -21,7 +21,7 @@ export function useApiRefresh() {
         }, 3000);
       }
     }
-  });
+  }, [globalMessage, globalRefreshMap]);
 
   return null;
 }

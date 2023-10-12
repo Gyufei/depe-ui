@@ -1,5 +1,6 @@
 import { GlobalRefreshMapAtom, IActionName } from "@/lib/states/global-message";
 import { useSetAtom } from "jotai";
+import { useEffect } from "react";
 
 export function useSetApiRefresh(
   key: string,
@@ -8,15 +9,17 @@ export function useSetApiRefresh(
 ) {
   const setGlMap = useSetAtom(GlobalRefreshMapAtom);
 
-  setGlMap((prev) => {
-    return {
-      ...prev,
-      [key]: {
-        actionNames: refreshActions,
-        cb: callback,
-      },
-    };
-  });
+  useEffect(() => {
+    setGlMap((prev) => {
+      return {
+        ...prev,
+        [key]: {
+          actionNames: refreshActions,
+          cb: callback,
+        },
+      };
+    });
+  }, [key, refreshActions, callback, setGlMap]);
 
   return null;
 }

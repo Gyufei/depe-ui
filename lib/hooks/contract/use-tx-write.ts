@@ -68,6 +68,7 @@ export function useTxWrite({
     setGlobalMessage,
     errorTip,
     successTip,
+    actionName,
   ]);
 
   return {

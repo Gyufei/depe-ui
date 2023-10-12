@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { TitleText, ContentCon, OptionBtn } from "./common";
 import { useAtom } from "jotai";
 import { FLeverageAtom } from "@/lib/states/farming";
@@ -10,12 +10,12 @@ export function MaxLeverage() {
 
   const { farmingPickPool } = useFarmingMatchPool();
 
-  const leverages = [5, 10, 20, 50];
+  const leverages = useMemo(() => [5, 10, 20, 50], []);
   const [activeLeverage, setActiveLeverage] = useAtom(FLeverageAtom);
 
   useEffect(() => {
     setActiveLeverage(leverages[0]);
-  }, [setActiveLeverage]);
+  }, [setActiveLeverage, leverages]);
 
   const handleChange = (l: number) => {
     setActiveLeverage(() => {
