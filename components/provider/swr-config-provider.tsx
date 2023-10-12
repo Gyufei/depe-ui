@@ -20,7 +20,7 @@ export default function SWRConfigProvider({
             message: `${error.status}: ${error.info}`,
           });
 
-          console.log({
+          console.info({
             variant: "destructive",
             title: `Api: ${key}`,
             description: `${error.status || "error"}: ${

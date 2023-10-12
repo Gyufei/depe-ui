@@ -45,9 +45,11 @@ export default function useFarmingMatchPool() {
       ratingLevel: rt,
     } = onPoolSelected(selPool);
 
+    if (!mt && !l && !rt) return;
+
     setPool(selPool);
     setMarginToken(mt || null);
-    setLeverage(l);
+    setLeverage(l || 5);
     setRatingLevel(rt);
 
     return {

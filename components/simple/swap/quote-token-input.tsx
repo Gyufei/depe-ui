@@ -83,6 +83,7 @@ export default function QuoteTokenInput() {
       quoteToken!.decimals,
       ePath,
       slippage,
+      baseToken!.decimals,
     );
 
     const baseVal = calcBaseToken(

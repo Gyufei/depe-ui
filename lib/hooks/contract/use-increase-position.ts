@@ -37,14 +37,14 @@ export function useIncreasePosition(pool: IPool, position: IPosition) {
     if (!pool || !position || !quoteToken || !amount || !aInMax || !estPayout)
       return;
 
-    const extraParams = getEthValueParams(baseToken, estPayout);
+    const increaseSize = parseUnits(amount, quoteToken?.decimals);
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
       pool.quoteToken,
       pool.baseToken,
     );
 
-    const increaseSize = parseUnits(amount, quoteToken?.decimals);
+    const extraParams = getEthValueParams(baseToken, estPayout);
 
     const TxArgs = [
       pool.poolAddr,

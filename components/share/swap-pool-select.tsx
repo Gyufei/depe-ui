@@ -42,10 +42,10 @@ export default function SwapPoolSelect() {
   }, [swapPickPool, onSwapPoolSelected]);
 
   useEffect(() => {
-    if (pools?.length && !selectedPool) {
+    if (pools?.length && !selectedPool && !isTokenLoading) {
       onAutoPick();
     }
-  }, [pools, selectedPool, onAutoPick]);
+  }, [pools, selectedPool, onAutoPick, isTokenLoading]);
 
   if (isTokenLoading) return <Skeleton className="h-6 w-[100px]" />;
 

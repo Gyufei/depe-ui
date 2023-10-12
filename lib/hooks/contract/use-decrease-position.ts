@@ -43,12 +43,11 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
       args: [ePath as any, size],
     });
 
+    const slippageValue = NP.divide(DEFAULT_SLIPPAGE, 100);
+    const withSlippage = NP.minus(1, slippageValue);
+
     const aOutMinVal = formatUnits(result, baseToken!.decimals);
-    const slippage = NP.divide(
-      NP.minus(1000, NP.times(DEFAULT_SLIPPAGE, 1000)),
-      1000,
-    );
-    const aOutMin = NP.divide(aOutMinVal, slippage).toFixed(
+    const aOutMin = NP.times(aOutMinVal, withSlippage).toFixed(
       baseToken!.decimals,
     );
     const aOutMinBig = parseUnits(aOutMin, baseToken!.decimals);
@@ -66,6 +65,7 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
 
     const decreaseSize = parseUnits(amount, quoteToken?.decimals);
     const aOutMin = await getAmountOutMin(decreaseSize);
+    console.log(decreaseSize, aOutMin);
 
     const TxArgs = [
       pool.poolAddr,

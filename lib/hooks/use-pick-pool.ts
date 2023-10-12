@@ -97,6 +97,8 @@ export function usePickPool() {
   };
 
   const onPoolSelected = (selectedPool: IPool) => {
+    if (!tokens) return {};
+
     const marginToken = tokens?.find(
       (t) => t.address === selectedPool.baseToken,
     );

@@ -70,6 +70,7 @@ export function useSwapQuoteCalc() {
     decimals: number,
     ePath: string,
     slippage: string,
+    baseDecimals: number,
   ): Promise<{
     aInMax: bigint;
     aInMaxWithSlippage: bigint;
@@ -86,13 +87,16 @@ export function useSwapQuoteCalc() {
     });
 
     const aInMaxWithSlippage = NP.divide(
-      formatUnits(result, decimals),
+      formatUnits(result, baseDecimals),
       NP.minus(1, slippageVal),
     );
 
     return {
       aInMax: result,
-      aInMaxWithSlippage: BigInt(aInMaxWithSlippage.toFixed()),
+      aInMaxWithSlippage: parseUnits(
+        aInMaxWithSlippage.toString(),
+        baseDecimals,
+      ),
     };
   };
 

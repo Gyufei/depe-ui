@@ -46,10 +46,12 @@ export default function useSwapPickPool() {
       leverage: l,
     } = onPoolSelected(selPool);
 
+    if (!mt && !qt && !l) return;
+
     setPool(selPool);
     setBaseToken(mt || null);
     setQuoteToken(qt || null);
-    setLeverage(l);
+    setLeverage(l || 5);
 
     return {
       marginToken: mt || null,

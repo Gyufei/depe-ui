@@ -39,8 +39,8 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
   const { data: poolTokenAmount } = usePoolRemainingTokenAmount(pool);
 
   const handleBtnClick = () => {
-    if (!inputVal) return;
     if (isLoading) return;
+    if (!inputVal) return;
     if (!amountInMax) return;
 
     write(inputVal, amountInMax, estPayout?.value || null);
@@ -122,6 +122,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
       quoteToken!.decimals,
       ePath,
       DEFAULT_SLIPPAGE,
+      baseToken!.decimals,
     );
 
     const baseVal = calcBaseToken(
@@ -145,9 +146,23 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
       return;
     }
 
+    if (
+      canIncreaseMax?.value &&
+      Number(inputVal) > Number(canIncreaseMax.value)
+    ) {
+      setIsBtnDisabled(true);
+      setBtnText("Insufficient liquidity");
+      return;
+    }
+
+    if (!estPayout) {
+      setIsBtnDisabled(true);
+      return;
+    }
+
     setIsBtnDisabled(false);
     setBtnText("Submit Order");
-  }, [inputVal]);
+  }, [inputVal, canIncreaseMax]);
 
   return {
     btnText,

@@ -45,7 +45,7 @@ export default function ShareDialogContent({
       link.href = imgData;
       link.click();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

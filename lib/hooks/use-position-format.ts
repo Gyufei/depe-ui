@@ -1,11 +1,13 @@
 import NP from "number-precision";
 import { useMemo } from "react";
+import { format } from "date-fns";
+
 import { IPosition } from "../types/position";
 import { IPool } from "../types/pool";
 import { formatNum } from "../utils/number";
 import { usePoolFormat } from "./use-pool-format";
 import { useTokenPrice } from "./contract/use-token-price";
-import { format } from "date-fns";
+import { formatUnits, parseUnits } from "viem";
 
 export function usePositionFormat(position: IPosition, pool: IPool) {
   const positionPool = usePoolFormat(pool);
@@ -28,10 +30,13 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     );
     return sizeVal;
   }, [position.positionSize, quoteToken?.decimals]);
-
-  const sizeFormat = useMemo(() => {
-    return formatNum(size, 3);
-  }, [size]);
+  console.log(size);
+  const sizeP = parseUnits(
+    String(position.positionSize),
+    quoteToken?.decimals || 18,
+  );
+  console.log(sizeP);
+  console.log(formatUnits(sizeP, quoteToken?.decimals || 18));
 
   const marginAmount = useMemo(
     () =>
@@ -41,18 +46,9 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     [position.marginAmount, baseToken?.decimals],
   );
 
-  const marginAmountFormat = useMemo(
-    () => formatNum(marginAmount),
-    [marginAmount],
-  );
-
   const openOn = useMemo(() => {
     return new Date(Number(position.updateTimestamp) * 1000);
   }, [position.updateTimestamp]);
-
-  const openOnFormat = useMemo(() => {
-    return format(openOn, "LLL dd, yyyy");
-  }, [openOn]);
 
   const debtAmount = useMemo(() => {
     const debt = NP.divide(
@@ -67,8 +63,6 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     return price;
   }, [debtAmount, size]);
 
-  const openPriceFormat = useMemo(() => formatNum(openPrice), [openPrice]);
-
   const pnlAmount = useMemo(() => {
     if (!currentPriceRes.data.value) return "";
 
@@ -80,8 +74,6 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     return pnlA;
   }, [currentPriceRes.data, size, debtAmount]);
 
-  const pnlAmountFormat = useMemo(() => formatNum(pnlAmount), [pnlAmount]);
-
   const pnlPercent = useMemo(() => {
     const M1 = NP.divide(debtAmount, leverage);
     const pnlP = NP.divide(pnlAmount, M1);
@@ -90,7 +82,16 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     return percent;
   }, [debtAmount, leverage, pnlAmount]);
 
-  const pnlPercentFormat = useMemo(() => formatNum(pnlPercent), [pnlPercent]);
+  const pendingFundingFee = useMemo(() => {
+    return NP.divide(
+      position.pendingFundingFee,
+      10 ** (baseToken?.decimals || 6),
+    );
+  }, [position.pendingFundingFee, baseToken?.decimals]);
+
+  const apr = useMemo(() => {
+    return NP.divide(position.apr, 10 ** 4);
+  }, [position.apr]);
 
   return {
     ...positionPool,
@@ -98,27 +99,35 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     leverage,
     size: {
       value: size,
-      formatted: sizeFormat,
+      formatted: formatNum(size, 3),
     },
     marginAmount: {
       value: marginAmount,
-      formatted: marginAmountFormat,
+      formatted: formatNum(marginAmount),
     },
     openPrice: {
       value: openPrice,
-      formatted: openPriceFormat,
+      formatted: formatNum(openPrice, 3),
     },
     pnlAmount: {
       value: pnlAmount,
-      formatted: pnlAmountFormat,
+      formatted: formatNum(pnlAmount),
     },
     pnlPercent: {
       value: pnlPercent,
-      formatted: pnlPercentFormat,
+      formatted: formatNum(pnlPercent),
     },
     openOn: {
       value: openOn,
-      formatted: openOnFormat,
+      formatted: format(openOn, "LLL dd, yyyy"),
+    },
+    pendingFundingFee: {
+      value: pendingFundingFee,
+      formatted: formatNum(pendingFundingFee),
+    },
+    apr: {
+      value: apr,
+      formatted: formatNum(apr),
     },
   };
 }
