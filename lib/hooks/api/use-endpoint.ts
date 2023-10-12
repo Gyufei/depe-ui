@@ -16,9 +16,14 @@ export function useEndPoint() {
     return chainConfig?.api.tokenApi;
   }, [chainConfig]);
 
+  const routerEndPoint = useMemo(() => {
+    return chainConfig?.api.routerApi;
+  }, [chainConfig]);
+
   return {
     apiEndPoint,
     gqlEndPoint,
     tokenEndPoint,
+    routerEndPoint,
   };
 }

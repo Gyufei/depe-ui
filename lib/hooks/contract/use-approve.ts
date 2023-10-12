@@ -6,7 +6,6 @@ import { erc20ABI, useAccount, useContractRead } from "wagmi";
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { useTokensInfo } from "@/lib/hooks/api/use-token-info";
 import { IUSDTABI } from "@/lib/abi/IUSDT";
-import { MAX_UNIT256 } from "@/lib/constant";
 import { useTxWrite } from "./use-tx-write";
 import { useSpecialToken } from "../use-eth-token";
 
@@ -45,6 +44,7 @@ export function useApprove(
 
     return formatUnits(allowanceValue, tokenInfo?.decimals);
   }, [allowanceValue, tokenInfo]);
+  console.log(allowanceValue);
 
   const shouldApprove = useMemo(() => {
     if (isEth) return false;
@@ -65,11 +65,9 @@ export function useApprove(
   const writeAction = () => {
     if (!IPIBoneAddress || !tokenAddress || !tokenInfo) return;
 
-    let amountVal;
+    let amountVal = String(10 ** tokenInfo.decimals);
     if (isUSDT) {
-      amountVal = allowance === 0 ? MAX_UNIT256 : "0";
-    } else {
-      amountVal = MAX_UNIT256;
+      amountVal = allowance === 0 ? amountVal : "0";
     }
 
     const amount = parseUnits(amountVal, tokenInfo.decimals);

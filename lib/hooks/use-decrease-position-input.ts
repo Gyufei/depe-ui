@@ -15,7 +15,7 @@ export function useDecreasePositionInput(pool: IPool, position: IPosition) {
     formatted: string;
   } | null>(null);
 
-  const { marginAmount, size, pnlAmount, pendingFundingFee, apr } =
+  const { marginAmount, size, pnlAmount, pendingFundingFee, apr, debtAmount } =
     usePositionFormat(position, pool);
 
   const { isLoading, write: writeAction } = useDecreasePosition(pool, position);
@@ -50,7 +50,7 @@ export function useDecreasePositionInput(pool: IPool, position: IPosition) {
 
     const aprOfDay = NP.divide(apr.value, 365);
     const durationApr = NP.times(aprOfDay, durationDays);
-    const fundingFee = NP.times(marginPercentage, durationApr);
+    const fundingFee = NP.times(debtAmount.value, durationApr);
 
     const withFundPayout = NP.minus(
       payout,

@@ -5,8 +5,8 @@ import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
 import { useSwapBaseCalc, useSwapQuoteCalc } from "./use-swap-calc";
 import { usePoolRemainingTokenAmount } from "./contract/use-pool-remaining-token-amount";
-import { encodePath } from "../utils/web3";
-import { DEFAULT_SLIPPAGE, UNISWAP_FEES } from "../constant";
+import { useTokenRoutes } from "./api/use-token-routes";
+import { DEFAULT_SLIPPAGE } from "../constant";
 import { formatNum } from "../utils/number";
 import { useDebouncedCallback } from "use-debounce";
 import { useTokenBalance } from "./contract/use-token-balance";
@@ -15,15 +15,15 @@ import { useIncreasePosition } from "./contract/use-increase-position";
 export function useIncreasePositionInput(pool: IPool, position: IPosition) {
   const { chainConfig } = useChainConfig();
 
-  const [inputVal, setInputVal] = useState("");
-  const [btnText, setBtnText] = useState("Submit Order");
-  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
-
   const { baseToken, quoteToken, leverage, tradingFeeRate } = usePositionFormat(
     position,
     pool,
   );
+  const { encodeTokenPath } = useTokenRoutes();
 
+  const [inputVal, setInputVal] = useState("");
+  const [btnText, setBtnText] = useState("Submit Order");
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [amountInMax, setAmountInMax] = useState<bigint | null>(null);
   const [estPayout, setEstPayout] = useState<{
     value: string;
@@ -72,10 +72,9 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
         tradingFeeRate!,
       );
 
-      const ePath = encodePath(
-        [baseToken!.address, quoteToken!.address],
-        UNISWAP_FEES,
-      );
+      const ePath = encodeTokenPath(baseToken!.address, quoteToken!.address);
+      if (!ePath) return;
+
       const max = await calcQuoteToken(
         aInMaxRes.aInMax,
         quoteToken!.decimals,
@@ -100,6 +99,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     calcBaseAInMax,
     calcQuoteToken,
     tradingFeeRate,
+    encodeTokenPath,
   ]);
 
   const debounceCalcIncreasePayout = useDebouncedCallback((value) => {
@@ -113,10 +113,13 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
     if (!leverage) return;
     if (!pool) return;
 
-    const ePath = encodePath(
-      [quoteToken!.address, baseToken!.address],
-      UNISWAP_FEES,
+    const ePath = encodeTokenPath(
+      baseToken!.address,
+      quoteToken!.address,
+      true,
     );
+    if (!ePath) return;
+
     const aInMaxRes = await calcQuoteAInMax(
       quoteV,
       quoteToken!.decimals,
@@ -162,7 +165,7 @@ export function useIncreasePositionInput(pool: IPool, position: IPosition) {
 
     setIsBtnDisabled(false);
     setBtnText("Submit Order");
-  }, [inputVal, canIncreaseMax]);
+  }, [inputVal, canIncreaseMax, estPayout]);
 
   return {
     btnText,

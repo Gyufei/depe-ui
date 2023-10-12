@@ -13,11 +13,10 @@ import {
   SQuoteTokenAtom,
   SSlippageAtom,
 } from "@/lib/states/swap";
-import { encodePath } from "@/lib/utils/web3";
+import { useTokenRoutes } from "@/lib/hooks/api/use-token-routes";
 
 import InputPanel from "@/components/share/input-panel";
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
-import { UNISWAP_FEES } from "@/lib/constant";
 import { StableTokenSelectDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
 import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
@@ -34,18 +33,19 @@ export default function BaseTokenInput() {
   const { swapPickPool } = useSwapPickPool();
   const { marginTokens, isLoading: isTokenLoading } = useTokens();
   const { calcAmountInMax, calcQuoteToken } = useSwapBaseCalc();
+  const { encodeTokenPath } = useTokenRoutes();
 
   const leverage = useAtomValue(SLeverageAtom);
   const slippage = useAtomValue(SSlippageAtom);
   const pool = useAtomValue(SPoolAtom);
+
+  const { tradingFeeRate } = usePoolFormat(pool);
 
   const [baseToken, setBaseToken] = useAtom(SBaseTokenAtom);
   const [baseTokenAmount, setBaseTokenAmount] = useAtom(SBaseTokenAmountAtom);
   const quoteToken = useAtomValue(SQuoteTokenAtom);
   const setQuoteTokenAmount = useSetAtom(SQuoteTokenAmountAtom);
   const setAmountInMax = useSetAtom(SAmountInMaxAtom);
-
-  const { tradingFeeRate } = usePoolFormat(pool);
 
   const { data: balanceData, isLoading: isBalanceLoading } = useTokenBalance(
     baseToken?.address || null,
@@ -85,10 +85,9 @@ export default function BaseTokenInput() {
       tradingFeeRate!,
     );
 
-    const ePath = encodePath(
-      [baseToken!.address, quoteToken!.address],
-      UNISWAP_FEES,
-    );
+    const ePath = encodeTokenPath(baseToken!.address, quoteToken!.address);
+    if (!ePath) return;
+
     const quoteVal = await calcQuoteToken(
       aInMaxRes.aInMax,
       quoteToken!.decimals,

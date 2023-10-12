@@ -4,12 +4,12 @@ import { formatUnits, parseUnits } from "viem";
 
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { encodePath, encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
+import { useTokenRoutes } from "../api/use-token-routes";
 import { IPool } from "../../types/pool";
 import { IPosition } from "../../types/position";
 import { useTokensInfo } from "../api/use-token-info";
 import { UniswapQuoterABI } from "../../abi/UniswapQuoter";
-import { DEFAULT_SLIPPAGE, UNISWAP_FEES } from "../../constant";
+import { DEFAULT_SLIPPAGE } from "../../constant";
 import { useTxWrite } from "./use-tx-write";
 
 export function useDecreasePosition(pool: IPool, position: IPosition) {
@@ -23,6 +23,7 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
     pool.baseToken,
     pool.quoteToken,
   ]);
+  const { encodeTokenPath, encodeTxExtendedParamsBytes } = useTokenRoutes();
 
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
     address: PositionManagerAddress,
@@ -34,7 +35,7 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
   const getAmountOutMin = async (size: bigint) => {
     const QuoterAddress = chainConfig!.contract.UniswapV3Quoter;
 
-    const ePath = encodePath([pool.quoteToken, pool.baseToken], UNISWAP_FEES);
+    const ePath = encodeTokenPath(pool.baseToken, pool.quoteToken, true);
 
     const { result } = await publicClient.simulateContract({
       address: QuoterAddress,
@@ -59,8 +60,9 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
     if (!pool || !position || !baseToken || !quoteToken || !amount) return;
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
-      pool.quoteToken,
       pool.baseToken,
+      pool.quoteToken,
+      true,
     );
 
     const decreaseSize = parseUnits(amount, quoteToken?.decimals);

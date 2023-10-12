@@ -12,6 +12,7 @@ interface IChainConfig {
   api: {
     default: string;
     tokenApi: string;
+    routerApi: string;
   };
   marginTokens: Array<Address>;
   contract: {
@@ -31,6 +32,7 @@ export const ChainConfigs: Array<IChainConfig> = [
     api: {
       default: EndPointPathMap.ethApi,
       tokenApi: EndPointPathMap.ethTokens,
+      routerApi: EndPointPathMap.ethRouter,
     },
     marginTokens: [
       "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
@@ -51,6 +53,7 @@ export const ChainConfigs: Array<IChainConfig> = [
     api: {
       default: EndPointPathMap.sepoliaApi,
       tokenApi: EndPointPathMap.sepoliaTokens,
+      routerApi: EndPointPathMap.sepoliaRouter,
     },
     marginTokens: [
       "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
@@ -71,6 +74,7 @@ export const ChainConfigs: Array<IChainConfig> = [
     api: {
       default: EndPointPathMap.opApi,
       tokenApi: EndPointPathMap.opTokens,
+      routerApi: EndPointPathMap.opRouter,
     },
     marginTokens: [
       "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
@@ -91,6 +95,7 @@ export const ChainConfigs: Array<IChainConfig> = [
     api: {
       default: EndPointPathMap.baseApi,
       tokenApi: EndPointPathMap.baseTokens,
+      routerApi: EndPointPathMap.baseRouter,
     },
     marginTokens: [
       "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",

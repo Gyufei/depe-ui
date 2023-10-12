@@ -16,8 +16,7 @@ import {
 } from "@/lib/states/swap";
 
 import InputPanel from "@/components/share/input-panel";
-import { encodePath } from "@/lib/utils/web3";
-import { UNISWAP_FEES } from "@/lib/constant";
+import { useTokenRoutes } from "@/lib/hooks/api/use-token-routes";
 import { TokenSelectDisplay } from "@/components/share/input-panel-token-display";
 import { useSwapQuoteCalc } from "@/lib/hooks/use-swap-calc";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
@@ -30,6 +29,7 @@ export default function QuoteTokenInput() {
 
   const { chainConfig } = useChainConfig();
   const { notMarginTokens, isLoading: tokenLoading } = useTokens();
+  const { encodeTokenPath } = useTokenRoutes();
 
   const leverage = useAtomValue(SLeverageAtom);
   const slippage = useAtomValue(SSlippageAtom);
@@ -74,10 +74,13 @@ export default function QuoteTokenInput() {
     if (!leverage) return;
     if (!pool) return;
 
-    const ePath = encodePath(
-      [quoteToken!.address, baseToken!.address],
-      UNISWAP_FEES,
+    const ePath = encodeTokenPath(
+      baseToken!.address,
+      quoteToken!.address,
+      true,
     );
+    if (!ePath) return;
+
     const aInMaxRes = await calcAmountInMax(
       quoteV,
       quoteToken!.decimals,

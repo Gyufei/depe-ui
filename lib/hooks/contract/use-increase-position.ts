@@ -2,7 +2,7 @@ import { parseUnits } from "viem";
 
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
+import { useTokenRoutes } from "../api/use-token-routes";
 import { IPool } from "../../types/pool";
 import { IPosition } from "../../types/position";
 import { useTokensInfo } from "../api/use-token-info";
@@ -21,6 +21,7 @@ export function useIncreasePosition(pool: IPool, position: IPosition) {
   ]);
 
   const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
+  const { encodeTxExtendedParamsBytes } = useTokenRoutes();
 
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
     address: PositionManagerAddress,
@@ -40,8 +41,9 @@ export function useIncreasePosition(pool: IPool, position: IPosition) {
     const increaseSize = parseUnits(amount, quoteToken?.decimals);
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
-      pool.quoteToken,
       pool.baseToken,
+      pool.quoteToken,
+      true,
     );
 
     const extraParams = getEthValueParams(baseToken, estPayout);

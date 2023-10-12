@@ -7,7 +7,7 @@ import { IPool } from "../types/pool";
 import { formatNum } from "../utils/number";
 import { usePoolFormat } from "./use-pool-format";
 import { useTokenPrice } from "./contract/use-token-price";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits } from "viem";
 
 export function usePositionFormat(position: IPosition, pool: IPool) {
   const positionPool = usePoolFormat(pool);
@@ -24,25 +24,15 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
   );
 
   const size = useMemo(() => {
-    const sizeVal = NP.divide(
-      position.positionSize,
-      10 ** (quoteToken?.decimals || 18),
+    const sizeVal = formatUnits(
+      BigInt(position.positionSize),
+      quoteToken?.decimals || 18,
     );
     return sizeVal;
   }, [position.positionSize, quoteToken?.decimals]);
-  console.log(size);
-  const sizeP = parseUnits(
-    String(position.positionSize),
-    quoteToken?.decimals || 18,
-  );
-  console.log(sizeP);
-  console.log(formatUnits(sizeP, quoteToken?.decimals || 18));
 
   const marginAmount = useMemo(
-    () =>
-      String(
-        NP.divide(position.marginAmount, 10 ** (baseToken?.decimals || 6)),
-      ),
+    () => formatUnits(BigInt(position.marginAmount), baseToken?.decimals || 6),
     [position.marginAmount, baseToken?.decimals],
   );
 
@@ -51,9 +41,9 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
   }, [position.updateTimestamp]);
 
   const debtAmount = useMemo(() => {
-    const debt = NP.divide(
-      position.debtAmount,
-      10 ** (baseToken?.decimals || 6),
+    const debt = formatUnits(
+      BigInt(position.debtAmount),
+      baseToken?.decimals || 6,
     );
     return debt;
   }, [position.debtAmount, baseToken?.decimals]);
@@ -108,6 +98,10 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     openPrice: {
       value: openPrice,
       formatted: formatNum(openPrice, 3),
+    },
+    debtAmount: {
+      value: debtAmount,
+      formatted: formatNum(debtAmount),
     },
     pnlAmount: {
       value: pnlAmount,

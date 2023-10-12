@@ -14,7 +14,7 @@ import {
 } from "@/lib/states/swap";
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { encodeTxExtendedParamsBytes } from "@/lib/utils/web3";
+import { useTokenRoutes } from "../api/use-token-routes";
 import { useTxWrite } from "./use-tx-write";
 import { useSpecialToken } from "../use-eth-token";
 
@@ -33,6 +33,7 @@ export function useOpenPosition() {
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
+  const { encodeTxExtendedParamsBytes } = useTokenRoutes();
 
   const extraParams = useMemo(() => {
     return getEthValueParams(baseToken, baseTokenAmount);
@@ -58,8 +59,9 @@ export function useOpenPosition() {
       return;
 
     const abiEncodedPath = encodeTxExtendedParamsBytes(
-      quoteToken.address,
       baseToken.address,
+      quoteToken.address,
+      true,
     );
 
     const quoteAmount = parseUnits(quoteTokenAmount, quoteToken?.decimals);
