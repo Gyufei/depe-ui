@@ -30,6 +30,7 @@ export function useOrderOverview() {
   const { expiration } = usePoolFormat(pool);
 
   const handleOrderOverviewDisplay = () => {
+    if (!quoteAmount || !baseAmount || !quotePrice) return;
     const size = quoteAmount ? formatNum(quoteAmount, 8, true) : null;
     const margin = baseAmount ? formatNum(baseAmount) : null;
 
