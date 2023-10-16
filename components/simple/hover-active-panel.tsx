@@ -1,12 +1,5 @@
 import { cn } from "@/lib/utils/utils";
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ReactNode, createContext, useMemo } from "react";
 import {
   ActivePanelAtom,
   HoverPanelAtom,
@@ -34,17 +27,28 @@ export default function HoverActivePanel({
 
   const windowSize = useWindowSize();
 
-  const orderNum = useMemo(() => {
-    return orderArr.findIndex((t) => t === name) + 1;
-  }, [orderArr, name]);
-
   const isBigScreen = useMemo(
     () => !windowSize.width || windowSize.width > 1480,
     [windowSize.width],
   );
 
+  const orderNum = useMemo(() => {
+    return orderArr.findIndex((t) => t === name) + 1;
+  }, [orderArr, name]);
+
   const isActivePanel =
     isBigScreen || activePanel === name || hoverPanel === name;
+
+  const position = useMemo(() => {
+    if (isBigScreen) return "static";
+
+    return "absolute";
+  }, [isBigScreen]);
+
+  const transform = useMemo(() => {
+    if (isBigScreen) return "scale(1)";
+    return orderNum === 2 ? "scale(1)" : "scale(0.9)";
+  }, [isBigScreen, orderNum]);
 
   const left = useMemo(() => {
     if (isBigScreen) return "unset";
@@ -71,17 +75,6 @@ export default function HoverActivePanel({
     setOrderArr(newOrder);
     return newOrder;
   };
-
-  const position = useMemo(() => {
-    if (isBigScreen) return "static";
-
-    return "absolute";
-  }, [isBigScreen]);
-
-  const transform = useMemo(() => {
-    if (isBigScreen) return "scale(1)";
-    return orderNum === 2 ? "scale(1)" : "scale(0.9)";
-  }, [isBigScreen, orderNum]);
 
   return (
     <IsActivePanelContext.Provider value={isActivePanel}>

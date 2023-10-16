@@ -22,12 +22,7 @@ export default function OrderOverview({ className }: { className?: string }) {
   if (!orderOverview) return null;
 
   return (
-    <div
-      className={cn(
-        "rounded-3xl bg-black/2 px-6 pt-6 pb-2",
-        className,
-      )}
-    >
+    <div className={cn("rounded-3xl bg-black/2 px-6 pt-6 pb-2", className)}>
       <div className="c-font-title-65 mb-3 text-xl text-black">
         Order Overview
       </div>
@@ -35,7 +30,7 @@ export default function OrderOverview({ className }: { className?: string }) {
         <DescRow title="Leverage">{orderOverview.leverage}</DescRow>
         <DescRow title="Expiration">{orderOverview.expiration}</DescRow>
         <DescRow title="Order Size">{orderOverview.orderSize}</DescRow>
-        <DescRow title="Excepted Entry Price">
+        <DescRow title="Expected Entry Price">
           {orderOverview.entryPrice}
         </DescRow>
         <DescRow title="Est. Margin">{orderOverview.marginAmount}</DescRow>

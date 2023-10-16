@@ -9,12 +9,13 @@ import { parseUnits } from "viem";
 import { IsActivePanelContext } from "../hover-active-panel";
 
 export default function FarmBtn() {
+  const originBtnText = "Farm";
   const isActive = useContext(IsActivePanelContext);
 
   const pool = useAtomValue(FPoolAtom);
   const depositAmount = useAtomValue(FDepositAmountAtom);
 
-  const [btnText, setBtnText] = useState("Farm it");
+  const [btnText, setBtnText] = useState(originBtnText);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const { baseToken } = usePoolFormat(pool);
@@ -23,7 +24,7 @@ export default function FarmBtn() {
 
   const { isLoading: isDepositLoading, write: writeAction } = usePoolDeposit(
     pool?.poolAddr || null,
-    baseToken
+    baseToken,
   );
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function FarmBtn() {
       setIsBtnDisabled(true);
     }
 
-    setBtnText("Farm it");
+    setBtnText(originBtnText);
     setIsBtnDisabled(false);
   }, [baseTokenBalance, pool, depositAmount]);
 
