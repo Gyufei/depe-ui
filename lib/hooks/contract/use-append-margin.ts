@@ -1,9 +1,12 @@
+import { useEffect } from "react";
 import { Address, formatUnits } from "viem";
+
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 import { useSpecialToken } from "../use-eth-token";
 import { IToken } from "@/lib/types/token";
+import { usePositions } from "../api/use-positions";
 
 export function useAppendMargin(
   poolAddr: Address,
@@ -19,7 +22,6 @@ export function useAppendMargin(
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "increaseMargin",
-    actionName: "AppendMargin",
   });
 
   const writeAction = (amount: bigint) => {
@@ -36,6 +38,14 @@ export function useAppendMargin(
       ...extraParams,
     });
   };
+
+  const { mutate: refetchPositions } = usePositions();
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchPositions();
+    }
+  }, [isSuccess, refetchPositions]);
 
   return {
     data,

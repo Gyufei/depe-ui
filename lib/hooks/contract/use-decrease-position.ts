@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import NP from "number-precision";
 import { usePublicClient } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
@@ -11,6 +12,7 @@ import { useTokensInfo } from "../api/use-token-info";
 import { UniswapQuoterABI } from "../../abi/UniswapQuoter";
 import { DEFAULT_SLIPPAGE } from "../../constant";
 import { useTxWrite } from "./use-tx-write";
+import { usePositions } from "../api/use-positions";
 
 export function useDecreasePosition(pool: IPool, position: IPosition) {
   const publicClient = usePublicClient();
@@ -29,7 +31,6 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "decreasePosition",
-    actionName: "DecreasePosition",
   });
 
   const getAmountOutMin = async (size: bigint) => {
@@ -81,6 +82,14 @@ export function useDecreasePosition(pool: IPool, position: IPosition) {
       args: TxArgs as any,
     });
   };
+
+  const { mutate: refetchPositions } = usePositions();
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchPositions();
+    }
+  }, [isSuccess, refetchPositions]);
 
   return {
     data,

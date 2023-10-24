@@ -1,5 +1,5 @@
 import { SOrderOverViewAtom } from "@/lib/states/swap";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 import { useAtomValue } from "jotai";
 
 function DescRow({

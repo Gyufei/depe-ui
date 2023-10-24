@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Arrow } from "@radix-ui/react-popover";
 
@@ -19,6 +19,7 @@ import { range } from "lodash";
 import Empty from "./empty";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
+import { usePoolsFilter } from "@/lib/hooks/use-pools-filter";
 
 export default function SelectPoolDialogContent({
   isLoading,
@@ -34,41 +35,16 @@ export default function SelectPoolDialogContent({
   onAutoPick: () => void;
 }) {
   const [isAuto, setIsAuto] = useState(false);
-  const [sortBy, setSortBy] = useState("Num");
-  const [searchStr, setSearchStr] = useState("");
 
-  const [poolAPYs, setPoolAPYs] = useState<Record<string, string>>({});
-
-  const filteredPools = useMemo<Array<IPool>>((): Array<IPool> => {
-    if (!pools) return [];
-
-    let sortedPools = pools;
-
-    if (sortBy === "Num") {
-      sortedPools = pools.sort((a, b) => Number(a.poolId) - Number(b.poolId));
-    } else if (sortBy === "APY") {
-      sortedPools = pools.sort((a, b) => {
-        const aAPY = poolAPYs[a.poolId] || 0;
-        const bAPY = poolAPYs[b.poolId] || 0;
-        return Number(aAPY) - Number(bAPY);
-      });
-    } else if (sortBy === "Leverage") {
-      sortedPools = pools.sort(
-        (a, b) => Number(a.maxleverage) - Number(b.maxleverage),
-      );
-    }
-
-    let fPools = sortedPools;
-    if (!searchStr) {
-      return fPools;
-    } else {
-      fPools = sortedPools.filter((p) => {
-        return p.poolId.toString().includes(searchStr);
-      });
-    }
-
-    return fPools;
-  }, [sortBy, searchStr, pools, poolAPYs]);
+  const {
+    sortFields,
+    sortBy,
+    searchStr,
+    setSearchStr,
+    setSortBy,
+    filteredPools,
+    recordPoolAPY,
+  } = usePoolsFilter(pools);
 
   const handleAuto = () => {
     if (isAuto) return;
@@ -82,15 +58,6 @@ export default function SelectPoolDialogContent({
     setIsAuto(false);
     onSelect(pool);
   };
-
-  const recordPoolAPY = useCallback((poolId: string, poolAPY: string) => {
-    setPoolAPYs((prev: Record<string, string>) => {
-      return {
-        ...prev,
-        [poolId]: poolAPY,
-      };
-    });
-  }, []);
 
   return (
     <>
@@ -136,12 +103,13 @@ export default function SelectPoolDialogContent({
                 className="flex w-[120px] flex-col items-stretch border-0 bg-white p-2 shadow-[0px_4px_8px_9px_rgba(14,4,62,0.08)]"
               >
                 <Arrow className="fill-white" />
-                <SortPopRow onClick={() => setSortBy("Num")} text="Num" />
-                <SortPopRow onClick={() => setSortBy("APY")} text="APY" />
-                <SortPopRow
-                  onClick={() => setSortBy("Leverage")}
-                  text="Leverage"
-                />
+                {sortFields.map((f) => (
+                  <SortPopRow
+                    key={f.value}
+                    onClick={() => setSortBy(f.value)}
+                    text={f.label}
+                  />
+                ))}
               </PopoverContent>
             </Popover>
           )}
@@ -183,7 +151,7 @@ export default function SelectPoolDialogContent({
                 <PoolRow
                   key={p.poolId}
                   pool={p}
-                  recordAPY={(e) => recordPoolAPY(p.poolId, e)}
+                  recordAPY={recordPoolAPY}
                   isSelected={pool?.poolId === p.poolId}
                   onClick={() => handleSelectPool(p)}
                 />
@@ -216,7 +184,7 @@ function PoolRow({
 }: {
   pool: IPool;
   isSelected: boolean;
-  recordAPY: (_a: any) => void;
+  recordAPY: (_id: string, _a: string) => void;
   onClick: () => void;
 }) {
   const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
@@ -226,8 +194,8 @@ function PoolRow({
   );
 
   useEffect(() => {
-    recordAPY(poolAPY);
-  }, [poolAPY, recordAPY]);
+    recordAPY(pool.poolId, poolAPY);
+  }, [poolAPY, recordAPY, pool.poolId]);
 
   return (
     <div

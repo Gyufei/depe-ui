@@ -4,14 +4,13 @@ import { useMemo } from "react";
 import { range } from "lodash";
 
 import { SkeletonRow } from "./row-common";
-import { FarmingRow } from "./farming-row";
+import { PoolRow } from "./pool-row";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { ListContainer } from "./list-container";
 import Empty from "../../share/empty";
 import { IPool } from "@/lib/types/pool";
-import { usePoolAsset } from "@/lib/hooks/api/use-pool-asset";
 
-export function FarmingList({
+export function PoolList({
   className,
   isLoading,
   pools,
@@ -25,9 +24,6 @@ export function FarmingList({
     return `Farming ${postfix}`;
   }, [pools]);
 
-  const { dataMap: poolAssetMap, isLoading: isPoolAssetLoading } =
-    usePoolAsset();
-
   return (
     <ListContainer isLoading={isLoading} title={title} className={className}>
       {isLoading && (
@@ -40,21 +36,9 @@ export function FarmingList({
 
       {!isLoading && pools.length > 0 && (
         <ScrollArea className="h-[212px]">
-          {pools.map((p, i: number) => {
-            const asset = {
-              value: poolAssetMap[p.poolAddr]?.amount || null,
-              isLoading: isPoolAssetLoading,
-            };
-
-            return (
-              <FarmingRow
-                pool={p}
-                asset={asset}
-                key={p.poolId}
-                isLast={i === pools.length - 1}
-              />
-            );
-          })}
+          {pools.map((p, i: number) => (
+            <PoolRow pool={p} key={p.poolId} isLast={i === pools.length - 1} />
+          ))}
           <ScrollBar />
         </ScrollArea>
       )}

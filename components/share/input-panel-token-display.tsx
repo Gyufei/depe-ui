@@ -17,7 +17,7 @@ import {
 import StrokeArrowIcon from "@/components/share/icons/stroke-arrow";
 
 import { IToken } from "@/lib/types/token";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 
 import DialogGimp from "./dialog-gimp";
 import PickUpTokenDialogContent from "./pick-up-token-dialog-content";

@@ -1,5 +1,4 @@
-import { useMemo, useState } from "react";
-import NP from "number-precision";
+import { useState } from "react";
 
 import {
   Dialog,
@@ -10,42 +9,26 @@ import {
 
 import TokenPairImage from "../../share/token-pair-image";
 import RowOperateDot from "./row-operate-dot";
-import FarmingDialogContent from "./farming-dialog-content";
+import PoolDialogContent from "./pool-dialog-content";
 import DialogGimp from "../../share/dialog-gimp";
 import { APYText, SecondText, TitleText } from "./row-common";
 import type { IPool } from "@/lib/types/pool";
 import { Skeleton } from "../../ui/skeleton";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
-import { formatNum } from "@/lib/utils/number";
+import { usePoolParsedAsset } from "@/lib/hooks/use-pool-parsed-asset";
 
-export function FarmingRow({
-  isLast,
-  pool,
-  asset,
-}: {
-  isLast: boolean;
-  pool: IPool;
-  asset: {
-    value: string | null;
-    isLoading: boolean;
-  };
-}) {
+export function PoolRow({ isLast, pool }: { isLast: boolean; pool: IPool }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
     pool?.poolAddr || null,
   );
 
+  const { data: assetData, isLoading: isAssetLoading } =
+    usePoolParsedAsset(pool);
+
   const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
-
-  const assetFormatted = useMemo(() => {
-    if (!baseToken) return "";
-    const val = NP.divide(asset.value || 0, 10 ** baseToken?.decimals);
-    const fmt = formatNum(val);
-
-    return fmt;
-  }, [asset.value, baseToken]);
 
   return (
     <div className="flex pl-2 pt-[10px] pr-6">
@@ -75,10 +58,10 @@ export function FarmingRow({
           <SecondText>APY</SecondText>
         </div>
         <div className="flex flex-col items-end">
-          {asset.isLoading ? (
+          {isAssetLoading ? (
             <Skeleton className="mb-1 h-6 w-[50px]" />
           ) : (
-            <TitleText>{assetFormatted}</TitleText>
+            <TitleText>{assetData.formatted}</TitleText>
           )}
           <SecondText>{baseToken?.symbol}</SecondText>
         </div>
@@ -93,7 +76,13 @@ export function FarmingRow({
             <DialogContent className="w-[400px]">
               <DialogGimp />
               <DialogTitle>Farming</DialogTitle>
-              <FarmingDialogContent pool={pool} asset={asset} />
+              <PoolDialogContent
+                pool={pool}
+                asset={{
+                  data: assetData,
+                  isLoading: isAssetLoading,
+                }}
+              />
             </DialogContent>
           </Dialog>
         </div>

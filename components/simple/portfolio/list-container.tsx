@@ -1,5 +1,5 @@
 import { ReactNode, useContext } from "react";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 
 import { Skeleton } from "../../ui/skeleton";
 import { IsActivePanelContext } from "../hover-active-panel";

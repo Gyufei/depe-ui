@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
 import { NumericalInput } from "@/components/share/numerical-input";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 
 export default function InputPanel({
   isActive = true,

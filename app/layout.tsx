@@ -1,7 +1,7 @@
 import "./globals.css";
 import { HaasGrotDisp, HaasGrotText } from "./fonts";
 
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 import Web3ConnectProvider from "@/components/provider/web3-connect-provider";
 import JotaiProvider from "@/components/provider/jotai-provider";
 import SWRConfigProvider from "@/components/provider/swr-config-provider";

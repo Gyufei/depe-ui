@@ -2,8 +2,8 @@
 
 import { useContext } from "react";
 import PanelLeaderButton from "../../share/panel-leader-button";
-import { FarmingList } from "./farming-list";
-import { TradingList } from "./trading-list";
+import { PoolList } from "./pool-list";
+import { PositionList } from "./position-list";
 import { usePositions } from "@/lib/hooks/api/use-positions";
 import Empty from "@/components/share/empty";
 import { useAccountPools } from "@/lib/hooks/api/use-account-pools";
@@ -42,8 +42,8 @@ function PortfolioBase() {
           </div>
         ) : (
           <>
-            <FarmingList pools={pools} isLoading={isPoolsLoading} />
-            <TradingList
+            <PoolList pools={pools} isLoading={isPoolsLoading} />
+            <PositionList
               className="mt-4"
               positions={positions}
               isLoading={isPositionsLoading}

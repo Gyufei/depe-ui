@@ -26,7 +26,7 @@ import { usePool } from "@/lib/hooks/api/use-pool";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
 import ShareDialogContent from "./share-dialog-content";
 
-export function TradingRow({
+export function PositionRow({
   position,
   isLast,
 }: {

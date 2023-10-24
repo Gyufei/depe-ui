@@ -42,12 +42,16 @@ export function usePoolFormat(pool: IPool | null) {
     });
 
     const readableTime = formatDuration(intervalDuration, {
-      format: ["days", "hours"],
+      format: ["months", "days", "hours"],
     });
 
     const rTime = readableTime
+      .replace("months", "Months")
+      .replace("month", "Month")
       .replace("days", "Days")
-      .replace("hours", "Hours");
+      .replace("day", "Day")
+      .replace("hours", "Hours")
+      .replace("hour", "Hour");
 
     return rTime;
   }, [pool]);
@@ -55,7 +59,13 @@ export function usePoolFormat(pool: IPool | null) {
   const expirationSimple = useMemo(() => {
     if (!expirationFull) return null;
 
-    const rTime = expirationFull.replace("Days", "d").replace("Hours", "h");
+    const rTime = expirationFull
+      .replace("Months", "m")
+      .replace("Month", "m")
+      .replace("Days", "d")
+      .replace("Day", "d")
+      .replace("Hours", "h")
+      .replace("Hour", "h");
     return rTime;
   }, [expirationFull]);
 

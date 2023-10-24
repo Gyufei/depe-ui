@@ -4,7 +4,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { useAtom, useAtomValue } from "jotai";
 
 import { useStrNum } from "@/lib/hooks/common/use-str-num";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { SLeverageAtom, SPoolAtom } from "@/lib/states/swap";
 import { useTokens } from "@/lib/hooks/api/use-tokens";

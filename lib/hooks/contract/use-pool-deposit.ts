@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
@@ -8,6 +9,7 @@ import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { IToken } from "@/lib/types/token";
 import { useSpecialToken } from "../use-eth-token";
 import { formatUnits } from "viem";
+import { usePoolAsset } from "../api/use-pool-asset";
 
 export function usePoolDeposit(
   poolAddr: IPool["poolAddr"] | null,
@@ -23,7 +25,6 @@ export function usePoolDeposit(
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "deposit",
-    actionName: "Deposit",
   });
 
   const writeAction = (amount: bigint) => {
@@ -41,6 +42,14 @@ export function usePoolDeposit(
       ...extraParams,
     });
   };
+
+  const { mutate: refetchPoolAsset } = usePoolAsset();
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchPoolAsset();
+    }
+  }, [isSuccess, refetchPoolAsset]);
 
   return {
     data,

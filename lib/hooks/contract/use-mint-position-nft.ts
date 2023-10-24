@@ -12,7 +12,6 @@ export function useMintPositionNft(position: IPosition) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "mintPosition",
-    actionName: "Mint",
   });
 
   const writeAction = () => {

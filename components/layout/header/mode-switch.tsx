@@ -1,18 +1,24 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useAtom } from "jotai";
-import { ModeAtom, TMode } from "@/lib/states/mode";
 import Image from "next/image";
 
+import { ModeAtom, TMode } from "@/lib/states/mode";
 import Trapezoid from "/public/icons/trapezoid.svg";
-import { useRouter } from "next/navigation";
 
 export default function ModeSwitch() {
+  const pathname = usePathname();
   const router = useRouter();
-  const routerMath = {
-    Simple: "/",
-    Pro: "/pools",
-  };
+
+  const routerMath = useMemo(
+    () => ({
+      Simple: "/",
+      Pro: "/pools",
+    }),
+    [],
+  );
 
   const [mode, setMode] = useAtom(ModeAtom);
   const modeOpt: Array<TMode> = ["Simple", "Pro"];
@@ -22,6 +28,14 @@ export default function ModeSwitch() {
     setMode(m);
     router.push(routerMath[m]);
   };
+
+  useEffect(() => {
+    if (pathname === routerMath.Simple) {
+      setMode("Simple");
+    } else if (pathname === routerMath.Pro) {
+      setMode("Pro");
+    }
+  }, [pathname, setMode, routerMath]);
 
   return (
     <div className="relative flex h-11 w-[210px] items-end justify-around rounded-xl border-2 border-black bg-white shadow-25 shadow-black">

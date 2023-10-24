@@ -28,6 +28,7 @@ module.exports = {
       },
       boxShadow: {
         1: "1px 1px 0px 0px var(--color-black)",
+        2: "2px 2px 0px 0px var(--color-black)",
         20: "0.2rem 0.2rem 0px 0px var(--color-black)",
         25: "0.25rem 0.25rem 0px 0px var(--color-black)",
         30: "0.3rem 0.3rem 0px 0px var(--color-black)",

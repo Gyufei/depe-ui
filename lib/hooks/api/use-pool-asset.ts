@@ -3,7 +3,6 @@ import { PoolAsset } from "../../gql-document/pool";
 import { useGqlRequest } from "./use-graphql-request";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
-import { useSetApiRefresh } from "./use-set-api-refresh";
 
 export interface IPoolAsset {
   dpPoolAddr: Address;
@@ -15,8 +14,6 @@ export function usePoolAsset() {
   const res = useGqlRequest(
     PoolAsset(account ? [{ key: "account", value: account }] : []),
   );
-
-  useSetApiRefresh("poolAsset", ["Deposit", "Withdraw"], res.mutate);
 
   const data = useMemo<Array<IPoolAsset>>(() => {
     const resData = res.data?.poolAsset?.data;

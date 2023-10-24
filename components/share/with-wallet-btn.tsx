@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 import { useConnectModal } from "@/lib/hooks/common/use-connect";
 import { Loader2 } from "lucide-react";
 

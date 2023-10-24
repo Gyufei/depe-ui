@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 import Image from "next/image";
 
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 
 export function TitleText({ children }: { children: React.ReactNode }) {
   return (

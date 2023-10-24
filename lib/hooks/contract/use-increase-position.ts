@@ -27,7 +27,6 @@ export function useIncreasePosition(pool: IPool, position: IPosition) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "increasePosition",
-    actionName: "IncreasePosition",
   });
 
   const writeAction = (

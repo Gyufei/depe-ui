@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useAtomValue } from "jotai";
 import { parseUnits } from "viem";
 
@@ -17,6 +17,7 @@ import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTokenRoutes } from "../api/use-token-routes";
 import { useTxWrite } from "./use-tx-write";
 import { useSpecialToken } from "../use-eth-token";
+import { usePositions } from "../api/use-positions";
 
 export function useOpenPosition() {
   const { chainConfig } = useChainConfig();
@@ -44,7 +45,6 @@ export function useOpenPosition() {
     abi: DepePositionManagerABI,
     functionName: "openPosition",
     ...extraParams,
-    actionName: "OpenPosition",
   });
 
   const writeAction = () => {
@@ -80,6 +80,14 @@ export function useOpenPosition() {
       args: TxArgs as any,
     });
   };
+
+  const { mutate: refetchPositions } = usePositions();
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchPositions();
+    }
+  });
 
   return {
     data,

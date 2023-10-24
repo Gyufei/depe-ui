@@ -5,7 +5,7 @@ import { useContext, useEffect } from "react";
 import { IsActivePanelContext } from "../hover-active-panel";
 import { RATING_LEVELS } from "@/lib/constant";
 import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 
 export function AssetRatingLevel() {
   const { farmingPickPool } = useFarmingMatchPool();

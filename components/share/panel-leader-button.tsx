@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils/common";
 import { useContext } from "react";
 import { IsActivePanelContext } from "../simple/hover-active-panel";
 

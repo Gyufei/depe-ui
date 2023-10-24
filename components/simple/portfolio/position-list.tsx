@@ -1,6 +1,6 @@
 "use client";
 import { SkeletonRow } from "./row-common";
-import { TradingRow } from "./trading-row";
+import { PositionRow } from "./position-row";
 import { ScrollArea, ScrollBar } from "../../ui/scroll-area";
 import { range } from "lodash";
 import { ListContainer } from "./list-container";
@@ -8,7 +8,7 @@ import Empty from "@/components/share/empty";
 import { IPosition } from "@/lib/types/position";
 import { useMemo } from "react";
 
-export function TradingList({
+export function PositionList({
   className,
   positions,
   isLoading,
@@ -36,7 +36,7 @@ export function TradingList({
         <ScrollArea className="h-[212px]">
           {positions.map((pos, i) => {
             return (
-              <TradingRow
+              <PositionRow
                 key={pos.positionAddr}
                 position={pos}
                 isLast={i === positions.length - 1}

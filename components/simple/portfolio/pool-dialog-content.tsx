@@ -1,27 +1,27 @@
-import NP from "number-precision";
-
-import { cn } from "@/lib/utils/utils";
-import { ReactNode, useMemo, useState } from "react";
+import { cn } from "@/lib/utils/common";
+import { ReactNode, useState } from "react";
 import WithWalletBtn from "../../share/with-wallet-btn";
 import SwitchTab from "../../share/switch-tab";
 import InputPanel from "../../share/input-panel";
 import { IPool } from "@/lib/types/pool";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import BalanceDisplay from "@/components/share/balance-display";
-import { formatNum } from "@/lib/utils/number";
 import { usePendingReward } from "@/lib/hooks/contract/use-pending-reward";
 import { Skeleton } from "@/components/ui/skeleton";
 import WithApproveBtn from "@/components/share/with-approve-btn";
 import { usePoolDepositInput } from "@/lib/hooks/use-pool-deposit-input";
 import { usePoolWithdrawInput } from "@/lib/hooks/use-pool-withdraw-input";
 
-export default function FarmingDialogContent({
+export default function PoolDialogContent({
   pool,
   asset,
 }: {
   pool: IPool;
   asset: {
-    value: string | null;
+    data: {
+      value: string | null;
+      formatted: string;
+    };
     isLoading: boolean;
   };
 }) {
@@ -29,20 +29,6 @@ export default function FarmingDialogContent({
   const [activeTab, setActiveTab] = useState("Deposit");
 
   const { baseToken, leverage } = usePoolFormat(pool);
-
-  const assetValue = useMemo(() => {
-    if (!baseToken) return "";
-    const val = NP.divide(asset.value || 0, 10 ** baseToken?.decimals);
-
-    return String(val);
-  }, [asset.value, baseToken]);
-
-  const assetFmt = useMemo(() => {
-    const fmt = formatNum(assetValue);
-
-    return fmt;
-  }, [assetValue]);
-
   const { data: pendingReward, isLoading: pendingRewardLoading } =
     usePendingReward(pool);
 
@@ -63,7 +49,7 @@ export default function FarmingDialogContent({
     inputVal: withdrawVal,
     handleBtnClick: handleWBtnClick,
     handleInputValChange: handleWValChange,
-  } = usePoolWithdrawInput(pool, assetValue);
+  } = usePoolWithdrawInput(pool, asset.data.value || "");
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
@@ -86,7 +72,7 @@ export default function FarmingDialogContent({
               <Skeleton className="h-5 w-[100px]" />
             ) : (
               <FieldText>
-                {assetFmt} {baseToken?.symbol}
+                {asset.data.formatted} {baseToken?.symbol}
               </FieldText>
             )}
           </FieldContainer>
@@ -128,9 +114,9 @@ export default function FarmingDialogContent({
             balanceDisplay={
               <BalanceDisplay
                 isLoading={wBtnLoading}
-                balance={assetValue}
+                balance={asset.data.value}
                 prefixText="Balance"
-                setMax={() => handleWValChange(assetValue)}
+                setMax={() => handleWValChange(asset.data.value || "")}
               />
             }
             isActive={true}

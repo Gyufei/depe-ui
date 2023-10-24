@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
 import {
   Chain,
@@ -30,6 +31,7 @@ export default function NetworkSelect() {
 
   const handleSelectNet = async (selectChain: Chain) => {
     if (selectChain.id === chain?.id) return;
+
     if (isConnected) {
       await switchNetworkAsync?.(selectChain.id);
     } else {
@@ -53,17 +55,7 @@ export default function NetworkSelect() {
     <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
       <PopoverTrigger asChild>
         <div className="relative flex h-12 w-[88px] cursor-pointer items-center rounded-xl bg-transparent px-2">
-          {chain ? (
-            <Image
-              width={40}
-              height={40}
-              src={getChainLogo(chain.name) || ""}
-              alt="current chain logo"
-              className="c-image-shadow z-10"
-            ></Image>
-          ) : (
-            <Skeleton className="h-10 w-10 rounded-full" />
-          )}
+          <CurrChainLogo />
           <div
             data-state={popOpen ? "open" : "close"}
             className="ml-2 flex h-6 w-6 items-center justify-center data-[state=open]:rotate-180"
@@ -101,3 +93,7 @@ export default function NetworkSelect() {
     </Popover>
   );
 }
+
+const CurrChainLogo = dynamic(() => import("./curr-chain-logo"), {
+  loading: () => <Skeleton className="h-10 w-10 rounded-full" />,
+});

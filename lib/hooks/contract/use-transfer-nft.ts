@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Address } from "viem";
 import { useAccount } from "wagmi";
 
@@ -5,6 +6,7 @@ import { IPosition } from "../../types/position";
 import { useChainConfig } from "../common/use-chain-config";
 import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
+import { usePositions } from "../api/use-positions";
 
 export function useTransferNFT(position: IPosition) {
   const { chainConfig } = useChainConfig();
@@ -16,7 +18,6 @@ export function useTransferNFT(position: IPosition) {
     address: PositionManagerAddress,
     abi: DepePositionManagerABI,
     functionName: "transferFrom",
-    actionName: "TransferNFT",
   });
 
   const writeAction = (to: Address) => {
@@ -29,6 +30,14 @@ export function useTransferNFT(position: IPosition) {
       args: TxArgs as any,
     });
   };
+
+  const { mutate: refetchPositions } = usePositions();
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetchPositions();
+    }
+  }, [isSuccess, refetchPositions]);
 
   return {
     data,
