@@ -12,9 +12,6 @@ export function usePoolParsedAsset(pool: IPool) {
   const { dataMap: poolAssetMap, isLoading: isPoolAssetLoading } =
     usePoolAsset();
 
-  console.log(poolAssetMap);
-  console.log(pool);
-
   const assetParsed = useMemo(() => {
     const empty = {
       data: {

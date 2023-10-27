@@ -18,116 +18,168 @@ export function usePositionFormat(position: IPosition, pool: IPool) {
     quoteToken?.decimals,
   );
 
-  const leverage = useMemo(() => {
-    return Number(position?.leverage || 0) / 100;
-  }, [position?.leverage]);
+  const leverage = useMemo(() => getLeverage(position), [position]);
 
-  const size = useMemo(() => {
-    const sizeVal = formatUnits(
-      BigInt(position?.positionSize || 0),
-      quoteToken?.decimals || 18,
-    );
-    return sizeVal;
-  }, [position?.positionSize, quoteToken?.decimals]);
+  const size = useMemo(
+    () => getSize(position, quoteToken?.decimals),
+    [position, quoteToken?.decimals],
+  );
 
   const marginAmount = useMemo(
-    () =>
-      formatUnits(
-        BigInt(position?.marginAmount || 0),
-        baseToken?.decimals || 6,
-      ),
-    [position?.marginAmount, baseToken?.decimals],
+    () => getMarginAmount(position, baseToken?.decimals),
+    [position, baseToken?.decimals],
   );
 
   // Todo: open on with history
-  const openOn = useMemo(() => {
-    if (!position?.updateTimestamp) return null;
-    return new Date(Number(position?.updateTimestamp) * 1000);
-  }, [position?.updateTimestamp]);
+  const openOn = useMemo(() => getOpenOn(position), [position]);
 
-  const debtAmount = useMemo(() => {
-    const debt = formatUnits(
-      BigInt(position?.debtAmount || 0),
-      baseToken?.decimals || 6,
-    );
-    return debt;
-  }, [position?.debtAmount, baseToken?.decimals]);
+  const debtAmount = useMemo(
+    () => getDebtAmount(position, baseToken?.decimals),
+    [position, baseToken?.decimals],
+  );
 
-  const openPrice = useMemo(() => {
-    const price = NP.divide(debtAmount, size);
-    return price;
-  }, [debtAmount, size]);
+  const openPrice = useMemo(
+    () => getOpenPrice(debtAmount.value, size.value),
+    [debtAmount, size],
+  );
 
-  const pnlAmount = useMemo(() => {
-    if (!currentPriceRes.data.value) return "";
+  const pendingFundingFee = useMemo(
+    () => getPendingFeeRate(position, baseToken?.decimals),
+    [position, baseToken?.decimals],
+  );
 
-    const pnlA = NP.minus(
-      NP.times(currentPriceRes.data.value, size),
-      debtAmount,
-    );
+  const pnlAmount = useMemo(
+    () =>
+      getPnlAmount(currentPriceRes.data?.value, size.value, debtAmount.value),
+    [currentPriceRes.data, size, debtAmount],
+  );
 
-    return pnlA;
-  }, [currentPriceRes.data, size, debtAmount]);
+  const pnlPercent = useMemo(
+    () => getPnlPercent(debtAmount.value, leverage, pnlAmount.value),
+    [debtAmount, leverage, pnlAmount],
+  );
 
-  const pnlPercent = useMemo(() => {
-    if (!debtAmount || !leverage || !pnlAmount) return "";
-    const M1 = NP.divide(debtAmount, leverage);
-    const pnlP = NP.divide(pnlAmount, M1);
-    const percent = NP.times(pnlP, 100);
-
-    return percent;
-  }, [debtAmount, leverage, pnlAmount]);
-
-  const pendingFundingFee = useMemo(() => {
-    return NP.divide(
-      position?.pendingFundingFee || 0,
-      10 ** (baseToken?.decimals || 6),
-    );
-  }, [position?.pendingFundingFee, baseToken?.decimals]);
-
-  const apr = useMemo(() => {
-    return NP.divide(position?.apr || 0, 10 ** 4);
-  }, [position?.apr]);
+  const apr = useMemo(() => getApr(position), [position]);
 
   return {
     ...positionPool,
     currentPriceRes,
     leverage,
-    size: {
-      value: size,
-      formatted: formatNum(size, 3),
-    },
-    marginAmount: {
-      value: marginAmount,
-      formatted: formatNum(marginAmount),
-    },
-    openPrice: {
-      value: openPrice,
-      formatted: formatNum(openPrice, 3),
-    },
-    debtAmount: {
-      value: debtAmount,
-      formatted: formatNum(debtAmount),
-    },
-    pnlAmount: {
-      value: pnlAmount,
-      formatted: formatNum(pnlAmount),
-    },
-    pnlPercent: {
-      value: pnlPercent,
-      formatted: formatNum(pnlPercent),
-    },
-    openOn: {
-      value: openOn,
-      formatted: openOn ? format(openOn, "LLL dd, yyyy") : "",
-    },
-    pendingFundingFee: {
-      value: pendingFundingFee,
-      formatted: formatNum(pendingFundingFee),
-    },
-    apr: {
-      value: apr,
-      formatted: formatNum(apr),
-    },
+    size,
+    marginAmount,
+    debtAmount,
+    openOn,
+    openPrice,
+    pnlAmount,
+    pnlPercent,
+    pendingFundingFee,
+    apr,
+  };
+}
+
+function getLeverage(position: IPosition) {
+  return Number(position?.leverage || 0) / 100;
+}
+
+function getSize(position: IPosition, decimals: number = 6) {
+  const val = formatUnits(BigInt(position?.positionSize || 0), decimals);
+
+  return {
+    value: val,
+    formatted: formatNum(val, 3),
+  };
+}
+
+function getMarginAmount(position: IPosition, decimals: number = 6) {
+  if (!position?.marginAmount) return {};
+
+  const val = formatUnits(BigInt(position?.marginAmount), decimals);
+  return {
+    value: val,
+    formatted: formatNum(val),
+  };
+}
+
+function getOpenOn(position: IPosition) {
+  if (!position?.updateTimestamp) return {};
+
+  const openOn = new Date(Number(position?.updateTimestamp) * 1000);
+  return {
+    value: openOn,
+    formatted: openOn ? format(openOn, "LLL dd, yyyy") : "",
+  };
+}
+
+function getDebtAmount(position: IPosition, decimals: number = 6) {
+  if (!position?.debtAmount) return {};
+
+  const debt = formatUnits(BigInt(position?.debtAmount), decimals);
+
+  return {
+    value: debt,
+    formatted: formatNum(debt),
+  };
+}
+
+function getPendingFeeRate(position: IPosition, decimals: number = 6) {
+  const val = NP.divide(
+    position?.pendingFundingFee || 0,
+    10 ** (decimals || 6),
+  );
+
+  return {
+    value: val,
+    formatted: formatNum(val),
+  };
+}
+
+function getOpenPrice(debtAmount: string | undefined, size: string) {
+  if (!debtAmount || !size) return {};
+
+  const price = NP.divide(debtAmount, size);
+
+  return {
+    value: price,
+    formatted: formatNum(price, 3),
+  };
+}
+
+function getPnlAmount(
+  price: string | undefined,
+  size: string,
+  debtAmount: string | undefined,
+) {
+  if (!price || !debtAmount || !size) return {};
+
+  const pnlA = NP.minus(NP.times(price, size), debtAmount);
+
+  return {
+    value: pnlA,
+    formatted: formatNum(pnlA),
+  };
+}
+
+function getPnlPercent(
+  debtAmount: string | undefined,
+  leverage: number | undefined,
+  pnlAmount: number | undefined,
+) {
+  if (!debtAmount || !leverage || !pnlAmount) return {};
+
+  const M1 = NP.divide(debtAmount, leverage);
+  const pnlP = NP.divide(pnlAmount, M1);
+  const percent = NP.times(pnlP, 100);
+
+  return {
+    value: percent,
+    formatted: formatNum(percent),
+  };
+}
+
+function getApr(position: IPosition) {
+  const val = NP.divide(position?.apr || 0, 10 ** 4);
+  return {
+    value: val,
+    formatted: formatNum(val),
   };
 }

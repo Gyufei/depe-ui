@@ -74,8 +74,8 @@ export default function PositionDialogContent({
               </>
             ) : (
               <PlText
-                profit={pnlAmount.formatted!}
-                percent={pnlPercent.formatted}
+                profit={pnlAmount.formatted || ""}
+                percent={pnlPercent.formatted || ""}
               />
             )}
           </div>
@@ -185,8 +185,8 @@ export default function PositionDialogContent({
             balanceDisplay={
               <BalanceDisplay
                 isLoading={false}
-                balance={marginAmount.formatted}
-                setMax={() => handleWInputValChange(marginAmount.value)}
+                balance={marginAmount.formatted || null}
+                setMax={() => handleWInputValChange(marginAmount.value || "")}
               />
             }
             isActive={true}

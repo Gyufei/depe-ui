@@ -74,8 +74,8 @@ export default function ShareDialogContent({
               ></LeverageAndToken>
               <Pnl
                 showAmount={showPnlAmount}
-                amount={pnlAmount.formatted}
-                percent={pnlPercent.formatted}
+                amount={pnlAmount.formatted || ""}
+                percent={pnlPercent.formatted || ""}
               />
             </div>
 
@@ -117,7 +117,7 @@ export default function ShareDialogContent({
                   height={69}
                   alt="logo"
                 />
-                <OpenedOn openDate={openOn.formatted}></OpenedOn>
+                <OpenedOn openDate={openOn.formatted || ''}></OpenedOn>
               </div>
               <QrCode />
             </div>

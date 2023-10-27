@@ -2,6 +2,7 @@
 
 import PoolDetail from "@/components/pro/pool-detail";
 import PoolPortfolio from "@/components/pro/pool-portfolio";
+import PoolPositions from "@/components/pro/pool-positions";
 import { PDPoolIdAtom } from "@/lib/states/poolDetail";
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ export default function PoolItem({ params }: { params: any }) {
         <PoolPortfolio />
         <PoolDetail />
       </div>
+      <PoolPositions />
     </div>
   );
 }

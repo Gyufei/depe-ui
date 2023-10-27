@@ -95,7 +95,7 @@ export function PositionRow({
           <SecondText>Size</SecondText>
         </div>
         <div className="flex flex-col items-end pr-4">
-          <APYText apy={pnlPercent.formatted} />
+          <APYText apy={pnlPercent.formatted || null} />
           <SecondText>P/L</SecondText>
         </div>
         <div className="flex w-[70px] flex-col items-end">

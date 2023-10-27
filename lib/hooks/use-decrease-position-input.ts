@@ -41,8 +41,8 @@ export function useDecreasePositionInput(pool: IPool, position: IPosition) {
     const sizePercentage = NP.divide(value, size.value);
     if (sizePercentage === 0 || sizePercentage > 1) return null;
 
-    const marginPercentage = NP.times(marginAmount.value, sizePercentage);
-    const payout = NP.plus(pnlAmount.value, marginPercentage);
+    const marginPercentage = NP.times(marginAmount.value || 0, sizePercentage);
+    const payout = NP.plus(pnlAmount.value || 0, marginPercentage);
 
     const nowTimestamp = (new Date().getTime() / 1000).toFixed();
     const durationTime = NP.minus(nowTimestamp, position.updateTimestamp);
@@ -50,7 +50,7 @@ export function useDecreasePositionInput(pool: IPool, position: IPosition) {
 
     const aprOfDay = NP.divide(apr.value, 365);
     const durationApr = NP.times(aprOfDay, durationDays);
-    const fundingFee = NP.times(debtAmount.value, durationApr);
+    const fundingFee = NP.times(debtAmount.value || 0, durationApr);
 
     const withFundPayout = NP.minus(
       payout,

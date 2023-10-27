@@ -94,8 +94,8 @@ export default function PoolPortfolio() {
         <div className="mt-4 flex items-center justify-between">
           <PL
             isLoading={isPoolLoading || isPositionsLoading}
-            amount={pnlAmount.formatted}
-            percent={pnlPercent.formatted}
+            amount={pnlAmount.formatted || ""}
+            percent={pnlPercent.formatted || ""}
           />
 
           <OperatorIcon onClick={handleGoTrade} />
@@ -104,12 +104,12 @@ export default function PoolPortfolio() {
         <div className="mt-4 flex items-center gap-x-[140px]">
           <DebtDisplay
             isLoading={isPoolLoading || isPositionsLoading}
-            debt={debtAmount.formatted}
+            debt={debtAmount.formatted || ""}
           />
 
           <MarginDisplay
             isLoading={isPoolLoading || isPositionsLoading}
-            margin={marginAmount.formatted}
+            margin={marginAmount.formatted || ""}
             baseToken={baseToken}
           />
         </div>
