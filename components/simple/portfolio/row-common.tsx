@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { Skeleton } from "../../ui/skeleton";
+import { ProfitText } from "@/components/share/profit-text";
 
 export function TitleText({ children }: { children: React.ReactNode }) {
   return <div className="text-lg leading-7 text-black">{children}</div>;
@@ -12,16 +13,13 @@ export function SecondText({ children }: { children: React.ReactNode }) {
 }
 
 export function APYText({ apy }: { apy: string | null }) {
-  const isGreaterThanZero = apy && Number(apy) > 0;
+  const isGtZero = apy && Number(apy) > 0;
 
   return (
-    <div
-      data-state={isGreaterThanZero ? "positive" : "negative"}
-      className="text-lg leading-7 data-[state=positive]:text-green data-[state=negative]:text-red"
-    >
-      {isGreaterThanZero ? "+" : ""}
+    <ProfitText isGtZero={!!isGtZero}>
+      {isGtZero ? "+" : ""}
       {apy}%
-    </div>
+    </ProfitText>
   );
 }
 

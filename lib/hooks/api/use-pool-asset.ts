@@ -11,6 +11,7 @@ export interface IPoolAsset {
 
 export function usePoolAsset() {
   const { address: account } = useAccount();
+
   const res = useGqlRequest(
     PoolAsset(account ? [{ key: "account", value: account }] : []),
   );

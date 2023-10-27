@@ -17,7 +17,8 @@ export function truncateAddr(
     (nPrefix || 0) + (nSuffix || 0) > address.length;
 
   return match && !nTotalIsLongerThanAddress
-    ? `0x${address.slice(2, 2 + (nPrefix || 4))}…
-      ${address.slice(address.length - (nSuffix || 4))}`
+    ? `0x${address.slice(2, 2 + (nPrefix || 4))}…${address.slice(
+        address.length - (nSuffix || 4),
+      )}`
     : address;
 }

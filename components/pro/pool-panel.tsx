@@ -1,11 +1,12 @@
 import { useEffect, useMemo } from "react";
 import NP from "number-precision";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { IPool } from "@/lib/types/pool";
 import TokenPairImage from "../share/token-pair-image";
 import { Skeleton } from "../ui/skeleton";
-import ExpirationIcon from "@/components/share/icons/expiration";
+import ExpirationIcon from "/public/icons/expiration.svg";
 import MakerIcon from "/public/icons/maker.svg";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
@@ -22,6 +23,7 @@ export default function PoolPanel({
   isLoading: boolean;
   recordAPY: (_id: string, _a: string) => void;
 }) {
+  const router = useRouter();
   const { baseToken, quoteToken, leverage, expiration } = usePoolFormat(pool);
   const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
     pool.poolAddr,
@@ -48,6 +50,10 @@ export default function PoolPanel({
 
     return formatNum(tvlVal);
   }, [basePriceData, assetData]);
+
+  const handleDetail = () => {
+    router.push(`/pools/${pool.poolId}`);
+  };
 
   return (
     <div className="relative flex flex-col ">
@@ -98,7 +104,12 @@ export default function PoolPanel({
             <TitleText>Expiration</TitleText>
             <FieldText isLoading={isPoolLoading}>
               <div className="flex items-center">
-                <ExpirationIcon />
+                <Image
+                  src={ExpirationIcon}
+                  width={16}
+                  height={16}
+                  alt="expiration"
+                />
                 <div className="ml-[1px]">{expiration.simple}</div>
               </div>
             </FieldText>
@@ -116,6 +127,7 @@ export default function PoolPanel({
           <button
             disabled={isPoolLoading}
             className="rounded-md border border-black px-10 py-2 leading-6 hover:contrast-50 disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={handleDetail}
           >
             Detail
           </button>

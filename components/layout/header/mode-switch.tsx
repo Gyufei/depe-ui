@@ -14,8 +14,8 @@ export default function ModeSwitch() {
 
   const routerMath = useMemo(
     () => ({
-      Simple: "/",
-      Pro: "/pools",
+      Simple: ["/"],
+      Pro: ["/pools"],
     }),
     [],
   );
@@ -26,13 +26,13 @@ export default function ModeSwitch() {
   const handleSwitch = (m: TMode) => {
     if (mode === m) return;
     setMode(m);
-    router.push(routerMath[m]);
+    router.push(routerMath[m][0]);
   };
 
   useEffect(() => {
-    if (pathname === routerMath.Simple) {
+    if (routerMath.Simple.includes(pathname)) {
       setMode("Simple");
-    } else if (pathname === routerMath.Pro) {
+    } else if (routerMath.Pro.includes(pathname)) {
       setMode("Pro");
     }
   }, [pathname, setMode, routerMath]);

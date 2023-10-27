@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Address, useBalance, useDisconnect } from "wagmi";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { truncateAddr } from "@/lib/utils/web3";
@@ -30,12 +30,16 @@ export default function ConnectBtn() {
     isConnecting,
   } = useConnectModal();
 
-  const shorterAddress = useMemo(() => {
-    if (!address) return "";
-    return truncateAddr(address, {
+  const [shortAddr, setShortAddr] = useState("");
+
+  useEffect(() => {
+    if (!address) return;
+    const sa = truncateAddr(address, {
       nPrefix: 7,
       nSuffix: 4,
     });
+
+    setShortAddr(sa);
   }, [address]);
 
   const walletType = useMemo<any>(() => {
@@ -61,10 +65,10 @@ export default function ConnectBtn() {
         <button className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all">
           <div className="flex items-center">
             <SmallWalletIcon type={walletType} />
-            {isConnecting ? (
+            {!shortAddr || isConnecting ? (
               <Skeleton className="h-5 w-24" />
             ) : (
-              <span>{shortAddress}</span>
+              <div>{shortAddress}</div>
             )}
           </div>
         </button>
@@ -80,7 +84,7 @@ export default function ConnectBtn() {
         <div className="mt-0 mb-6 flex items-center gap-x-3">
           <BigWalletIcon type={walletType} />
           <div className="flex flex-1 flex-col">
-            <div className="leading-6 text-black">{shorterAddress}</div>
+            <div className="leading-6 text-black">{shortAddr}</div>
             <BalanceDisplay address={address} />
           </div>
           <CopyIcon text={address || ""} />

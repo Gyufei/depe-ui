@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import StrokeArrowIcon from "@/components/share/icons/stroke-arrow";
+import StrokeArrowIcon from "/public/icons/arrow-down.svg";
 
 import { IToken } from "@/lib/types/token";
 import { cn } from "@/lib/utils/common";
@@ -89,7 +89,7 @@ export function StableTokenSelectDisplay({
               {token.symbol}
             </div>
             <div className="flex h-6 w-6 items-center justify-center">
-              <StrokeArrowIcon />
+              <Image src={StrokeArrowIcon} width={24} height={24} alt="arrow" />
             </div>
           </div>
         </PopoverTrigger>
@@ -156,7 +156,7 @@ export function TokenSelectDisplay({
               {token.symbol}
             </div>
             <div className="flex h-6 w-6 items-center justify-center">
-              <StrokeArrowIcon />
+              <Image src={StrokeArrowIcon} width={24} height={24} alt="arrow" />
             </div>
           </div>
           <Image

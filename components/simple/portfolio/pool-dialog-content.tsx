@@ -20,7 +20,7 @@ export default function PoolDialogContent({
   asset: {
     data: {
       value: string | null;
-      formatted: string;
+      formatted: string | null;
     };
     isLoading: boolean;
   };

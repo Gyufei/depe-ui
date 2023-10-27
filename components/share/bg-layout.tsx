@@ -1,13 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 
 export default function BgLayout({ children }: { children: React.ReactNode }) {
   const { chain } = usePublicClient();
+  const [chainName, setChainName] = useState("Ethereum");
+
+  useEffect(() => {
+    setChainName(chain?.name.replace(" ", ""));
+  }, [chain]);
 
   return (
     <div
-      data-chain={chain?.name.replace(" ", "")}
+      data-chain={chainName}
       className="
       h-screen
       w-screen overflow-y-auto

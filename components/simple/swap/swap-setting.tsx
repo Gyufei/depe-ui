@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useAtom } from "jotai";
 
 import SettingIcon from "/public/icons/setting.svg";
-import StrokeArrowIcon from "@/components/share/icons/stroke-arrow";
+import StrokeArrowIcon from "/public/icons/arrow-down.svg";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import AnimatedDropdown from "@/components/share/animated-dropdown";
@@ -78,7 +78,13 @@ export default function SwapSetting() {
                 data-state={showSlippageOp ? "open" : "close"}
                 className="scale-75 fill-current data-[state=open]:rotate-180"
               >
-                <StrokeArrowIcon />
+                <Image
+                  src={StrokeArrowIcon}
+                  width={24}
+                  height={24}
+                  alt="arrow"
+                  className="opacity-40"
+                />
               </div>
             </div>
           </div>

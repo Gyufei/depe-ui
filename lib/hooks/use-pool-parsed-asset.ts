@@ -12,17 +12,22 @@ export function usePoolParsedAsset(pool: IPool) {
   const { dataMap: poolAssetMap, isLoading: isPoolAssetLoading } =
     usePoolAsset();
 
-  const assetParsed = useMemo(() => {
-    const assetVal = poolAssetMap[pool.poolAddr]?.amount || null;
+  console.log(poolAssetMap);
+  console.log(pool);
 
-    if (!baseToken || !assetVal)
-      return {
-        data: {
-          value: "",
-          formatted: "",
-        },
-        isLoading: isPoolAssetLoading,
-      };
+  const assetParsed = useMemo(() => {
+    const empty = {
+      data: {
+        value: null,
+        formatted: null,
+      },
+      isLoading: isPoolAssetLoading,
+    };
+
+    if (!pool) return empty;
+
+    const assetVal = poolAssetMap[pool.poolAddr]?.amount || null;
+    if (!baseToken || !assetVal) return empty;
 
     const val = NP.divide(assetVal || 0, 10 ** baseToken?.decimals);
     const fmt = formatNum(val);

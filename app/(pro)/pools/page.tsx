@@ -111,7 +111,7 @@ function CustomSelect({
       <SelectTrigger
         data-active={isActive}
         className={cn(
-          "h-[32px] rounded-full border-0 px-4 hover:border hover:border-black hover:bg-white data-[active=true]:border data-[active=true]:border-black data-[active=true]:bg-white data-[active=true]:shadow-2",
+          "h-[32px] rounded-full border border-transparent px-4 hover:border-black hover:bg-white data-[active=true]:border-black data-[active=true]:bg-white data-[active=true]:shadow-2",
           className,
         )}
       >

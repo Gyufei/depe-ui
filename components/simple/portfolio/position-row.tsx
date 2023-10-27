@@ -59,7 +59,7 @@ export function PositionRow({
     if (!val) setPopOpen(false);
   };
 
-  const { data: pool } = usePool(position.dpPoolAddr);
+  const { data: pool } = usePool({ poolAddr: position.dpPoolAddr });
 
   const { baseToken, quoteToken, leverage, size, marginAmount, pnlPercent } =
     usePositionFormat(position, pool);
