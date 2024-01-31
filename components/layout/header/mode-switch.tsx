@@ -48,15 +48,24 @@ export default function ModeSwitch() {
   return (
     <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
       <PopoverTrigger asChild>
-        <Image className="cursor-pointer" width={24} height={24} src={Menu} alt="menu"></Image>
+        <Image
+          className="cursor-pointer"
+          width={24}
+          height={24}
+          src={Menu}
+          alt="menu"
+        ></Image>
       </PopoverTrigger>
       <PopoverContent
         className="flex w-[220px] flex-col items-stretch border-[2px] border-black bg-white py-2"
         align="start"
       >
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div className="font-medium text-black">{modeOpt[0]}</div>
-          <Switch checked={mode === modeOpt[1]} onCheckedChange={handleSwitch} />
+          <Switch
+            checked={mode === modeOpt[1]}
+            onCheckedChange={handleSwitch}
+          />
           <div className="font-medium text-black">{modeOpt[1]}</div>
         </div>
       </PopoverContent>
