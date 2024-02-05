@@ -1,10 +1,14 @@
-import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount } from "wagmi";
 import { truncateAddr } from "../../utils/web3";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { WalletSelectDialogVisibleAtom } from "@/components/share/wallet-select-dialog";
+import { useSetAtom } from "jotai";
 
 export function useConnectModal() {
-  const modal = useWeb3Modal();
+  const setWalletSelectDialogVisible = useSetAtom(
+    WalletSelectDialogVisibleAtom,
+  );
+
   const accountRes = useAccount();
 
   const shortAddress = useMemo(
@@ -12,7 +16,9 @@ export function useConnectModal() {
     [accountRes.address],
   );
 
-  const openConnectModal = modal.open;
+  const openConnectModal = useCallback(() => {
+    setWalletSelectDialogVisible(true);
+  }, [setWalletSelectDialogVisible]);
 
   return {
     shortAddress,

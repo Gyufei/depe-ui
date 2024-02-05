@@ -19,6 +19,7 @@ import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { truncateAddr } from "@/lib/utils/web3";
 import CopyIcon from "@/components/share/copy-icon";
 import { formatNum } from "@/lib/utils/number";
+import WalletSelectDialog from "@/components/share/wallet-select-dialog";
 
 export default function ConnectBtn() {
   const {
@@ -50,12 +51,15 @@ export default function ConnectBtn() {
 
   if (isDisconnected) {
     return (
-      <button
-        className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all"
-        onClick={() => openConnectModal()}
-      >
-        Connect
-      </button>
+      <>
+        <button
+          className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all"
+          onClick={() => openConnectModal()}
+        >
+          Connect
+        </button>
+        <WalletSelectDialog />
+      </>
     );
   }
 
