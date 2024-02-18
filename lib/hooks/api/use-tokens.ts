@@ -9,9 +9,16 @@ export function useTokens() {
   const { chainConfig } = useChainConfig();
   const { tokenEndPoint } = useEndPoint();
 
+  async function tFetcher() {
+    const tokens = await fetcher(tokenEndPoint);
+    return {
+      tokens,
+    };
+  }
+
   const { data, isLoading, error } = useSWRImmutable<{
     tokens: Array<IToken>;
-  }>(tokenEndPoint, fetcher);
+  }>(tokenEndPoint, tFetcher);
 
   const marginTokens = useMemo(() => {
     const mTs = chainConfig?.marginTokens || [];

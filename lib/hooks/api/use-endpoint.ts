@@ -13,8 +13,8 @@ export function useEndPoint() {
   }, [apiEndPoint]);
 
   const tokenEndPoint = useMemo(() => {
-    return chainConfig?.api.tokenApi;
-  }, [chainConfig]);
+    return "https://token.jup.ag/strict";
+  }, []);
 
   const routerEndPoint = useMemo(() => {
     return chainConfig?.api.routerApi;

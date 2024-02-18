@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import NP from "number-precision";
 
 import { Skeleton } from "../../ui/skeleton";
-import { useConnectModal } from "@/lib/hooks/common/use-connect";
-import MetamaskLogo from "/public/icons/metamask.svg";
-import WalletConnectLogo from "/public/icons/walletconnect.svg";
 import LogoutIcon from "/public/icons/logout.svg";
 
 import {
@@ -13,48 +12,52 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useMemo, useState } from "react";
-import { Address, useBalance, useDisconnect } from "wagmi";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { truncateAddr } from "@/lib/utils/web3";
 import CopyIcon from "@/components/share/copy-icon";
 import { formatNum } from "@/lib/utils/number";
-import WalletSelectDialog from "@/components/share/wallet-select-dialog";
+import WalletSelectDialog, {
+  WalletSelectDialogVisibleAtom,
+} from "@/components/share/wallet-select-dialog";
+import toPubString from "@/lib/utils/pub-string";
+import { useSetAtom } from "jotai";
+import { SOLDecimals } from "@/lib/constant";
+import { PublicKey } from "@solana/web3.js";
 
 export default function ConnectBtn() {
-  const {
-    shortAddress,
-    address,
-    connector,
-    openConnectModal,
-    isDisconnected,
-    isConnecting,
-  } = useConnectModal();
+  const setWalletSelectDialogVisible = useSetAtom(
+    WalletSelectDialogVisibleAtom,
+  );
+
+  const openWalletSelectDialog = useCallback(() => {
+    setWalletSelectDialogVisible(true);
+  }, [setWalletSelectDialogVisible]);
+
+  const { publicKey, connected, connecting, wallet } = useWallet();
+
+  const address = toPubString(publicKey);
 
   const [shortAddr, setShortAddr] = useState("");
 
   useEffect(() => {
     if (!address) return;
     const sa = truncateAddr(address, {
-      nPrefix: 7,
+      nPrefix: 9,
       nSuffix: 4,
     });
 
     setShortAddr(sa);
   }, [address]);
 
-  const walletType = useMemo<any>(() => {
-    return connector?.name || null;
-  }, [connector]);
-
   const [popOpen, setPopOpen] = useState(false);
 
-  if (isDisconnected) {
+  if (!connected) {
     return (
       <>
         <button
           className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all"
-          onClick={() => openConnectModal()}
+          onClick={() => openWalletSelectDialog()}
         >
           Connect
         </button>
@@ -68,11 +71,11 @@ export default function ConnectBtn() {
       <PopoverTrigger asChild>
         <button className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all">
           <div className="flex items-center">
-            <SmallWalletIcon type={walletType} />
-            {!shortAddr || isConnecting ? (
+            <SmallWalletIcon icon={wallet?.adapter.icon} />
+            {!shortAddr || connecting ? (
               <Skeleton className="h-5 w-24" />
             ) : (
-              <div>{shortAddress}</div>
+              <div>{shortAddr}</div>
             )}
           </div>
         </button>
@@ -86,10 +89,10 @@ export default function ConnectBtn() {
           Wallet
         </div>
         <div className="mt-0 mb-6 flex items-center gap-x-3">
-          <BigWalletIcon type={walletType} />
+          <BigWalletIcon icon={wallet?.adapter.icon} />
           <div className="flex flex-1 flex-col">
             <div className="leading-6 text-black">{shortAddr}</div>
-            <BalanceDisplay address={address} />
+            <BalanceDisplay />
           </div>
           <CopyIcon text={address || ""} />
         </div>
@@ -99,23 +102,42 @@ export default function ConnectBtn() {
   );
 }
 
-function BalanceDisplay({ address }: { address: Address | undefined }) {
-  const { data: balanceData, isLoading } = useBalance({
-    address: address,
-  });
+function BalanceDisplay() {
+  const { publicKey } = useWallet();
+  const { connection } = useConnection();
+
+  const [balanceData, setBalanceData] = useState<any>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!publicKey) return;
+
+    async function getBalance(pb: PublicKey) {
+      if (!pb) {
+        setBalanceData(null);
+      } else {
+        const res = await connection.getBalance(pb);
+        setBalanceData(res);
+        setIsLoading(false);
+      }
+    }
+
+    getBalance(publicKey);
+  }, [publicKey, connection]);
 
   const balanceNum = useMemo(() => {
-    return formatNum(balanceData?.formatted || 0, 4);
-  }, [balanceData?.formatted]);
+    if (!balanceData) return 0;
+    const balance = NP.divide(balanceData, 10 ** SOLDecimals);
+    return formatNum(balance || 0, 4);
+  }, [balanceData]);
 
   const { data: tokens } = useTokens();
   const balanceToken = useMemo(() => {
-    const balanceSymbol =
-      balanceData?.symbol === "SEP" ? "ETH" : balanceData?.symbol;
+    const balanceSymbol = "SOL";
 
     if (!tokens) return null;
     return tokens.find((x) => x.symbol === balanceSymbol);
-  }, [tokens, balanceData?.symbol]);
+  }, [tokens]);
 
   return (
     <div className="flex items-center">
@@ -146,12 +168,8 @@ function BalanceDisplay({ address }: { address: Address | undefined }) {
   );
 }
 
-function SmallWalletIcon({
-  type,
-}: {
-  type: "MetaMask" | "WalletConnect" | null;
-}) {
-  if (!type) return <Skeleton className="mr-2 h-7 w-7 rounded-full" />;
+function SmallWalletIcon({ icon }: { icon: string | undefined }) {
+  if (!icon) return <Skeleton className="mr-2 h-7 w-7 rounded-full" />;
 
   return (
     <div
@@ -160,27 +178,13 @@ function SmallWalletIcon({
         backgroundColor: "rgba(14, 4, 62, 0.04)",
       }}
     >
-      {type === "MetaMask" && (
-        <Image width={15} height={12} src={MetamaskLogo} alt="metamask"></Image>
-      )}
-      {type === "WalletConnect" && (
-        <Image
-          width={15}
-          height={12}
-          src={WalletConnectLogo}
-          alt="metamask"
-        ></Image>
-      )}
+      <Image width={15} height={12} src={icon} alt="metamask"></Image>
     </div>
   );
 }
 
-function BigWalletIcon({
-  type,
-}: {
-  type: "MetaMask" | "WalletConnect" | null;
-}) {
-  if (!type) return <Skeleton className="h-10 w-10 rounded-full" />;
+function BigWalletIcon({ icon }: { icon: string | undefined }) {
+  if (!icon) return <Skeleton className="h-10 w-10 rounded-full" />;
 
   return (
     <div
@@ -189,28 +193,14 @@ function BigWalletIcon({
         backgroundColor: "rgba(14, 4, 62, 0.1)",
       }}
     >
-      {type === "MetaMask" && (
-        <Image
-          width={21.5}
-          height={17.5}
-          src={MetamaskLogo}
-          alt="metamask"
-        ></Image>
-      )}
-      {type === "WalletConnect" && (
-        <Image
-          width={21.5}
-          height={17.5}
-          src={WalletConnectLogo}
-          alt="metamask"
-        ></Image>
-      )}
+      <Image width={21.5} height={17.5} src={icon} alt="metamask"></Image>
     </div>
   );
 }
 
 function Disconnect() {
-  const { disconnect } = useDisconnect();
+  const { disconnect } = useWallet();
+
   const handleDisconnect = () => {
     disconnect();
   };
@@ -221,7 +211,7 @@ function Disconnect() {
         className="flex cursor-pointer items-center pb-4"
         onClick={handleDisconnect}
       >
-        <Image width={20} height={20} src={LogoutIcon} alt="metamask"></Image>
+        <Image width={20} height={20} src={LogoutIcon} alt="logo"></Image>
         <div className="ml-2 text-sm leading-5 text-black">Disconnect</div>
       </div>
       <div className="flex items-center space-x-6 text-xs text-[#666]">

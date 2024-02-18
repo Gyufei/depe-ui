@@ -9,17 +9,13 @@ import {
 } from "@solana/wallet-adapter-react";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { SolflareWalletAdapter } from "@solflare-wallet/wallet-adapter";
-import { clusterApiUrl } from "@solana/web3.js";
 import { OKXWalletAdapter } from "./okx-wallet-adapter";
-import { useRpc } from "../../../lib/hooks/common/use-rpc";
+import { useCluster } from "@/lib/hooks/common/use-cluster";
 
 export function SolanaWalletProviders({ children }: { children?: ReactNode }) {
-  const rpc = useRpc();
+  const { clusterConfig } = useCluster();
 
-  const endpoint = useMemo(
-    () => rpc.endpoint ?? clusterApiUrl("devnet"),
-    [rpc],
-  );
+  const endpoint = useMemo(() => clusterConfig.rpcEndpoint, [clusterConfig]);
 
   const wallets = [
     new PhantomWalletAdapter(),

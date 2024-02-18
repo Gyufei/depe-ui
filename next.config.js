@@ -12,6 +12,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "explorer-api.walletconnect.com",
       },
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+      },
     ],
   },
   webpack: (config) => {
