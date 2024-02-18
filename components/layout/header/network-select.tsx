@@ -2,14 +2,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
-import {
-  Chain,
-  useAccount,
-  useConfig,
-  usePublicClient,
-  useSwitchNetwork,
-} from "wagmi";
 
 import {
   Popover,
@@ -17,37 +9,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { getChainLogo } from "@/lib/chain-configs";
 import Triangle from "/public/icons/triangle.svg";
 import { Skeleton } from "../../ui/skeleton";
+import { useAtom } from "jotai";
+import { ClusterAtom, ClusterType } from "@/lib/states/cluster";
 
 export default function NetworkSelect() {
-  const config = useConfig();
-  const { isConnected } = useAccount();
-  const { chain, chains } = usePublicClient();
-  const { switchNetworkAsync, isLoading, pendingChainId } = useSwitchNetwork();
+  const [cluster, setCluster] = useAtom(ClusterAtom);
 
   const [popOpen, setPopOpen] = useState(false);
 
-  const handleSelectNet = async (selectChain: Chain) => {
-    if (selectChain.id === chain?.id) return;
-
-    if (isConnected) {
-      await switchNetworkAsync?.(selectChain.id);
-    } else {
-      config.setState((x) => {
-        return {
-          ...x,
-          data: {
-            ...x.data,
-            chain: {
-              ...selectChain,
-              unsupported: false,
-            },
-          },
-        };
-      });
-    }
+  const handleSelectNet = async (c: ClusterType) => {
+    if (c === cluster) return;
+    setCluster(c);
     setPopOpen(false);
   };
 
@@ -69,26 +43,44 @@ export default function NetworkSelect() {
         align="start"
         alignOffset={-170}
       >
-        {(chains || []).map((c) => (
-          <div
-            key={c.name}
-            onClick={() => handleSelectNet(c)}
-            data-state={c.id === chain?.id ? "active" : "inactive"}
-            className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black data-[state=active]:bg-black data-[state=active]:text-yellow"
-          >
+        <div
+          onClick={() => handleSelectNet(ClusterType.Mainnet)}
+          data-state={ClusterType.Mainnet === cluster ? "active" : "inactive"}
+          className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black data-[state=active]:bg-black data-[state=active]:text-yellow"
+        >
+          <Image
+            width={24}
+            height={24}
+            src="/icons/solana.svg"
+            alt="chain logo"
+            className="c-image-shadow z-10 bg-white"
+          />
+          <div className="flex-1 text-sm">Solana Mainnet</div>
+        </div>
+        <div
+          onClick={() => handleSelectNet(ClusterType.Devnet)}
+          data-state={ClusterType.Devnet === cluster ? "active" : "inactive"}
+          className="flex cursor-pointer items-center space-x-3 rounded-xl px-4 py-3 text-black data-[state=active]:bg-black data-[state=active]:text-yellow"
+        >
+          <div className="relative">
             <Image
               width={24}
               height={24}
-              src={getChainLogo(c.name) || ""}
-              alt="chain logo"
-              className="c-image-shadow z-10"
-            />
-            <div className="flex-1 text-sm">{c.name}</div>
-            {isLoading && pendingChainId === c.id && (
-              <Loader2 className="h-4 w-4 animate-spin text-pink" />
-            )}
+              src="/icons/solana.svg"
+              alt="current chain logo"
+              className="c-image-shadow z-10 bg-white"
+            ></Image>
+
+            <Image
+              width={12}
+              height={12}
+              src="/icons/dev-flag.svg"
+              alt="dev flag"
+              className="absolute bottom-0 -right-1 z-[11]"
+            ></Image>
           </div>
-        ))}
+          <div className="flex-1 text-sm">Solana Testnet</div>
+        </div>
       </PopoverContent>
     </Popover>
   );
