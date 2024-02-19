@@ -24,13 +24,13 @@ export default async function RootLayout({
       <body className={cn(HaasGrotDisp.variable, HaasGrotText.variable)}>
         <GlobalProvider>
           <Web3ConnectProvider>
-            <SolanaWalletProviders>
-              <JotaiProvider>
+            <JotaiProvider>
+              <SolanaWalletProviders>
                 <SWRConfigProvider>
                   <HomeLayout>{children}</HomeLayout>
                 </SWRConfigProvider>
-              </JotaiProvider>
-            </SolanaWalletProviders>
+              </SolanaWalletProviders>
+            </JotaiProvider>
           </Web3ConnectProvider>
         </GlobalProvider>
       </body>

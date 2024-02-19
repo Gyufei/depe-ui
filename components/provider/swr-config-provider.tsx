@@ -17,7 +17,9 @@ export default function SWRConfigProvider({
         onError: (error, key) => {
           setGlobalMessage({
             type: "error",
-            message: `${error.status}: ${error.info}`,
+            message: `${error.status || error.name}: ${
+              error.info || error.message
+            }`,
           });
 
           console.info({
