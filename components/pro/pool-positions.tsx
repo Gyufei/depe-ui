@@ -32,7 +32,10 @@ export default function PoolPositions() {
         </PanelLeaderButton>
       </div>
 
-      <div data-state="active" className="c-shadow-panel h-[400px] p-0">
+      <div
+        data-state="active"
+        className="c-shadow-panel h-[400px] overflow-hidden p-0"
+      >
         <PositionTable />
       </div>
     </div>
@@ -40,51 +43,52 @@ export default function PoolPositions() {
 }
 
 const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
+  // {
+  //   tokenName: "m5gr84i9",
+  //   tokenLogo: "usdt",
+  //   positionStatus: "success",
+  //   hash: "4442321131",
+  //   leverage: 5,
+  //   size: 1,
+  //   margin: "usdt",
+  //   liqPrice: 123,
+  //   pl: 15,
+  //   plPercent: 0.2,
+  //   isNft: true,
+  // },
+  // {
+  //   tokenName: "m5gr84i9",
+  //   tokenLogo: "sdf",
+  //   positionStatus: "success",
+  //   hash: "4442321131",
+  //   leverage: 10,
+  //   size: 1,
+  //   margin: "usdt",
+  //   liqPrice: 123,
+  //   pl: 15,
+  //   plPercent: 0.2,
+  //   isNft: false,
+  // },
 ];
 
 export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+  tokenName: string;
+  tokenLogo: string;
+  positionStatus: string;
+  hash: string;
+  leverage: number;
+  size: number;
+  margin: string;
+  liqPrice: number;
+  pl: number;
+  plPercent: number;
+  isNft: boolean;
 };
 
 export const columns: ColumnDef<Payment>[] = [
   {
     id: "index",
-    header: () => {
-      return "#";
-    },
+    header: () => <div className="text-sm leading-5 text-lightgray">#</div>,
     cell: ({ row }) => {
       return row.index + 1;
     },
@@ -92,36 +96,55 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+    accessorKey: "tokenName",
+    header: () => <div className="text-sm leading-5 text-lightgray">Token</div>,
+    cell: ({ row }) => <div>{row.getValue("tokenName")}</div>,
+  },
+  {
+    accessorKey: "hash",
+    header: () => <div className="text-sm leading-5 text-lightgray">Hash</div>,
+    cell: ({ row }) => <div>{row.getValue("hash")}</div>,
+  },
+  {
+    accessorKey: "leverage",
+    header: () => (
+      <div className="text-sm leading-5 text-lightgray">Leverage</div>
     ),
+    cell: ({ row }) => <div>{row.getValue("leverage")}</div>,
   },
   {
-    accessorKey: "email",
-    header: () => {
-      return "Email";
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    accessorKey: "size",
+    header: () => <div className="text-sm leading-5 text-lightgray">Size</div>,
+    cell: ({ row }) => <div>{row.getValue("size")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    accessorKey: "margin",
+    header: () => (
+      <div className="text-sm leading-5 text-lightgray">Margin</div>
+    ),
+    cell: ({ row }) => <div>{row.getValue("margin")}</div>,
+  },
+  {
+    accessorKey: "liqPrice",
+    header: () => (
+      <div className="text-sm leading-5 text-lightgray">Liq.Price</div>
+    ),
+    cell: ({ row }) => <div>{row.getValue("liqPrice")}</div>,
+  },
+  {
+    accessorKey: "pl",
+    header: () => <div className="text-sm leading-5 text-lightgray">P/L</div>,
+    cell: ({ row }) => <div>{row.getValue("liqPrice")}</div>,
   },
   {
     id: "actions",
+    enableHiding: false,
+    cell: () => {
+      return <MoreHorizontal className="h-4 w-4" />;
+    },
+  },
+  {
+    id: "share",
     enableHiding: false,
     cell: () => {
       return <MoreHorizontal className="h-4 w-4" />;
@@ -155,11 +178,11 @@ function PositionTable() {
   });
 
   return (
-    <div className="w-full">
+    <div className="mt-3 w-full">
       <Table>
-        <TableHeader>
+        <TableHeader className="h-[48px] bg-white">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow className="border-none" key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
@@ -175,10 +198,11 @@ function PositionTable() {
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="bg-white leading-6 text-black">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                className="border-none"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
