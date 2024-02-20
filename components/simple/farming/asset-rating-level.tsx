@@ -75,7 +75,7 @@ export function AssetRatingLevel() {
   );
 }
 
-function LevelBtn({
+export function LevelBtn({
   level,
   activeLevel,
   handleChange,
@@ -107,7 +107,7 @@ function LevelBtn({
   );
 }
 
-function BtnTextUnderline({
+export function BtnTextUnderline({
   className,
   style,
 }: {

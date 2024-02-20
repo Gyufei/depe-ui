@@ -3,7 +3,6 @@ import Image from "next/image";
 
 import PoolsIcon from "/public/icons/pools.svg";
 import PoolsActiveIcon from "/public/icons/pools-active.svg";
-import GovernanceIcon from "/public/icons/governance.svg";
 import AchievementsIcon from "/public/icons/achievements.svg";
 
 import { usePathname } from "next/navigation";
@@ -44,17 +43,12 @@ function Pools({ isActive }: { isActive: boolean }) {
 function Governance({ isActive }: { isActive: boolean }) {
   return (
     <Link href="/governance">
-      {isActive ? (
-        <Image src={GovernanceIcon} width={40} height={40} alt="governance" />
-      ) : (
-        <Image
-          src={GovernanceIcon}
-          width={40}
-          height={40}
-          className="opacity-40"
-          alt="governance"
-        />
-      )}
+      <Image
+        src={isActive ? "/icons/governance-fill.svg" : "/icons/governance.svg"}
+        width={40}
+        height={40}
+        alt="governance"
+      />
     </Link>
   );
 }

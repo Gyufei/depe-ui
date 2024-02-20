@@ -4,6 +4,12 @@ import Image from "next/image";
 
 import { usePools } from "@/lib/hooks/api/use-pools";
 import PoolPanel from "@/components/pro/pool-panel";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import {
   Select,
@@ -16,6 +22,9 @@ import {
 import { usePoolsFilter } from "@/lib/hooks/use-pools-filter";
 import Triangle from "/public/icons/triangle.svg";
 import { cn } from "@/lib/utils/common";
+import DialogGimp from "@/components/share/dialog-gimp";
+import CreatePoolDialogContent from "@/components/pro/create-pool-dialog-content";
+import { useState } from "react";
 
 export default function Pools() {
   const { data: pools, isLoading } = usePools();
@@ -37,10 +46,7 @@ export default function Pools() {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex items-center justify-between">
-        <button className="c-shadow-translate c-font-text-65 flex w-fit items-center justify-center  rounded-xl border-2 border-black bg-white py-3 px-9 leading-6 shadow-25">
-          Create Pool
-        </button>
-
+        <CreatePoolBtn />
         <div className="flex items-center">
           <CustomSelect
             label="Order by"
@@ -145,5 +151,24 @@ function CustomSelect({
           ))}
       </SelectContent>
     </Select>
+  );
+}
+
+function CreatePoolBtn() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <Dialog open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
+      <DialogTrigger asChild>
+        <button className="c-shadow-translate c-font-text-65 flex w-fit items-center justify-center  rounded-xl border-2 border-black bg-white py-3 px-9 leading-6 shadow-25">
+          Create Pool
+        </button>
+      </DialogTrigger>
+      <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
+        <DialogGimp />
+        <DialogTitle className="px-6 pt-6">Create Pool</DialogTitle>
+        <CreatePoolDialogContent />
+      </DialogContent>
+    </Dialog>
   );
 }
