@@ -8,6 +8,7 @@ import AchievementsIcon from "/public/icons/achievements.svg";
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/common";
+import Link from "next/link";
 
 export default function ProSideMenu({ className }: { className?: string }) {
   const routePath = ["/pools", "/governance", "/achievements"];
@@ -23,30 +24,38 @@ export default function ProSideMenu({ className }: { className?: string }) {
 }
 
 function Pools({ isActive }: { isActive: boolean }) {
-  return isActive ? (
-    <Image src={PoolsActiveIcon} width={40} height={40} alt="pools" />
-  ) : (
-    <Image
-      src={PoolsIcon}
-      width={40}
-      height={40}
-      className="opacity-40"
-      alt="pools"
-    />
+  return (
+    <Link href="/pools">
+      {isActive ? (
+        <Image src={PoolsActiveIcon} width={40} height={40} alt="pools" />
+      ) : (
+        <Image
+          src={PoolsIcon}
+          width={40}
+          height={40}
+          className="opacity-40"
+          alt="pools"
+        />
+      )}
+    </Link>
   );
 }
 
 function Governance({ isActive }: { isActive: boolean }) {
-  return isActive ? (
-    <Image src={GovernanceIcon} width={40} height={40} alt="governance" />
-  ) : (
-    <Image
-      src={GovernanceIcon}
-      width={40}
-      height={40}
-      className="opacity-40"
-      alt="governance"
-    />
+  return (
+    <Link href="/governance">
+      {isActive ? (
+        <Image src={GovernanceIcon} width={40} height={40} alt="governance" />
+      ) : (
+        <Image
+          src={GovernanceIcon}
+          width={40}
+          height={40}
+          className="opacity-40"
+          alt="governance"
+        />
+      )}
+    </Link>
   );
 }
 

@@ -11,9 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
 
-import PanelLeaderButton from "../share/panel-leader-button";
 import {
   Table,
   TableBody,
@@ -25,24 +23,16 @@ import {
 
 export default function PoolPositions() {
   return (
-    <div className="relative mt-[55px]">
-      <div className="absolute top-[100px] -left-[116px] -rotate-90">
-        <PanelLeaderButton className="bg-pink" defaultActive={true}>
-          Positions
-        </PanelLeaderButton>
-      </div>
-
-      <div
-        data-state="active"
-        className="c-shadow-panel h-[400px] overflow-hidden p-0"
-      >
-        <PositionTable />
-      </div>
+    <div
+      data-state="active"
+      className="c-shadow-panel mt-[55px] h-[400px] w-[774px] overflow-hidden p-0"
+    >
+      <BundleTable />
     </div>
   );
 }
 
-const data: IPositionRow[] = [
+const data: IBundleRow[] = [
   // {
   //   tokenName: "m5gr84i9",
   //   tokenLogo: "usdt",
@@ -71,88 +61,51 @@ const data: IPositionRow[] = [
   // },
 ];
 
-export type IPositionRow = {
-  tokenName: string;
-  tokenLogo: string;
-  positionStatus: string;
-  hash: string;
-  leverage: number;
-  size: number;
-  margin: string;
-  liqPrice: number;
-  pl: number;
-  plPercent: number;
-  isNft: boolean;
+export type IBundleRow = {
+  bundle: string;
+  amount: number;
+  date: string;
+  value: number;
 };
 
-export const columns: ColumnDef<IPositionRow>[] = [
+export const columns: ColumnDef<IBundleRow>[] = [
   {
     id: "index",
     header: () => <div className="text-sm leading-5 text-lightgray">#</div>,
     cell: ({ row }) => {
       return row.index + 1;
     },
+    footer: () => <div>Total</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "tokenName",
-    header: () => <div className="text-sm leading-5 text-lightgray">Token</div>,
-    cell: ({ row }) => <div>{row.getValue("tokenName")}</div>,
-  },
-  {
-    accessorKey: "hash",
-    header: () => <div className="text-sm leading-5 text-lightgray">Hash</div>,
-    cell: ({ row }) => <div>{row.getValue("hash")}</div>,
-  },
-  {
-    accessorKey: "leverage",
+    accessorKey: "bundle",
     header: () => (
-      <div className="text-sm leading-5 text-lightgray">Leverage</div>
+      <div className="text-sm leading-5 text-lightgray">Bundle</div>
     ),
-    cell: ({ row }) => <div>{row.getValue("leverage")}</div>,
+    cell: ({ row }) => <div>{row.getValue("bundle")}</div>,
   },
   {
-    accessorKey: "size",
-    header: () => <div className="text-sm leading-5 text-lightgray">Size</div>,
+    accessorKey: "amount",
+    header: () => (
+      <div className="text-sm leading-5 text-lightgray">Amount</div>
+    ),
+    cell: ({ row }) => <div>{row.getValue("amount")}</div>,
+  },
+  {
+    accessorKey: "date",
+    header: () => <div className="text-sm leading-5 text-lightgray">Date</div>,
     cell: ({ row }) => <div>{row.getValue("size")}</div>,
   },
   {
-    accessorKey: "margin",
-    header: () => (
-      <div className="text-sm leading-5 text-lightgray">Margin</div>
-    ),
-    cell: ({ row }) => <div>{row.getValue("margin")}</div>,
-  },
-  {
-    accessorKey: "liqPrice",
-    header: () => (
-      <div className="text-sm leading-5 text-lightgray">Liq.Price</div>
-    ),
-    cell: ({ row }) => <div>{row.getValue("liqPrice")}</div>,
-  },
-  {
-    accessorKey: "pl",
-    header: () => <div className="text-sm leading-5 text-lightgray">P/L</div>,
-    cell: ({ row }) => <div>{row.getValue("liqPrice")}</div>,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () => {
-      return <MoreHorizontal className="h-4 w-4" />;
-    },
-  },
-  {
-    id: "share",
-    enableHiding: false,
-    cell: () => {
-      return <MoreHorizontal className="h-4 w-4" />;
-    },
+    accessorKey: "value",
+    header: () => <div className="text-sm leading-5 text-lightgray">Value</div>,
+    cell: ({ row }) => <div>{row.getValue("value")}</div>,
   },
 ];
 
-function PositionTable() {
+function BundleTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
