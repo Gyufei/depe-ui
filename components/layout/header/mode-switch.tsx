@@ -17,7 +17,7 @@ import Menu from "/public/icons/menu.svg";
 
 const routerMath = {
   Simple: ["/"],
-  Pro: ["/pools"],
+  Pro: ["/pools", "/governance"],
 };
 
 const modeOpt: Array<TMode> = ["Simple", "Pro"];
@@ -49,7 +49,7 @@ export default function ModeSwitch() {
     <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
       <PopoverTrigger asChild>
         <Image
-          className="cursor-pointer"
+          className="hidden cursor-pointer md:block"
           width={24}
           height={24}
           src={Menu}

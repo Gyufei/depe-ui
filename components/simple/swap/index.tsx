@@ -26,7 +26,7 @@ function SwapBase() {
   return (
     <>
       <PanelLeaderButton className="bg-brown">
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-2 md:gap-x-4">
           <div className="flex items-center">Margin Swap</div>
           <SwapSetting />
         </div>
@@ -34,7 +34,7 @@ function SwapBase() {
 
       <div
         data-state={isActivePanel ? "active" : "inactive"}
-        className="c-shadow-panel w-[480px]"
+        className="c-shadow-panel w-[calc(100vw-52px)] md:w-[480px]"
       >
         <div className="flex flex-col">
           <BaseTokenInput />

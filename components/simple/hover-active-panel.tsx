@@ -32,6 +32,11 @@ export default function HoverActivePanel({
     [windowSize.width],
   );
 
+  const isSmallScreen = useMemo(
+    () => !windowSize.width || windowSize.width < 768,
+    [windowSize.width],
+  );
+
   const orderNum = useMemo(() => {
     return orderArr.findIndex((t) => t === name) + 1;
   }, [orderArr, name]);
@@ -40,18 +45,18 @@ export default function HoverActivePanel({
     isBigScreen || activePanel === name || hoverPanel === name;
 
   const position = useMemo(() => {
-    if (isBigScreen) return "static";
+    if (isBigScreen || isSmallScreen) return "static";
 
     return "absolute";
-  }, [isBigScreen]);
+  }, [isBigScreen, isSmallScreen]);
 
   const transform = useMemo(() => {
-    if (isBigScreen) return "scale(1)";
+    if (isBigScreen || isSmallScreen) return "scale(1)";
     return orderNum === 2 ? "scale(1)" : "scale(0.9)";
-  }, [isBigScreen, orderNum]);
+  }, [isBigScreen, orderNum, isSmallScreen]);
 
   const left = useMemo(() => {
-    if (isBigScreen) return "unset";
+    if (isBigScreen || isSmallScreen) return "unset";
 
     const conWidth = windowSize.width > 1566 ? 1566 : windowSize.width;
     const avgPartWidth = conWidth / 3;
@@ -61,10 +66,16 @@ export default function HoverActivePanel({
     if (orderNum === 1) return "0";
     if (orderNum === 2) return avgPartWidth + "px";
     if (orderNum === 3) return right3 + "px";
-  }, [windowSize.width, orderNum, isBigScreen]);
+  }, [windowSize.width, orderNum, isBigScreen, isSmallScreen]);
+
+  const handlePanelHover = (n: TPanel | null) => {
+    if (isSmallScreen) return;
+
+    setHoverPanel(n);
+  };
 
   const handleClickToActive = () => {
-    if (isBigScreen) return true;
+    if (isBigScreen || isSmallScreen) return true;
 
     setActivePanel(name);
     if (orderArr && orderArr[1] === name) return;
@@ -79,12 +90,12 @@ export default function HoverActivePanel({
   return (
     <IsActivePanelContext.Provider value={isActivePanel}>
       <div
-        data-state={activePanel === name ? "active" : "inactive"}
+        data-status={activePanel === name ? "active" : "inactive"}
         onClick={() => handleClickToActive()}
-        onMouseEnter={() => setHoverPanel(name)}
-        onMouseLeave={() => setHoverPanel(null)}
+        onMouseEnter={() => handlePanelHover(name)}
+        onMouseLeave={() => handlePanelHover(null)}
         className={cn(
-          "flex h-fit flex-col transition-all duration-1000",
+          "h-fit flex-col transition-all duration-1000 data-[status=active]:flex data-[status=inactive]:hidden md:data-[status=inactive]:flex",
           className,
         )}
         style={{
@@ -95,7 +106,7 @@ export default function HoverActivePanel({
           transform,
         }}
       >
-        {!isBigScreen && activePanel !== name && (
+        {!isBigScreen && !isSmallScreen && activePanel !== name && (
           <div
             className="inset-shadow absolute top-[44px] z-20 w-full rounded-3xl bg-white opacity-50 shadow-lg"
             style={{

@@ -53,12 +53,12 @@ export default function PoolDetail() {
   }, [endTime]);
 
   return (
-    <div className="flex w-[574px] flex-col rounded-3xl bg-black/2 p-6">
+    <div className="flex w-[calc(100vw-52px)] flex-col rounded-3xl bg-black/2 p-6 md:w-[574px]">
       <div className="c-font-title-65 text-xl leading-6 text-black">
         Pool Detail
       </div>
       <DetailRow
-        className="mt-8"
+        className="mt-5 md:mt-8"
         label="Total Value Locked"
         isLoading={isPoolLoading}
       >
@@ -66,19 +66,19 @@ export default function PoolDetail() {
       </DetailRow>
 
       <DetailRow
-        className="mt-[47px]"
+        className="mt-5 md:mt-[47px]"
         label="Pool Creator"
         isLoading={isPoolLoading}
       >
         {shorterCreator}
       </DetailRow>
 
-      <CreatorRewards isLoading={isPoolLoading} className="mt-[47px]">
+      <CreatorRewards isLoading={isPoolLoading} className="mt-5 md:mt-[47px]">
         ${creatorRewards.formatted}
       </CreatorRewards>
 
       <DetailRow
-        className="mt-[47px]"
+        className="mt-5 md:mt-[47px]"
         label="Farmers"
         isLoading={isPoolLoading}
       >
@@ -86,7 +86,7 @@ export default function PoolDetail() {
       </DetailRow>
 
       <DetailRow
-        className="mt-[47px]"
+        className="mt-5 md:mt-[47px]"
         label="Max Leverage"
         isLoading={isPoolLoading}
       >
@@ -94,7 +94,7 @@ export default function PoolDetail() {
       </DetailRow>
 
       <DetailRow
-        className="mt-[47px]"
+        className="mt-5 md:mt-[47px]"
         label={`Ends on (${tz.text})`}
         isLoading={isPoolLoading}
       >
@@ -118,7 +118,7 @@ function DetailRow({
   return (
     <div
       className={cn(
-        "flex justify-between text-sm leading-[17px] text-black",
+        "flex justify-between text-sm leading-[17px] text-black opacity-60 md:opacity-100",
         className,
       )}
     >
@@ -149,7 +149,9 @@ function CreatorRewards({
       )}
     >
       <div className="flex items-center">
-        <span className="mr-1">Pool Creator Rewards</span>
+        <span className="mr-1 text-black opacity-60 md:opacity-100">
+          Pool Creator Rewards
+        </span>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>

@@ -4,12 +4,20 @@ import Image from "next/image";
 
 import { usePools } from "@/lib/hooks/api/use-pools";
 import PoolPanel from "@/components/pro/pool-panel";
+
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 import {
   Select,
@@ -25,6 +33,7 @@ import { cn } from "@/lib/utils/common";
 import DialogGimp from "@/components/share/dialog-gimp";
 import CreatePoolDialogContent from "@/components/pro/create-pool-dialog-content";
 import { useState } from "react";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function Pools() {
   const { data: pools, isLoading } = usePools();
@@ -45,9 +54,9 @@ export default function Pools() {
 
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col items-start justify-between md:flex-row md:items-center">
         <CreatePoolBtn />
-        <div className="flex items-center">
+        <div className="mt-2 flex items-center py-4 md:mt-0 md:p-0">
           <CustomSelect
             label="Order by"
             value={sortBy}
@@ -117,16 +126,16 @@ function CustomSelect({
       <SelectTrigger
         data-active={isActive}
         className={cn(
-          "h-[32px] rounded-full border border-transparent px-4 hover:border-black hover:bg-white data-[active=true]:border-black data-[active=true]:bg-white data-[active=true]:shadow-2",
+          "h-[32px] rounded-full border border-black bg-white px-4 hover:border-black hover:bg-white data-[active=true]:border-black data-[active=true]:bg-white data-[active=true]:shadow-2 md:border-transparent md:bg-transparent",
           className,
         )}
       >
-        <div className="flex items-center gap-x-2">
-          <span className="c-font-title-55 whitespace-nowrap text-xs leading-[18px] text-lightgray">
+        <div className="flex items-center gap-x-1 md:gap-x-2">
+          <span className="c-font-title-55 whitespace-nowrap text-xs leading-[18px] text-black md:text-lightgray">
             {label}
           </span>
           <SelectValue placeholder={placeholder || ""}>
-            <span className="c-font-text-65 whitespace-nowrap text-xs leading-[18px] text-[#11142d]">
+            <span className="c-font-text-65 hidden whitespace-nowrap text-xs leading-[18px] text-[#11142d] md:block">
               {currLabel}
             </span>
           </SelectValue>
@@ -156,8 +165,9 @@ function CustomSelect({
 
 function CreatePoolBtn() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  return (
+  if (isDesktop) {
     <Dialog open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
       <DialogTrigger asChild>
         <button className="c-shadow-translate c-font-text-65 flex w-fit items-center justify-center  rounded-xl border-2 border-black bg-white py-3 px-9 leading-6 shadow-25">
@@ -169,6 +179,20 @@ function CreatePoolBtn() {
         <DialogTitle className="px-6 pt-6">Create Pool</DialogTitle>
         <CreatePoolDialogContent />
       </DialogContent>
-    </Dialog>
+    </Dialog>;
+  }
+
+  return (
+    <Drawer open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
+      <DrawerTrigger asChild>
+        <button className="c-shadow-translate c-font-text-65 flex w-fit items-center justify-center  rounded-xl border-2 border-black bg-white py-3 px-9 leading-6 shadow-25">
+          Create Pool
+        </button>
+      </DrawerTrigger>
+      <DrawerContent className="w-full">
+        <DrawerTitle>Create Pool</DrawerTitle>
+        <CreatePoolDialogContent />
+      </DrawerContent>
+    </Drawer>
   );
 }

@@ -16,7 +16,7 @@ import WithApproveBtn from "../share/with-approve-btn";
 
 export default function CreatePoolDialogContent() {
   return (
-    <div className="mx-6 flex flex-col items-stretch gap-y-6">
+    <div className="md:mx-6 flex flex-col items-stretch gap-y-6">
       <Margin />
       <AssetLevel />
       <MaxLeverage />

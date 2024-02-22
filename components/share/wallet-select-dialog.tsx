@@ -6,10 +6,13 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Wallet, useWallet } from "@solana/wallet-adapter-react";
 import { useState } from "react";
 import { WalletReadyState } from "@solana/wallet-adapter-base";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export const WalletSelectDialogVisibleAtom = atom(false);
 
 export default function WalletSelectDialog() {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const { wallets, select } = useWallet();
   const [walletSelectDialogVisible, setWalletSelectDialogVisible] = useAtom(
     WalletSelectDialogVisibleAtom,
@@ -42,59 +45,114 @@ export default function WalletSelectDialog() {
     }
   }
 
-  return (
-    <Dialog
-      open={walletSelectDialogVisible}
-      onOpenChange={(isOpen) => setWalletSelectDialogVisible(isOpen)}
-    >
-      <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
-        <DialogGimp />
-        <DialogTitle className="px-6 pt-6">
-          Connect a wallet to continue
-        </DialogTitle>
-        <div className="flex flex-col space-y-4 px-6 py-4">
-          {showWallets.map((wallet) => (
-            <div
-              onClick={() => handleConnect(wallet)}
-              onMouseEnter={() => handleMouseEnter(wallet)}
-              onMouseLeave={handleMouseLeave}
-              className="flex cursor-pointer items-center justify-between rounded-xl border-2 border-black p-4 hover:bg-black"
-              key={wallet.adapter.name}
-            >
-              <div className="flex items-center space-x-3">
-                <Image
-                  src={wallet.adapter.icon}
-                  alt="wallet"
-                  width={24}
-                  height={24}
-                  className="c-image-shadow"
-                />
-                <span
-                  data-state={hoverWallet === wallet.adapter.name}
-                  className="text-sm font-semibold leading-[17px] data-[state=true]:text-yellow"
-                >
-                  {wallet.adapter.name}
-                </span>
-              </div>
+  if (isDesktop) {
+    return (
+      <Dialog
+        open={walletSelectDialogVisible}
+        onOpenChange={(isOpen) => setWalletSelectDialogVisible(isOpen)}
+      >
+        <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
+          <DialogGimp />
+          <DialogTitle className="px-6 pt-6">
+            Connect a wallet to continue
+          </DialogTitle>
+          <div className="flex flex-col space-y-4 px-6 py-4">
+            {showWallets.map((wallet) => (
+              <div
+                onClick={() => handleConnect(wallet)}
+                onMouseEnter={() => handleMouseEnter(wallet)}
+                onMouseLeave={handleMouseLeave}
+                className="flex cursor-pointer items-center justify-between rounded-xl border-2 border-black p-4 hover:bg-black"
+                key={wallet.adapter.name}
+              >
+                <div className="flex items-center space-x-3">
+                  <Image
+                    src={wallet.adapter.icon}
+                    alt="wallet"
+                    width={24}
+                    height={24}
+                    className="c-image-shadow"
+                  />
+                  <span
+                    data-state={hoverWallet === wallet.adapter.name}
+                    className="text-sm font-semibold leading-[17px] data-[state=true]:text-yellow"
+                  >
+                    {wallet.adapter.name}
+                  </span>
+                </div>
 
-              {wallet.readyState !== WalletReadyState.Installed && (
-                <div
-                  data-state={hoverWallet === wallet.adapter.name}
-                  className="flex cursor-pointer items-center justify-center rounded-full border border-black py-[2px] px-[12px] data-[state=true]:border-yellow"
-                  onClick={() => goToWallet(wallet)}
-                >
+                {wallet.readyState !== WalletReadyState.Installed && (
                   <div
                     data-state={hoverWallet === wallet.adapter.name}
-                    className="text-sm leading-5 data-[state=true]:text-yellow"
+                    className="flex cursor-pointer items-center justify-center rounded-full border border-black py-[2px] px-[12px] data-[state=true]:border-yellow"
+                    onClick={() => goToWallet(wallet)}
                   >
-                    Install
+                    <div
+                      data-state={hoverWallet === wallet.adapter.name}
+                      className="text-sm leading-5 data-[state=true]:text-yellow"
+                    >
+                      Install
+                    </div>
                   </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  } else {
+    return (
+      <Drawer
+        open={walletSelectDialogVisible}
+        onOpenChange={(isOpen) => setWalletSelectDialogVisible(isOpen)}
+      >
+        <DrawerContent className="p-2 pt-4">
+          <DrawerTitle>Connect a wallet to continue</DrawerTitle>
+          <div className="flex flex-col space-y-4 px-4 py-4">
+            {showWallets.map((wallet) => (
+              <div
+                onClick={() => handleConnect(wallet)}
+                onMouseEnter={() => handleMouseEnter(wallet)}
+                onMouseLeave={handleMouseLeave}
+                className="flex cursor-pointer items-center justify-between rounded-xl border-2 border-black p-4 hover:bg-black"
+                key={wallet.adapter.name}
+              >
+                <div className="flex items-center space-x-3">
+                  <Image
+                    src={wallet.adapter.icon}
+                    alt="wallet"
+                    width={24}
+                    height={24}
+                    className="c-image-shadow"
+                  />
+                  <span
+                    data-state={hoverWallet === wallet.adapter.name}
+                    className="text-sm font-semibold leading-[17px] data-[state=true]:text-yellow"
+                  >
+                    {wallet.adapter.name}
+                  </span>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
+
+                {wallet.readyState !== WalletReadyState.Installed && (
+                  <div
+                    data-state={hoverWallet === wallet.adapter.name}
+                    className="flex cursor-pointer items-center justify-center rounded-full border border-black py-[2px] px-[12px] data-[state=true]:border-yellow"
+                    onClick={() => goToWallet(wallet)}
+                  >
+                    <div
+                      data-state={hoverWallet === wallet.adapter.name}
+                      className="text-sm leading-5 data-[state=true]:text-yellow"
+                    >
+                      Install
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
 }

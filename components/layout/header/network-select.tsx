@@ -28,7 +28,7 @@ export default function NetworkSelect() {
   return (
     <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
       <PopoverTrigger asChild>
-        <div className="relative flex h-12 w-[88px] cursor-pointer items-center rounded-xl bg-transparent px-2">
+        <div className="relative hidden h-12 w-[88px] cursor-pointer items-center rounded-xl bg-transparent px-2 md:flex">
           <CurrChainLogo />
           <div
             data-state={popOpen ? "open" : "close"}

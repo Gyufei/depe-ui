@@ -8,18 +8,36 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { useBlockNumber } from "wagmi";
 import { Skeleton } from "../ui/skeleton";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useConnection } from "@solana/wallet-adapter-react";
+import { usePathname } from "next/navigation";
+import SwapMobileMenu from "../simple/swap/swap-mobile-menu";
+import PoolDetailMobileMenu from "../pro/pool-detail-mobile-menu";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  const showMobileMenu = useMemo(() => {
+    return pathname === "/";
+  }, [pathname]);
+
+  const showPoolDetailMenu = useMemo(() => {
+    const regex = /\/pools\/\d+/;
+    return pathname.match(regex);
+  }, [pathname]);
+
+  console.log(pathname);
+
   return (
-    <div className="relative mt-8 flex items-center justify-center">
+    <div className="relative mt-8 flex flex-col items-center justify-center md:flex-row">
       <PoweredBy />
-      <div className="absolute right-0 flex items-center">
+      <div className="static mt-2 flex items-center md:absolute md:right-0 md:mt-0">
         <Social />
         <BlockNumberTag />
       </div>
+      {showMobileMenu && <SwapMobileMenu />}
+      {showPoolDetailMenu && <PoolDetailMobileMenu />}
     </div>
   );
 }
@@ -120,15 +138,40 @@ function Social() {
 }
 
 function BlockNumberTag() {
-  const { data, isLoading, status } = useBlockNumber();
+  const { connection } = useConnection();
+  const [data, setData] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<"success" | "error" | "loading">(
+    "loading",
+  );
+
+  useEffect(() => {
+    async function getBlockHeight() {
+      try {
+        const res = await connection.getBlockHeight();
+        console.log(res);
+        setData(res);
+        setIsLoading(false);
+        setStatus("success");
+      } catch (e) {
+        setIsLoading(false);
+        setStatus("error");
+      }
+    }
+
+    getBlockHeight();
+    setInterval(() => {
+      getBlockHeight();
+    }, 20000);
+  }, [connection]);
 
   return (
     <div
       data-status={status}
-      className="flex items-center self-end rounded-3xl border-2 px-4 py-[6px] 
-      data-[status='success']:border-green data-[status='error']:border-red
-      data-[status='loading']:border-tan data-[status='success']:text-green
-      data-[status='error']:text-red data-[status='loading']:text-tan
+      className="hidden items-center self-end rounded-3xl border-2 px-4 py-[6px] data-[status='success']:border-green 
+      data-[status='error']:border-red data-[status='loading']:border-tan
+      data-[status='success']:text-green data-[status='error']:text-red
+      data-[status='loading']:text-tan md:flex
       "
     >
       {isLoading ? (

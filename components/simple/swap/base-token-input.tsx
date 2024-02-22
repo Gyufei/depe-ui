@@ -111,7 +111,7 @@ export default function BaseTokenInput() {
         <BalanceDisplay
           isLoading={isBalanceLoading}
           balance={baseTokenBalance || null}
-          prefixText="Wallet Balance"
+          prefixText="Balance"
           setMax={() => handleValueChange(balanceData?.value || "")}
         />
       }

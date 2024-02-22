@@ -15,9 +15,11 @@ import { IToken } from "@/lib/types/token";
 
 import OperatorInIcon from "/public/icons/operator-in.svg";
 import OperatorInHoverIcon from "/public/icons/operator-in-hover.svg";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function PoolPortfolio() {
   const poolId = useAtomValue(PDPoolIdAtom);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const { data: pool, isLoading: isPoolLoading } = usePool({
     poolId,
@@ -54,16 +56,22 @@ export default function PoolPortfolio() {
 
   const handleGoFarming = () => {};
 
-  const handleGoTrade = () => {};
+  // const handleGoTrade = () => {};
 
   return (
-    <div data-state="active" className="c-shadow-panel h-fit w-[574px]">
-      <div className="c-font-title-65 text-xl leading-6 text-[#3d3d3d]">
+    <div
+      data-state="active"
+      className="c-shadow-panel h-fit w-[calc(100vw-52px)]  md:w-[574px]"
+    >
+      <div className="c-font-title-65 text-lg leading-6 text-[#3d3d3d] md:text-xl">
         Portfolio
       </div>
       <div className="mt-4 flex flex-col border-b border-[#eee] pb-6">
-        <div className="c-font-title-55 text-xl leading-[30px] text-[#3d3d3d]">
-          Farming
+        <div className="flex justify-between">
+          <div className="c-font-title-55 text-base leading-[30px] text-[#3d3d3d] md:text-xl">
+            Farming
+          </div>
+          {!isDesktop && <OperatorIcon onClick={handleGoFarming} />}
         </div>
 
         <div className="mt-4 flex items-center justify-between">
@@ -82,7 +90,7 @@ export default function PoolPortfolio() {
               baseToken={baseToken}
             />
           </div>
-          <OperatorIcon onClick={handleGoFarming} />
+          {isDesktop && <OperatorIcon onClick={handleGoFarming} />}
         </div>
       </div>
 
@@ -98,11 +106,14 @@ export default function PoolPortfolio() {
             percent={pnlPercent.formatted || ""}
           />
 
-          <OperatorIcon onClick={handleGoTrade} />
+          <DebtDisplay
+            isLoading={isPoolLoading || isPositionsLoading}
+            debt={debtAmount.formatted || ""}
+          />
         </div>
 
-        <div className="mt-4 flex items-center gap-x-[140px]">
-          <DebtDisplay
+        <div className="mt-4 flex items-center justify-between md:gap-x-[140px]">
+          <NotionalValue
             isLoading={isPoolLoading || isPositionsLoading}
             debt={debtAmount.formatted || ""}
           />
@@ -171,12 +182,14 @@ function CurrentProviding({
 }) {
   return (
     <div className="flex flex-col">
-      <LabelText>Current Providing</LabelText>
+      <LabelText>
+        <span className="text-xs">Current Providing</span>
+      </LabelText>
       <div className="flex items-center">
         {isLoading ? (
           <>
             <ValueSkeleton />
-            <Skeleton className="ml-[6px] h-5 w-5 rounded-full" />
+            <Skeleton className="ml-[6px] hidden h-5 w-5 rounded-full md:block" />
           </>
         ) : (
           <>
@@ -186,7 +199,7 @@ function CurrentProviding({
               height={20}
               src={baseToken?.logoURI || ""}
               alt="token"
-              className="c-image-shadow ml-[6px]"
+              className="c-image-shadow ml-[6px] hidden md:block"
             ></Image>
           </>
         )}
@@ -218,6 +231,21 @@ function PL({
   );
 }
 
+function NotionalValue({
+  isLoading,
+  debt,
+}: {
+  isLoading: boolean;
+  debt: string | null;
+}) {
+  return (
+    <div className="flex flex-col">
+      <LabelText>Position Notional Value</LabelText>
+      <ValueText>{isLoading ? <ValueSkeleton /> : `$${debt}`}</ValueText>
+    </div>
+  );
+}
+
 function DebtDisplay({
   isLoading,
   debt,
@@ -227,7 +255,7 @@ function DebtDisplay({
 }) {
   return (
     <div className="flex flex-col">
-      <LabelText>Position Debt</LabelText>
+      <LabelText>Total Debt</LabelText>
       <ValueText>{isLoading ? <ValueSkeleton /> : `$${debt}`}</ValueText>
     </div>
   );
@@ -259,7 +287,7 @@ function MarginDisplay({
               height={20}
               src={baseToken?.logoURI || ""}
               alt="token"
-              className="c-image-shadow ml-[6px]"
+              className="c-image-shadow ml-[6px] hidden md:block"
             ></Image>
           </>
         )}
@@ -294,13 +322,15 @@ function OperatorIcon({ onClick }: { onClick: () => void }) {
 
 function LabelText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="c-font-title-55 leading-6 text-lightgray">{children}</div>
+    <div className="c-font-title-55 text-sm leading-6 text-lightgray md:text-base">
+      {children}
+    </div>
   );
 }
 
 function ValueText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="c-font-text-55 text-[28px] leading-[42px] text-black">
+    <div className="c-font-text-55 text-xl leading-[30px] text-black md:text-[28px] md:leading-[42px]">
       {children}
     </div>
   );

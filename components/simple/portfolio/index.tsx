@@ -34,7 +34,7 @@ function PortfolioBase() {
       <PanelLeaderButton className="bg-pink">Portfolio</PanelLeaderButton>
       <div
         data-state={isActive ? "active" : "inactive"}
-        className="c-shadow-panel h-fit w-[480px]"
+        className="c-shadow-panel h-fit w-[calc(100vw-52px)] md:w-[480px]"
       >
         {noData ? (
           <div className="flex h-[210px] items-center justify-center pr-4">

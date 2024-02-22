@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -20,12 +20,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function PoolPositions() {
   return (
     <div
       data-state="active"
-      className="c-shadow-panel mt-[55px] h-[400px] w-[774px] overflow-hidden p-0"
+      className="c-shadow-panel mt-[55px] h-[400px] w-[calc(100w-52px)] overflow-hidden p-0 md:w-[774px]"
     >
       <BundleTable />
     </div>
@@ -108,8 +109,36 @@ export const columns: ColumnDef<IBundleRow>[] = [
 function BundleTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    index: false,
+    bundle: true,
+    amount: true,
+    date: true,
+    value: true,
+  });
   const [rowSelection, setRowSelection] = useState({});
+
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  useEffect(() => {
+    if (!isDesktop) {
+      setColumnVisibility({
+        index: false,
+        bundle: true,
+        amount: true,
+        date: true,
+        value: true,
+      });
+    } else {
+      setColumnVisibility({
+        index: true,
+        bundle: true,
+        amount: true,
+        date: true,
+        value: true,
+      });
+    }
+  }, [isDesktop]);
 
   const table = useReactTable({
     data,
@@ -135,7 +164,7 @@ function BundleTable() {
       <Table>
         <TableHeader className="h-[48px] bg-white">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow className="border-none" key={headerGroup.id}>
+            <TableRow className="border-none px-1" key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>

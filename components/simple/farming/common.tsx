@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils/common";
 
 export function TitleText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="c-font-title-65 text-sm leading-5 text-black">
+    <div className="c-font-title-65 text-base leading-5 text-black md:text-sm">
       {children}
     </div>
   );
@@ -29,7 +29,7 @@ export function OptionBtn({
       {...rest}
       data-state={isActive ? "active" : "inactive"}
       className={cn(
-        "c-active-border flex h-14 w-full items-center justify-center rounded-xl border-2 bg-white text-sm leading-5",
+        "c-active-border flex h-12 w-full items-center justify-center rounded-xl border-2 bg-white text-sm leading-5 md:h-14",
         className,
       )}
     >

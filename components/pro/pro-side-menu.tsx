@@ -1,10 +1,6 @@
 "use client";
 import Image from "next/image";
 
-import PoolsIcon from "/public/icons/pools.svg";
-import PoolsActiveIcon from "/public/icons/pools-active.svg";
-import AchievementsIcon from "/public/icons/achievements.svg";
-
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/common";
 import Link from "next/link";
@@ -25,17 +21,12 @@ export default function ProSideMenu({ className }: { className?: string }) {
 function Pools({ isActive }: { isActive: boolean }) {
   return (
     <Link href="/pools">
-      {isActive ? (
-        <Image src={PoolsActiveIcon} width={40} height={40} alt="pools" />
-      ) : (
-        <Image
-          src={PoolsIcon}
-          width={40}
-          height={40}
-          className="opacity-40"
-          alt="pools"
-        />
-      )}
+      <Image
+        src={isActive ? "/icons/pools-active.svg" : "/icons/pools.svg"}
+        width={40}
+        height={40}
+        alt="pools"
+      />
     </Link>
   );
 }
@@ -54,14 +45,12 @@ function Governance({ isActive }: { isActive: boolean }) {
 }
 
 function Achievements({ isActive }: { isActive: boolean }) {
-  return isActive ? (
-    <Image src={AchievementsIcon} width={40} height={40} alt="achievements" />
-  ) : (
+  console.log(isActive);
+  return (
     <Image
-      src={AchievementsIcon}
+      src="/icons/achievements.svg"
       width={40}
       height={40}
-      className="opacity-40"
       alt="achievements"
     />
   );

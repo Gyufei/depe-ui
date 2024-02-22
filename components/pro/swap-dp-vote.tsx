@@ -10,7 +10,11 @@ import { Skeleton } from "../ui/skeleton";
 import Triangle from "/public/icons/triangle.svg";
 
 export default function SwapDpVote() {
-  const [isBuy] = useState(false);
+  const [isBuy, setIsBuy] = useState(false);
+
+  const handleClickArrow = () => {
+    setIsBuy(!isBuy);
+  };
 
   return (
     <>
@@ -32,15 +36,18 @@ export default function SwapDpVote() {
         </div>
       </PanelLeaderButton>
 
-      <div data-state={"active"} className="c-shadow-panel w-[774px]">
-        <div className="relative flex items-center justify-between">
+      <div
+        data-state={"active"}
+        className="c-shadow-panel w-[calc(100w-52px)]  md:w-[774px]"
+      >
+        <div className="relative flex flex-col items-center justify-between md:flex-row">
           <BaseInput />
-          <SwapArrow />
+          <SwapArrow handleClick={handleClickArrow} />
           <DpVoteInput />
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <BundleSelect />
+        <div className="mt-4 flex items-center justify-between gap-x-3">
+          {!isBuy && <BundleSelect />}
           <ConfirmBtn />
         </div>
       </div>
@@ -65,7 +72,7 @@ function BaseInput() {
 
   return (
     <InputPanel
-      className="w-[355px]"
+      className="w-full md:w-[355px]"
       tokenDisplay={
         <StableTokenSelectDisplay
           isLoading={isTokenLoading}
@@ -78,7 +85,7 @@ function BaseInput() {
         <BalanceDisplay
           isLoading={isBalanceLoading}
           balance={baseTokenBalance || null}
-          prefixText="Wallet Balance"
+          prefixText="Balance"
           setMax={() => handleValueChange("")}
         />
       }
@@ -93,7 +100,7 @@ function DpVoteInput() {
   const [dpVoteValue, setDpVoteValue] = useState("");
   return (
     <InputPanel
-      className="w-[355px]"
+      className="w-full md:w-[355px]"
       tokenDisplay={<DpVoteToken />}
       balanceDisplay={<></>}
       isActive={true}
@@ -119,9 +126,12 @@ function DpVoteToken() {
   );
 }
 
-function SwapArrow() {
+function SwapArrow({ handleClick }: { handleClick: () => void }) {
   return (
-    <div className="z-10 -mx-3 h-12 w-12 rounded-lg border-2 border-black bg-white p-3">
+    <div
+      onClick={handleClick}
+      className="z-10 -my-3 h-10 w-10 rounded-lg border-2 border-black bg-white p-3 md:-mx-3 md:h-12 md:w-12"
+    >
       <Image
         width={24}
         height={24}
@@ -134,23 +144,30 @@ function SwapArrow() {
 
 function BundleSelect() {
   const isLoading = false;
+
   return (
-    <div className="flex cursor-pointer items-center rounded-full border border-black px-[10px] py-[1px] text-black">
+    <div className="flex cursor-pointer items-center rounded-xl border-2 border-black py-2 px-4 text-black md:rounded-full md:border md:px-[10px] md:py-[1px]">
       {isLoading ? (
         <>
-          <Skeleton className="my-[3px] ml-1 mr-[14px] h-4 w-[40px]" />
-          <Skeleton className="h-[8px] w-[14px]" />
+          <Skeleton className="my-[3px] ml-1 mr-[14px] hidden h-4 w-[40px] md:block" />
+          <Skeleton className="hidden h-[8px] w-[14px] md:block" />
         </>
       ) : (
         <>
-          <div className="ml-1 mr-[10px] leading-[22px]">Bundle #1</div>
+          <div className="ml-1 mr-[10px] hidden leading-[22px] md:block">
+            Bundle #1
+          </div>
           <Image
             width={14}
             height={8}
             src={Triangle}
             alt="triangle"
-            className="-rotate-90"
+            className="hidden -rotate-90 md:block"
           ></Image>
+          <div className="flex flex-col justify-between md:hidden">
+            <div className="leading-5 text-black">#1</div>
+            <div className="text-xs leading-4 text-gray">Bundle</div>
+          </div>
         </>
       )}
     </div>
@@ -159,8 +176,8 @@ function BundleSelect() {
 
 function ConfirmBtn() {
   return (
-    <div className="z-1 relative -right-[55px] flex cursor-pointer items-center justify-between rounded-xl border-2 border-black bg-white px-4 py-2 leading-6">
-      <div className="mr-3 font-title text-xl font-semibold text-[#3d3d3d]">
+    <div className="z-1 relative flex h-14 flex-1 cursor-pointer items-center justify-center rounded-xl border-black bg-black px-4 py-2 leading-6 md:-right-[55px] md:h-auto md:flex-none md:justify-between md:border-2 md:bg-white md:text-black">
+      <div className="font-title text-xl font-semibold text-yellow md:mr-3 md:text-[#3d3d3d]">
         Confirm
       </div>
       <Image
@@ -168,6 +185,7 @@ function ConfirmBtn() {
         height={24}
         src="/icons/big-arrow-right.svg"
         alt="back"
+        className="hidden md:block"
       ></Image>
     </div>
   );

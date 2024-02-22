@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -22,11 +22,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function PoolPositions() {
   return (
-    <div className="relative mt-[55px]">
-      <div className="absolute top-[100px] -left-[116px] -rotate-90">
+    <div className="relative">
+      <div className="md:absolute md:top-[100px] md:-left-[116px] md:-rotate-90">
         <PanelLeaderButton className="bg-pink" defaultActive={true}>
           Positions
         </PanelLeaderButton>
@@ -34,7 +35,7 @@ export default function PoolPositions() {
 
       <div
         data-state="active"
-        className="c-shadow-panel h-[400px] overflow-hidden p-0"
+        className="c-shadow-panel -mt-2 h-[400px] overflow-hidden p-0"
       >
         <PositionTable />
       </div>
@@ -155,8 +156,51 @@ export const columns: ColumnDef<IPositionRow>[] = [
 function PositionTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    index: false,
+    tokenName: false,
+    hash: false,
+    leverage: false,
+    size: false,
+    margin: false,
+    liqPrice: true,
+    pl: true,
+    actions: true,
+    share: false,
+  });
   const [rowSelection, setRowSelection] = useState({});
+
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  useEffect(() => {
+    if (!isDesktop) {
+      setColumnVisibility({
+        index: false,
+        tokenName: false,
+        hash: false,
+        leverage: false,
+        size: false,
+        margin: false,
+        liqPrice: true,
+        pl: true,
+        actions: true,
+        share: false,
+      });
+    } else {
+      setColumnVisibility({
+        index: true,
+        tokenName: true,
+        hash: true,
+        leverage: true,
+        size: true,
+        margin: true,
+        liqPrice: true,
+        pl: true,
+        actions: true,
+        share: true,
+      });
+    }
+  }, [isDesktop]);
 
   const table = useReactTable({
     data,

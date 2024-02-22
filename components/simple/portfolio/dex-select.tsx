@@ -4,7 +4,7 @@ export default function DexSelect() {
   return (
     <div className="flex rounded-xl border-2 border-black px-4 py-2 justify-between items-center">
       <div className="flex flex-col">
-        <div className="leading-6 text-black">Uniswap</div>
+        <div className="leading-6 text-black">Depe Pro</div>
         <div className="text-xs leading-[18px] text-gray">Dex</div>
       </div>
 

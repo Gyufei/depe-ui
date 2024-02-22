@@ -62,21 +62,21 @@ export default function SelectPoolDialogContent({
   return (
     <>
       {isLoading ? (
-        <div className="mx-6 rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5">
+        <div className="mt-5 rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5 md:mx-6 md:mt-0">
           <Skeleton className="h-5 w-[100px]" />
         </div>
       ) : (
         <div
           onClick={handleAuto}
           data-check={isAuto ? "true" : "false"}
-          className="mx-6 cursor-pointer rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5 data-[check=true]:bg-blue"
+          className="mt-5 cursor-pointer rounded-xl border-2 border-black bg-white px-4 py-[16px] text-sm leading-5 data-[check=true]:bg-blue md:mx-6 md:mt-0"
         >
           Automatch
         </div>
       )}
 
       <div className="mt-1">
-        <div className="flex items-center justify-between px-6">
+        <div className="flex items-center justify-between md:px-6">
           {isLoading ? (
             <Skeleton className="h-5 w-[100px]" />
           ) : (
@@ -130,9 +130,9 @@ export default function SelectPoolDialogContent({
           )}
         </div>
 
-        <div className="mt-3 pl-6 pr-2">
+        <div className="mt-3 md:pl-6 md:pr-2">
           {isLoading && (
-            <div className="h-[312px] pr-4">
+            <div className="h-[312px] md:pr-4">
               {range(5).map((i: number) => {
                 return <SkeletonRow key={i} />;
               })}
@@ -146,7 +146,7 @@ export default function SelectPoolDialogContent({
           )}
 
           {!isLoading && filteredPools.length > 0 && (
-            <ScrollArea className="h-[312px] pr-4">
+            <ScrollArea className="h-[312px] md:pr-4">
               {filteredPools.map((p) => (
                 <PoolRow
                   key={p.poolId}

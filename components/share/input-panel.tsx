@@ -22,14 +22,14 @@ export default function InputPanel({
     <div
       data-state={isActive ? "active" : "inactive"}
       className={cn(
-        "c-active-border input-panel flex h-[88px] rounded-xl border-2 px-4 transition-colors focus-within:bg-yellow",
+        "c-active-border input-panel flex h-[88px] space-x-0 rounded-xl border-2 px-4 transition-colors focus-within:bg-yellow md:space-x-4",
         className,
       )}
     >
-      {tokenDisplay && <div className="mr-4">{tokenDisplay}</div>}
+      {tokenDisplay && <div>{tokenDisplay}</div>}
       <div className="flex flex-1 flex-col items-stretch justify-between py-3">
         <NumericalInput
-          className="h-6 text-right"
+          className="h-6 w-[164px] text-right md:w-auto"
           value={value}
           onUserInput={setValue}
           placeholder="0"

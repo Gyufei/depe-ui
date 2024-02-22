@@ -36,6 +36,10 @@ export default function GlobalActionTip() {
     },
   };
 
+  if (Math.random() != 0) {
+    return null;
+  }
+
   return (
     <>
       {message && type ? (

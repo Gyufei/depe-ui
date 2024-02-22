@@ -8,6 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
 import Triangle from "/public/icons/triangle.svg";
 import DialogGimp from "../../share/dialog-gimp";
 import SelectPoolDialogContent from "../../share/select-pool-dialog-content";
@@ -20,9 +28,11 @@ import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 import { IsActivePanelContext } from "../hover-active-panel";
 import useFarmingMatchPool from "@/lib/hooks/use-farming-pick-pool";
 import { IPool } from "@/lib/types/pool";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export function FarmingPoolSelect() {
   const isActive = useContext(IsActivePanelContext);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const { data: pools, isLoading } = usePools();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -77,44 +87,84 @@ export function FarmingPoolSelect() {
         </div>
       </TitleText>
       <ContentCon>
-        <Dialog
-          open={dialogOpen}
-          onOpenChange={(isOpen) => setDialogOpen(isOpen)}
-        >
-          <DialogTrigger asChild>
-            <div
-              data-state={isActive ? "active" : "inactive"}
-              className=" c-active-border flex flex-1 cursor-pointer items-center justify-between rounded-xl border-2 p-4 hover:brightness-110"
-            >
-              <div className="flex items-center text-sm leading-[17px] text-black ">
-                <div className="mr-[14px]">Automatch</div>
-                <div className="rounded-full border border-black py-1 pl-4 pr-5">
-                  {selectedPool?.poolId
-                    ? `#${selectedPool?.poolId}`
-                    : "No Match Pool"}
+        {isDesktop ? (
+          <Dialog
+            open={dialogOpen}
+            onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+          >
+            <DialogTrigger asChild>
+              <div
+                data-state={isActive ? "active" : "inactive"}
+                className=" c-active-border flex flex-1 cursor-pointer items-center justify-between rounded-xl border-2 p-3 hover:brightness-110 md:p-4"
+              >
+                <div className="flex items-center text-sm leading-[17px] text-black ">
+                  <div className="mr-[14px]">Automatch</div>
+                  <div className="rounded-full border border-black py-1 pl-4 pr-5">
+                    {selectedPool?.poolId
+                      ? `#${selectedPool?.poolId}`
+                      : "No Match Pool"}
+                  </div>
                 </div>
+                <Image
+                  width={14}
+                  height={8}
+                  src={Triangle}
+                  alt="triangle"
+                  className="-rotate-90"
+                ></Image>
               </div>
-              <Image
-                width={14}
-                height={8}
-                src={Triangle}
-                alt="triangle"
-                className="-rotate-90"
-              ></Image>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
-            <DialogGimp />
-            <DialogTitle className="px-6 pt-6">Select Pool</DialogTitle>
-            <SelectPoolDialogContent
-              pools={pools}
-              isLoading={isLoading}
-              pool={selectedPool}
-              onSelect={onPoolChange}
-              onAutoPick={onAutoPick}
-            />
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
+              <DialogGimp />
+              <DialogTitle className="px-6 pt-6">Select Pool</DialogTitle>
+              <SelectPoolDialogContent
+                pools={pools}
+                isLoading={isLoading}
+                pool={selectedPool}
+                onSelect={onPoolChange}
+                onAutoPick={onAutoPick}
+              />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Drawer
+            open={dialogOpen}
+            onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+          >
+            <DrawerTrigger asChild>
+              <div
+                data-state={isActive ? "active" : "inactive"}
+                className=" c-active-border flex flex-1 cursor-pointer items-center justify-between rounded-xl border-2 p-3 hover:brightness-110 md:p-4"
+              >
+                <div className="flex items-center text-sm leading-[17px] text-black ">
+                  <div className="mr-[14px]">Automatch</div>
+                  <div className="rounded-full border border-black py-1 pl-4 pr-5">
+                    {selectedPool?.poolId
+                      ? `#${selectedPool?.poolId}`
+                      : "No Match Pool"}
+                  </div>
+                </div>
+                <Image
+                  width={14}
+                  height={8}
+                  src={Triangle}
+                  alt="triangle"
+                  className="-rotate-90"
+                ></Image>
+              </div>
+            </DrawerTrigger>
+            <DrawerContent className="p-2 pt-4">
+              <DrawerTitle>Select Pool</DrawerTitle>
+              <SelectPoolDialogContent
+                pools={pools}
+                isLoading={isLoading}
+                pool={selectedPool}
+                onSelect={onPoolChange}
+                onAutoPick={onAutoPick}
+              />
+            </DrawerContent>
+          </Drawer>
+        )}
       </ContentCon>
     </div>
   );

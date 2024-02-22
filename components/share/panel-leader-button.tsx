@@ -17,7 +17,7 @@ export default function PanelLeaderButton({
   return (
     <div
       data-state={activeState}
-      className="c-active-border ml-6 inline-block h-11 w-fit rounded-t-xl border-2 border-b-0 p-2"
+      className="c-active-border ml-6 inline-block h-11 leading-[44px] w-fit rounded-t-xl border-2 border-b-0 p-2"
     >
       <div
         data-state={activeState}
@@ -26,7 +26,7 @@ export default function PanelLeaderButton({
         <button
           data-state={activeState}
           className={cn(
-            "c-active-border c-active-shadow c-font-title-65 relative -top-10 rounded-[32px] border-2 px-6 py-[16px] text-xl leading-5 text-black shadow-25 transition-all ",
+            "c-active-border c-active-shadow c-font-title-65 relative -top-10 rounded-[32px] border-2 px-5 md:px-6 py-[16px] text-lg leading-5 text-black shadow-25 transition-all md:text-xl ",
             className,
           )}
         >

@@ -26,7 +26,7 @@ function FarmingBase() {
       <PanelLeaderButton className="bg-sea">Farming</PanelLeaderButton>
       <div
         data-state={isActive ? "active" : "inactive"}
-        className="c-shadow-panel w-[480px]"
+        className="c-shadow-panel w-[calc(100vw-52px)]  md:w-[480px]"
       >
         <div className="flex flex-col items-stretch gap-y-6">
           <MarginCoin />

@@ -185,7 +185,7 @@ export function TokenSelectDisplay({
 function SkeletonToken() {
   return (
     <div className="flex h-full flex-col items-start justify-around space-y-3 py-4">
-      <Skeleton className="mr-4 h-6 w-20" />
+      <Skeleton className="mr-4 h-6 w-10 md:w-20" />
       <Skeleton className="mr-4 h-6 w-6 rounded-full" />
     </div>
   );

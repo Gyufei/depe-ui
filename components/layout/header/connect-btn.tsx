@@ -56,7 +56,7 @@ export default function ConnectBtn() {
     return (
       <>
         <button
-          className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all"
+          className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[14px] py-[10px] text-sm leading-5 text-black shadow-25 transition-all md:px-[30px] md:py-[14px] md:text-base"
           onClick={() => openWalletSelectDialog()}
         >
           Connect
@@ -69,7 +69,7 @@ export default function ConnectBtn() {
   return (
     <Popover open={popOpen} onOpenChange={(isOpen) => setPopOpen(isOpen)}>
       <PopoverTrigger asChild>
-        <button className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[30px] py-[14px] text-base leading-5 text-black shadow-25 transition-all">
+        <button className="c-shadow-translate c-font-title-65 rounded-xl border-2 bg-yellow px-[14px]  py-[10px] text-sm leading-5 text-black shadow-25 transition-all md:px-[30px] md:py-[14px] md:text-base">
           <div className="flex items-center">
             <SmallWalletIcon icon={wallet?.adapter.icon} />
             {!shortAddr || connecting ? (
