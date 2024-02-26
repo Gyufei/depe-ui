@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDebouncedCallback } from "use-debounce";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import {
   SAmountInMaxAtom,
@@ -27,7 +27,7 @@ import { IToken } from "@/lib/types/token";
 export default function QuoteTokenInput() {
   const isActive = useContext(IsActivePanelContext);
 
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const { notMarginTokens, isLoading: tokenLoading } = useTokens();
   const { encodeTokenPath } = useTokenRoutes();
 

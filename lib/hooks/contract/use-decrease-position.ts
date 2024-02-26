@@ -3,7 +3,7 @@ import NP from "number-precision";
 import { usePublicClient } from "wagmi";
 import { formatUnits, parseUnits } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTokenRoutes } from "../api/use-token-routes";
 import { IPool } from "../../types/pool";
@@ -16,7 +16,7 @@ import { usePositions } from "../api/use-positions";
 
 export function useDecreasePosition(pool: IPool, position: IPosition) {
   const publicClient = usePublicClient();
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
   const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;

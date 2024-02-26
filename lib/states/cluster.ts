@@ -1,6 +1,7 @@
 import { atomWithStorage } from "jotai/utils";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { clusterApiUrl, Connection } from "@solana/web3.js";
+import { EndPointPathMap } from "../PathMap";
 
 const MAINNET_RPC_ENDPOINT =
   "http://realms-realms-c335.mainnet.rpcpool.com/258d3727-bb96-409d-abea-0b1b4c48af29/";
@@ -18,6 +19,13 @@ interface Cluster {
   endpoint: string;
   network: WalletAdapterNetwork;
   rpcEndpoint: string;
+  customRpcEndPoint: string | null;
+  api: {
+    default: string;
+    tokenApi: string;
+  };
+  marginTokens: Array<string>;
+  program: Record<string, any>;
 }
 
 export const MainnetCluster: Cluster = {
@@ -26,6 +34,16 @@ export const MainnetCluster: Cluster = {
   endpoint: clusterApiUrl("mainnet-beta"),
   network: WalletAdapterNetwork.Mainnet,
   rpcEndpoint: MAINNET_RPC_ENDPOINT,
+  customRpcEndPoint: null,
+  api: {
+    default: EndPointPathMap.ethApi,
+    tokenApi: EndPointPathMap.ethTokens,
+  },
+  marginTokens: [
+    "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
+    "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+  ],
+  program: {},
 };
 
 export const DevnetCluster: Cluster = {
@@ -34,6 +52,16 @@ export const DevnetCluster: Cluster = {
   endpoint: clusterApiUrl("devnet"),
   network: WalletAdapterNetwork.Testnet,
   rpcEndpoint: DEVNET_RPC_ENDPOINT,
+  customRpcEndPoint: null,
+  api: {
+    default: EndPointPathMap.ethApi,
+    tokenApi: EndPointPathMap.ethTokens,
+  },
+  marginTokens: [
+    "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
+    "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+  ],
+  program: {},
 };
 
 export const ClusterAtom = atomWithStorage<ClusterType>(

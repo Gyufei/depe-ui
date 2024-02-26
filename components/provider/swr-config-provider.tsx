@@ -14,6 +14,7 @@ export default function SWRConfigProvider({
   return (
     <SWRConfig
       value={{
+        shouldRetryOnError: false,
         onError: (error, key) => {
           setGlobalMessage({
             type: "error",

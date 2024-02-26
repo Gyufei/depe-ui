@@ -3,10 +3,10 @@ import fetcher from "../../fetcher";
 import type { IToken } from "../../types/token";
 import { useEndPoint } from "./use-endpoint";
 import { useMemo } from "react";
-import { useChainConfig } from "../common/use-chain-config";
+import { useClusterConfig } from "../common/use-cluster-config";
 
 export function useTokens() {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const { tokenEndPoint } = useEndPoint();
 
   async function tFetcher() {

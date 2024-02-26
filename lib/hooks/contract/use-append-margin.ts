@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Address, formatUnits } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 import { useSpecialToken } from "../use-eth-token";
@@ -13,7 +13,7 @@ export function useAppendMargin(
   positionAddr: Address,
   baseToken: IToken | null,
 ) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { getEthTxValueParams: getEthValueParams } = useSpecialToken();

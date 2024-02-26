@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 
 import { useTxWrite } from "./use-tx-write";
 import { IPool } from "../../types/pool";
@@ -18,7 +18,7 @@ export function usePoolDeposit(
   const { address: account } = useAccount();
   const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
 
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { data, error, isLoading, isSuccess, isError, write } = useTxWrite({

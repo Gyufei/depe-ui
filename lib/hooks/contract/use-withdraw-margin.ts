@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { Address } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 import { usePositions } from "../api/use-positions";
 
 export function useWithdrawMargin(poolAddr: Address, positionAddr: Address) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({

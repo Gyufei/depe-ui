@@ -10,10 +10,10 @@ import {
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { SolflareWalletAdapter } from "@solflare-wallet/wallet-adapter";
 import { OKXWalletAdapter } from "./okx-wallet-adapter";
-import { useCluster } from "@/lib/hooks/common/use-cluster";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 
 export function SolanaWalletProviders({ children }: { children?: ReactNode }) {
-  const { clusterConfig } = useCluster();
+  const { clusterConfig } = useClusterConfig();
 
   const endpoint = useMemo(() => clusterConfig.rpcEndpoint, [clusterConfig]);
 

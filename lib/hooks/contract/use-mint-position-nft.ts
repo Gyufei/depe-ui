@@ -1,10 +1,10 @@
 import { IPosition } from "../../types/position";
-import { useChainConfig } from "../common/use-chain-config";
+import { useClusterConfig } from "../common/use-cluster-config";
 import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 
 export function useMintPositionNft(position: IPosition) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 

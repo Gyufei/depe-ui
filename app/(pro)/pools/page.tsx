@@ -119,26 +119,78 @@ function CustomSelect({
   placeholder?: string;
   isActive: boolean;
 }) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const currLabel = options.find((o) => o.value === value)?.label;
 
+  const [mobileDialog, setMobileDialog] = useState(false);
+
+  const handleDialogSelect = (v: string) => {
+    onChange(v);
+    setMobileDialog(false);
+  };
+
+  if (isDesktop) {
+    return (
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger
+          data-active={isActive}
+          className={cn(
+            "h-[32px] rounded-full border border-black bg-white px-4 hover:border-black hover:bg-white data-[active=true]:border-black data-[active=true]:bg-white data-[active=true]:shadow-2 md:border-transparent md:bg-transparent",
+            className,
+          )}
+        >
+          <div className="flex items-center gap-x-1 md:gap-x-2">
+            <span className="c-font-title-55 whitespace-nowrap text-xs leading-[18px] text-black md:text-lightgray">
+              {label}
+            </span>
+            <SelectValue placeholder={placeholder || ""}>
+              <span className="c-font-text-65 hidden whitespace-nowrap text-xs leading-[18px] text-[#11142d] md:block">
+                {currLabel}
+              </span>
+            </SelectValue>
+            <SelectIcon asChild>
+              <Image
+                width={8}
+                height={4}
+                src={Triangle}
+                alt="triangle"
+                className="data-[state=open]:rotate-180"
+              ></Image>
+            </SelectIcon>
+          </div>
+        </SelectTrigger>
+        <SelectContent className="bg-white">
+          {options
+            .filter((field) => !field.hide)
+            .map((field) => (
+              <SelectItem key={field.value} value={field.value}>
+                {field.label}
+              </SelectItem>
+            ))}
+        </SelectContent>
+      </Select>
+    );
+  }
+
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger
-        data-active={isActive}
+    <Dialog
+      open={mobileDialog}
+      onOpenChange={(o: boolean) => setMobileDialog(o)}
+    >
+      <DialogTrigger
         className={cn(
           "h-[32px] rounded-full border border-black bg-white px-4 hover:border-black hover:bg-white data-[active=true]:border-black data-[active=true]:bg-white data-[active=true]:shadow-2 md:border-transparent md:bg-transparent",
           className,
         )}
+        asChild
       >
         <div className="flex items-center gap-x-1 md:gap-x-2">
           <span className="c-font-title-55 whitespace-nowrap text-xs leading-[18px] text-black md:text-lightgray">
             {label}
           </span>
-          <SelectValue placeholder={placeholder || ""}>
-            <span className="c-font-text-65 hidden whitespace-nowrap text-xs leading-[18px] text-[#11142d] md:block">
-              {currLabel}
-            </span>
-          </SelectValue>
+          <span className="c-font-text-65 hidden whitespace-nowrap text-xs leading-[18px] text-[#11142d] md:block">
+            {currLabel}
+          </span>
           <SelectIcon asChild>
             <Image
               width={8}
@@ -149,17 +201,25 @@ function CustomSelect({
             ></Image>
           </SelectIcon>
         </div>
-      </SelectTrigger>
-      <SelectContent className="bg-white">
-        {options
-          .filter((field) => !field.hide)
-          .map((field) => (
-            <SelectItem key={field.value} value={field.value}>
-              {field.label}
-            </SelectItem>
-          ))}
-      </SelectContent>
-    </Select>
+      </DialogTrigger>
+      <DialogContent className="w-[calc(100vw-52px)] p-2" showClose={false}>
+        <div className="flex flex-col">
+          {options
+            .filter((field) => !field.hide)
+            .map((f) => (
+              <div
+                data-active={value === f.value ? true : false}
+                className="flex h-14 items-center justify-between pl-4 pr-2 data-[active=true]:bg-[#f5f6f7]"
+                key={f.value}
+                onClick={() => handleDialogSelect(f.value)}
+              >
+                <div className="leading-5 text-black">{f.label}</div>
+                {value === f.value && <CircleFlag />}
+              </div>
+            ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -194,5 +254,11 @@ function CreatePoolBtn() {
         <CreatePoolDialogContent />
       </DrawerContent>
     </Drawer>
+  );
+}
+
+function CircleFlag() {
+  return (
+    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

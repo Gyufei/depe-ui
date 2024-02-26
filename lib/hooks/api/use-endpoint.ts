@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useChainConfig } from "../common/use-chain-config";
+import { useClusterConfig } from "../common/use-cluster-config";
 
 export function useEndPoint() {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
 
   const apiEndPoint = useMemo(() => {
     return chainConfig?.api.default;

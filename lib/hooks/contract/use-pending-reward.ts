@@ -1,6 +1,6 @@
 import { useAccount, useContractRead } from "wagmi";
 import { IPool } from "../../types/pool";
-import { useChainConfig } from "../common/use-chain-config";
+import { useClusterConfig } from "../common/use-cluster-config";
 import { formatUnits } from "viem";
 import { useMemo } from "react";
 import { formatNum } from "../../utils/number";
@@ -10,7 +10,7 @@ import { useTokensInfo } from "../api/use-token-info";
 export function usePendingReward(pool: IPool | null) {
   const { address: account } = useAccount();
 
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const [baseToken] = useTokensInfo([pool?.baseToken || null]);

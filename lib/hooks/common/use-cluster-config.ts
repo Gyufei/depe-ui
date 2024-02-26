@@ -7,7 +7,7 @@ import {
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
-export function useCluster() {
+export function useClusterConfig() {
   const [cluster, setCluster] = useAtom(ClusterAtom);
 
   const clusterConfig = useMemo(() => {

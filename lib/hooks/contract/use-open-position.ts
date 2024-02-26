@@ -12,7 +12,7 @@ import {
   SQuoteTokenAmountAtom,
   SQuoteTokenAtom,
 } from "@/lib/states/swap";
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTokenRoutes } from "../api/use-token-routes";
 import { useTxWrite } from "./use-tx-write";
@@ -20,7 +20,7 @@ import { useSpecialToken } from "../use-eth-token";
 import { usePositions } from "../api/use-positions";
 
 export function useOpenPosition() {
-  const { chainConfig } = useChainConfig();
+  const { clusterConfig } = useClusterConfig();
 
   const pool = useAtomValue(SPoolAtom);
   const baseToken = useAtomValue(SBaseTokenAtom);
@@ -31,7 +31,7 @@ export function useOpenPosition() {
   const leverage = useAtomValue(SLeverageAtom);
   const mintNFTFlag = useAtomValue(SMintNftFlagAtom);
 
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+  const PositionManagerAddress = clusterConfig?.program?.DepePositionManager;
 
   const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
   const { encodeTxExtendedParamsBytes } = useTokenRoutes();
@@ -68,7 +68,7 @@ export function useOpenPosition() {
 
     const TxArgs = [
       pool.poolAddr,
-      chainConfig?.contract?.UniswapV3Router,
+      clusterConfig?.contract?.UniswapV3Router,
       quoteAmount,
       BigInt((leverage * 100).toFixed()),
       amountInMax,

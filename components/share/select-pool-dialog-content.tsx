@@ -8,6 +8,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import Triangle from "/public/icons/triangle.svg";
 import { Search } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
@@ -20,6 +22,7 @@ import Empty from "./empty";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 import { usePoolsFilter } from "@/lib/hooks/use-pools-filter";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function SelectPoolDialogContent({
   isLoading,
@@ -34,7 +37,10 @@ export default function SelectPoolDialogContent({
   onSelect: (_p: IPool | null) => void;
   onAutoPick: () => void;
 }) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const [isAuto, setIsAuto] = useState(false);
+
+  const [mobileDialog, setMobileDialog] = useState(false);
 
   const {
     sortFields,
@@ -59,6 +65,11 @@ export default function SelectPoolDialogContent({
     onSelect(pool);
   };
 
+  const handleSelectSortBy = (v: string) => {
+    setSortBy(v);
+    setMobileDialog(false);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -79,7 +90,7 @@ export default function SelectPoolDialogContent({
         <div className="flex items-center justify-between md:px-6">
           {isLoading ? (
             <Skeleton className="h-5 w-[100px]" />
-          ) : (
+          ) : isDesktop ? (
             <Popover>
               <PopoverTrigger asChild>
                 <div className="flex cursor-pointer items-center outline-none">
@@ -112,6 +123,47 @@ export default function SelectPoolDialogContent({
                 ))}
               </PopoverContent>
             </Popover>
+          ) : (
+            <Dialog
+              open={mobileDialog}
+              onOpenChange={(o: boolean) => setMobileDialog(o)}
+            >
+              <DialogTrigger asChild>
+                <div className="flex cursor-pointer items-center outline-none">
+                  <div className="mr-2 text-xs leading-[18px] text-lightgray">
+                    Order by
+                  </div>
+                  <div className="c-font-text-65 mr-1 text-xs leading-[18px] text-[#11142d]">
+                    {sortBy}
+                  </div>
+                  <Image
+                    width={14}
+                    height={8}
+                    src={Triangle}
+                    alt="triangle"
+                    className="data-[state=open]:rotate-180"
+                  ></Image>
+                </div>
+              </DialogTrigger>
+              <DialogContent
+                className="w-[calc(100vw-52px)] p-2"
+                showClose={false}
+              >
+                <div className="flex flex-col">
+                  {sortFields.map((f) => (
+                    <div
+                      data-active={sortBy === f.value ? true : false}
+                      className="flex h-14 items-center justify-between pl-4 pr-2 data-[active=true]:bg-[#f5f6f7]"
+                      key={f.value}
+                      onClick={() => handleSelectSortBy(f.value)}
+                    >
+                      <div className="leading-5 text-black">{f.label}</div>
+                      {sortBy === f.value && <CircleFlag />}
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
 
           {isLoading ? (
@@ -260,5 +312,11 @@ function TitleText({ children }: { children: React.ReactNode }) {
 function SecondText({ children }: { children: React.ReactNode }) {
   return (
     <div className="text-xs leading-[18px] text-lightgray">{children}</div>
+  );
+}
+
+function CircleFlag() {
+  return (
+    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

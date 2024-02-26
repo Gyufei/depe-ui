@@ -1,6 +1,6 @@
 import { parseUnits } from "viem";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
 import { useTokenRoutes } from "../api/use-token-routes";
 import { IPool } from "../../types/pool";
@@ -10,7 +10,7 @@ import { useTxWrite } from "./use-tx-write";
 import { useSpecialToken } from "../use-eth-token";
 
 export function useIncreasePosition(pool: IPool, position: IPosition) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
   const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;

@@ -4,8 +4,11 @@ import * as React from "react";
 import Image from "next/image";
 import { useAtom } from "jotai";
 import { ActivePanelAtom, TPanel } from "@/lib/states/active-panel";
+import useScrollTop from "@/lib/hooks/common/use-scroll-top";
 
 export default function SwapMobileMenu() {
+  const { hide } = useScrollTop();
+
   const [activePanel, setActivePanel] = useAtom(ActivePanelAtom);
 
   const isSwapActive = activePanel === "Swap";
@@ -17,6 +20,8 @@ export default function SwapMobileMenu() {
 
     setActivePanel(n);
   };
+
+  if (hide) return null;
 
   return (
     <div className="mt-6 flex items-center justify-between rounded-full border-[1.5px] border-black bg-white p-1 md:hidden">

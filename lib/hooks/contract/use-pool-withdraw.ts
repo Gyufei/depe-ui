@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { useTxWrite } from "./use-tx-write";
 import { IPool } from "../../types/pool";
 import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { usePoolAsset } from "../api/use-pool-asset";
 
 export function usePoolWithdraw(poolAddr: IPool["poolAddr"] | null) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
 
   const { data, error, isLoading, isSuccess, isError, write } = useTxWrite({

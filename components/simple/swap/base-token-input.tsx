@@ -16,7 +16,7 @@ import {
 import { useTokenRoutes } from "@/lib/hooks/api/use-token-routes";
 
 import InputPanel from "@/components/share/input-panel";
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { StableTokenSelectDisplay } from "@/components/share/input-panel-token-display";
 import BalanceDisplay from "@/components/share/balance-display";
 import { useTokenBalance } from "@/lib/hooks/contract/use-token-balance";
@@ -27,7 +27,7 @@ import { IToken } from "@/lib/types/token";
 import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
 
 export default function BaseTokenInput() {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const isActivePanel = useContext(IsActivePanelContext);
 
   const { swapPickPool } = useSwapPickPool();

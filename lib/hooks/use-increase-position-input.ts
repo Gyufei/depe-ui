@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useChainConfig } from "./common/use-chain-config";
+import { useClusterConfig } from "./common/use-cluster-config";
 import { usePositionFormat } from "./use-position-format";
 import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
@@ -13,7 +13,7 @@ import { useTokenBalance } from "./contract/use-token-balance";
 import { useIncreasePosition } from "./contract/use-increase-position";
 
 export function useIncreasePositionInput(pool: IPool, position: IPosition) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
 
   const { baseToken, quoteToken, leverage, tradingFeeRate } = usePositionFormat(
     position,

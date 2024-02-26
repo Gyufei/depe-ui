@@ -3,7 +3,7 @@ import { Address, formatUnits, parseUnits } from "viem";
 
 import { erc20ABI, useAccount, useContractRead } from "wagmi";
 
-import { useChainConfig } from "@/lib/hooks/common/use-chain-config";
+import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { useTokensInfo } from "@/lib/hooks/api/use-token-info";
 import { IUSDTABI } from "@/lib/abi/IUSDT";
 import { useTxWrite } from "./use-tx-write";
@@ -14,7 +14,7 @@ export function useApprove(
   tokenAmount: string | null,
 ) {
   const { address: account } = useAccount();
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const [tokenInfo] = useTokensInfo([tokenAddress]);
   const IPIBoneAddress = chainConfig?.contract.IPIBone;
 

@@ -14,6 +14,7 @@ import { useConnection } from "@solana/wallet-adapter-react";
 import { usePathname } from "next/navigation";
 import SwapMobileMenu from "../simple/swap/swap-mobile-menu";
 import PoolDetailMobileMenu from "../pro/pool-detail-mobile-menu";
+import SettingDialog from "./setting-dialog";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -52,10 +53,12 @@ function PoweredBy() {
 }
 
 function Social() {
+  const [showSetting, setShowSetting] = useState(false);
   const [hoverIcon, setHoverIcon] = useState<number | null>(null);
 
   return (
     <div className="mr-4 flex items-center space-x-4">
+      <SettingDialog open={showSetting} onOpenChange={setShowSetting} />
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
@@ -112,6 +115,7 @@ function Social() {
             <Image
               onMouseEnter={() => setHoverIcon(3)}
               onMouseLeave={() => setHoverIcon(null)}
+              onClick={() => setShowSetting(true)}
               width={28}
               height={28}
               src={

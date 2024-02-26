@@ -3,14 +3,14 @@ import { useContractRead } from "wagmi";
 import { formatUnits, Address } from "viem";
 
 import { PriceOracleABI } from "../../abi/PriceOracle";
-import { useChainConfig } from "../common/use-chain-config";
+import { useClusterConfig } from "../common/use-cluster-config";
 import { formatNum } from "../../utils/number";
 
 export function useTokenPrice(
   tokenAddress: Address | null,
   decimals: number = 18,
 ) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
 
   const priceOracleAddress = chainConfig?.contract?.PriceOracle;
 

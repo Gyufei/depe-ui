@@ -2,11 +2,11 @@ import { formatUnits, parseUnits } from "viem";
 import NP from "number-precision";
 import { usePublicClient } from "wagmi";
 
-import { useChainConfig } from "./common/use-chain-config";
+import { useClusterConfig } from "./common/use-cluster-config";
 import { UniswapQuoterABI } from "@/lib/abi/UniswapQuoter";
 
 export function useSwapBaseCalc() {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const publicClient = usePublicClient();
 
   const calcAmountInMax = (
@@ -62,7 +62,7 @@ export function useSwapBaseCalc() {
 }
 
 export function useSwapQuoteCalc() {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const publicClient = usePublicClient();
 
   const calcAmountInMax = async (

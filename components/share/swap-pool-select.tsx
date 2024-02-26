@@ -11,6 +11,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+
 import DialogGimp from "./dialog-gimp";
 import SelectPoolDialogContent from "./select-pool-dialog-content";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,8 +27,10 @@ import { usePools } from "@/lib/hooks/api/use-pools";
 import { useTokens } from "@/lib/hooks/api/use-tokens";
 import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
 import { IPool } from "@/lib/types/pool";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function SwapPoolSelect() {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const { isLoading: isTokenLoading } = useTokens();
   const { data: pools, isLoading } = usePools();
 
@@ -49,9 +59,60 @@ export default function SwapPoolSelect() {
 
   if (isTokenLoading) return <Skeleton className="h-6 w-[100px]" />;
 
+  if (isDesktop) {
+    return (
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+      >
+        <DialogTrigger asChild>
+          <div className="flex cursor-pointer items-center rounded-full border border-black px-[10px] py-[1px] text-black">
+            {isLoading || !selectedPool ? (
+              <>
+                <Skeleton className="h-[12.5px] w-[12.5px] rounded-full" />
+                <Skeleton className="my-[3px] ml-1 mr-[14px] h-4 w-[40px]" />
+                <Skeleton className="h-[8px] w-[14px]" />
+              </>
+            ) : (
+              <>
+                <Image
+                  width={12.5}
+                  height={12.5}
+                  src={PoolCircleIcon}
+                  alt="pools"
+                ></Image>
+                <div className="ml-1 mr-[10px] leading-[22px]">
+                  #{selectedPool.poolId}
+                </div>
+                <Image
+                  width={14}
+                  height={8}
+                  src={Triangle}
+                  alt="triangle"
+                  className="-rotate-90"
+                ></Image>
+              </>
+            )}
+          </div>
+        </DialogTrigger>
+        <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
+          <DialogGimp />
+          <DialogTitle className="px-6 pt-6">Select Pool</DialogTitle>
+          <SelectPoolDialogContent
+            pools={pools}
+            isLoading={isLoading}
+            pool={selectedPool}
+            onSelect={onPoolChange}
+            onAutoPick={onAutoPick}
+          />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
-    <Dialog open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
-      <DialogTrigger asChild>
+    <Drawer open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
+      <DrawerTrigger asChild>
         <div className="flex cursor-pointer items-center rounded-full border border-black px-[10px] py-[1px] text-black">
           {isLoading || !selectedPool ? (
             <>
@@ -80,10 +141,9 @@ export default function SwapPoolSelect() {
             </>
           )}
         </div>
-      </DialogTrigger>
-      <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
-        <DialogGimp />
-        <DialogTitle className="px-6 pt-6">Select Pool</DialogTitle>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerTitle>Select Pool</DrawerTitle>
         <SelectPoolDialogContent
           pools={pools}
           isLoading={isLoading}
@@ -91,7 +151,7 @@ export default function SwapPoolSelect() {
           onSelect={onPoolChange}
           onAutoPick={onAutoPick}
         />
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 }

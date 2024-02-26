@@ -3,13 +3,13 @@ import { Address } from "viem";
 import { useAccount } from "wagmi";
 
 import { IPosition } from "../../types/position";
-import { useChainConfig } from "../common/use-chain-config";
+import { useClusterConfig } from "../common/use-cluster-config";
 import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { useTxWrite } from "./use-tx-write";
 import { usePositions } from "../api/use-positions";
 
 export function useTransferNFT(position: IPosition) {
-  const { chainConfig } = useChainConfig();
+  const { chainConfig } = useClusterConfig();
   const { address: account } = useAccount();
 
   const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;

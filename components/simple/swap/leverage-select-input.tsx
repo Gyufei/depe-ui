@@ -11,12 +11,16 @@ import { useTokens } from "@/lib/hooks/api/use-tokens";
 import { Skeleton } from "@/components/ui/skeleton";
 import useSwapPickPool from "@/lib/hooks/use-swap-pick-pool";
 import { range } from "lodash";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
+
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function LeverageSelectInput({
   className,
 }: {
   className?: string;
 }) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const { isLoading: isTokenLoading } = useTokens();
 
   const { swapPickPool } = useSwapPickPool();
@@ -26,6 +30,7 @@ export default function LeverageSelectInput({
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputLeverage, setInputLeverage] = useStrNum();
+  const [dialogLeverage, setDialogLeverage] = useState(currentLeverage);
 
   const leverageOptions = useMemo(() => {
     if (pool) {
@@ -39,13 +44,24 @@ export default function LeverageSelectInput({
   const ref = useOnclickOutside(() => {
     setIsExpanded(false),
       {
-        disabled: !isExpanded,
+        disabled: !isExpanded || !isDesktop,
       };
   });
 
   const handleExpand = () => {
     if (isTokenLoading) return;
     setIsExpanded(true);
+  };
+
+  const handleDialogConfirm = () => {
+    if (isTokenLoading) return;
+    setCurrentLeverage(() => {
+      if (!pool) {
+        swapPickPool({ leverage: dialogLeverage });
+      }
+      return dialogLeverage;
+    });
+    setIsExpanded(false);
   };
 
   const handleClickLeverage = (l: number) => {
@@ -74,7 +90,7 @@ export default function LeverageSelectInput({
         "h-12 w-fit max-w-[296px] overflow-hidden rounded-lg border-2 border-black bg-white transition-all",
         className,
       )}
-      ref={ref}
+      ref={isDesktop ? ref : null}
       style={{
         scrollbarWidth: "none",
       }}
@@ -90,7 +106,7 @@ export default function LeverageSelectInput({
             <>{currentLeverage}×</>
           )}
         </div>
-      ) : (
+      ) : isDesktop ? (
         <ScrollArea className="flex h-full w-[296px] items-center gap-x-2 px-2">
           <ScrollBar orientation="horizontal" className="h-0" />
           <div className="flex h-11 w-fit items-center gap-x-2 px-2">
@@ -115,6 +131,47 @@ export default function LeverageSelectInput({
             </div>
           </div>
         </ScrollArea>
+      ) : (
+        <Dialog
+          open={isExpanded}
+          onOpenChange={(o: boolean) => setIsExpanded(o)}
+        >
+          <DialogContent
+            className="w-[calc(100vw-52px)] p-4 md:w-[400px]"
+            showClose={false}
+          >
+            <div className="grid grid-cols-3 gap-3">
+              {leverageOptions.map((l) => (
+                <button
+                  data-active={dialogLeverage === l ? true : false}
+                  className="flex h-8 w-[56px] items-center justify-center rounded-lg border-2 border-black text-sm leading-[18px] data-[active=true]:bg-yellow"
+                  key={l}
+                  onClick={() => setDialogLeverage(l)}
+                >
+                  {l}×
+                </button>
+              ))}
+              <div className="relative">
+                <input
+                  className="flex h-8 w-[56px] rounded-lg border-2 border-black bg-white py-2 pl-3 pr-5 text-right text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-lightgray focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                  type="text"
+                  placeholder="0"
+                  value={inputLeverage}
+                  onChange={(e) => setDialogLeverage(Number(e.target.value))}
+                />
+                <span className="absolute top-[4px] right-[30px]">×</span>
+              </div>
+            </div>
+
+            <button
+              data-state="active"
+              className="c-active-border-light c-active-bg c-font-title-65 flex w-full items-center justify-center rounded-xl border-2 py-[18px] leading-5 text-white outline-none transition-colors hover:brightness-110 disabled:cursor-not-allowed disabled:border-lightgray disabled:bg-lightgray data-[state=active]:text-yellow disabled:data-[state=active]:text-white"
+              onClick={() => handleDialogConfirm()}
+            >
+              Confirm
+            </button>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
