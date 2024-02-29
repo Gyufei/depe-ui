@@ -1,58 +1,45 @@
 import { useEffect } from "react";
-import { Address, formatUnits } from "viem";
-
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { useTxWrite } from "./use-tx-write";
-import { useSpecialToken } from "../use-eth-token";
-import { IToken } from "@/lib/types/token";
 import { usePositions } from "../api/use-positions";
+import { useTempMock } from "./temp-mock";
+import useDepeProgram from "../use-depe-program";
+import BN from "bn.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import useTxStatus from "./use-tx-status";
 
-export function useAppendMargin(
-  poolAddr: Address,
-  positionAddr: Address,
-  baseToken: IToken | null,
-) {
-  const { chainConfig } = useClusterConfig();
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+export function useAppendMargin() {
+  // poolAddr: Address,
+  // positionAddr: Address,
+  // baseToken: IToken | null,
 
-  const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
+  const { owner, GlobalVars } = useTempMock();
+  const { program } = useDepeProgram();
 
-  const { data, error, isLoading, isSuccess, isError, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "increaseMargin",
-  });
+  const writeAction = async (amount: bigint) => {
+    // if (!poolAddr || !positionAddr || !amount) return;
 
-  const writeAction = (amount: bigint) => {
-    if (!poolAddr || !positionAddr || !amount) return;
-
-    const extraParams = getEthValueParams(
-      baseToken,
-      formatUnits(amount, baseToken?.decimals || 18),
-    );
-    const TxArgs = [poolAddr, positionAddr, amount];
-
-    write({
-      args: TxArgs as any,
-      ...extraParams,
-    });
+    await program.methods
+      .increaseMargin(new BN(Number(amount)))
+      .accounts({
+        trader: owner.publicKey,
+        position: GlobalVars.position,
+        pool: GlobalVars.pool,
+        userSourceTokenAccount: GlobalVars.userSourceTokenAccount,
+        poolSourceTokenAccount: GlobalVars.poolSourceTokenAccount,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([owner])
+      .rpc();
   };
 
   const { mutate: refetchPositions } = usePositions();
 
+  const wrapRes = useTxStatus(writeAction);
+
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPositions();
     }
-  }, [isSuccess, refetchPositions]);
+  }, [wrapRes.isSuccess, refetchPositions]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }

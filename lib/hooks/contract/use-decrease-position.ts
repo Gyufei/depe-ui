@@ -1,102 +1,42 @@
 import { useEffect } from "react";
-import NP from "number-precision";
-import { usePublicClient } from "wagmi";
-import { formatUnits, parseUnits } from "viem";
-
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { useTokenRoutes } from "../api/use-token-routes";
-import { IPool } from "../../types/pool";
-import { IPosition } from "../../types/position";
-import { useTokensInfo } from "../api/use-token-info";
-import { UniswapQuoterABI } from "../../abi/UniswapQuoter";
-import { DEFAULT_SLIPPAGE } from "../../constant";
-import { useTxWrite } from "./use-tx-write";
 import { usePositions } from "../api/use-positions";
+import BN from "bn.js";
+import { useTempMock } from "./temp-mock";
+import useDepeProgram from "../use-depe-program";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import useTxStatus from "./use-tx-status";
 
-export function useDecreasePosition(pool: IPool, position: IPosition) {
-  const publicClient = usePublicClient();
-  const { chainConfig } = useClusterConfig();
-
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
-  const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;
-
-  const [baseToken, quoteToken] = useTokensInfo([
-    pool.baseToken,
-    pool.quoteToken,
-  ]);
-  const { encodeTokenPath, encodeTxExtendedParamsBytes } = useTokenRoutes();
-
-  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "decreasePosition",
-  });
-
-  const getAmountOutMin = async (size: bigint) => {
-    const QuoterAddress = chainConfig!.contract.UniswapV3Quoter;
-
-    const ePath = encodeTokenPath(pool.baseToken, pool.quoteToken, true);
-
-    const { result } = await publicClient.simulateContract({
-      address: QuoterAddress,
-      abi: UniswapQuoterABI,
-      functionName: "quoteExactInput",
-      args: [ePath as any, size],
-    });
-
-    const slippageValue = NP.divide(DEFAULT_SLIPPAGE, 100);
-    const withSlippage = NP.minus(1, slippageValue);
-
-    const aOutMinVal = formatUnits(result, baseToken!.decimals);
-    const aOutMin = NP.times(aOutMinVal, withSlippage).toFixed(
-      baseToken!.decimals,
-    );
-    const aOutMinBig = parseUnits(aOutMin, baseToken!.decimals);
-
-    return aOutMinBig;
-  };
+export function useDecreasePosition() {
+  // pool: IPool, position: IPosition
+  const { owner, GlobalVars } = useTempMock();
+  const { program } = useDepeProgram();
 
   const writeAction = async (amount: string) => {
-    if (!pool || !position || !baseToken || !quoteToken || !amount) return;
-
-    const abiEncodedPath = encodeTxExtendedParamsBytes(
-      pool.baseToken,
-      pool.quoteToken,
-      true,
-    );
-
-    const decreaseSize = parseUnits(amount, quoteToken?.decimals);
-    const aOutMin = await getAmountOutMin(decreaseSize);
-
-    const TxArgs = [
-      pool.poolAddr,
-      position.positionAddr,
-      SwapRouterAddress,
-      decreaseSize,
-      aOutMin,
-      abiEncodedPath,
-    ];
-
-    write({
-      args: TxArgs as any,
-    });
+    await program.methods
+      .decreasePosition(new BN(Number(amount)), new BN(5 * 100), [])
+      .accounts({
+        trader: owner.publicKey,
+        position: GlobalVars.position,
+        pool: GlobalVars.pool,
+        userSourceTokenAccount: GlobalVars.userSourceTokenAccount,
+        poolSourceTokenAccount: GlobalVars.poolSourceTokenAccount,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        poolTokenAuthority: GlobalVars.initializeDataInfo.poolTokenAuthority,
+        initializeData: GlobalVars.initializeData,
+      })
+      .signers([owner])
+      .rpc();
   };
 
   const { mutate: refetchPositions } = usePositions();
 
+  const wrapRes = useTxStatus(writeAction);
+
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPositions();
     }
-  }, [isSuccess, refetchPositions]);
+  }, [wrapRes.isSuccess, refetchPositions]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }

@@ -1,62 +1,84 @@
 import { useEffect } from "react";
-import { useAccount } from "wagmi";
-
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-
-import { useTxWrite } from "./use-tx-write";
-import { IPool } from "../../types/pool";
-import { DepePositionManagerABI } from "../../abi/DepePositionManager";
-import { IToken } from "@/lib/types/token";
-import { useSpecialToken } from "../use-eth-token";
-import { formatUnits } from "viem";
 import { usePoolAsset } from "../api/use-pool-asset";
+import BN from "bn.js";
+import useTxStatus from "./use-tx-status";
+import { useTempMock } from "./temp-mock";
+import { PublicKey } from "@solana/web3.js";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
+import useDepeProgram from "../use-depe-program";
 
-export function usePoolDeposit(
-  poolAddr: IPool["poolAddr"] | null,
-  baseToken: IToken | null,
-) {
-  const { address: account } = useAccount();
-  const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
+export function usePoolDeposit() {
+  // poolAddr: IPool["poolAddr"] | null,
+  // baseToken: IToken | null,
+  const { owner, GlobalVars } = useTempMock();
+  const { program, systemProgram } = useDepeProgram();
 
-  const { chainConfig } = useClusterConfig();
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+  const writeAction = async (amount: bigint) => {
+    // if (!poolAddr || !amount) return;
 
-  const { data, error, isLoading, isSuccess, isError, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "deposit",
-  });
+    const userSourceTokenAccount =
+      await GlobalVars.baseTokenMint?.createAssociatedTokenAccount(
+        owner.publicKey,
+      );
+    GlobalVars.userSourceTokenAccount = userSourceTokenAccount || null;
 
-  const writeAction = (amount: bigint) => {
-    if (!poolAddr || !amount) return;
+    const poolSourceTokenAccount = PublicKey.findProgramAddressSync(
+      [
+        GlobalVars.initializeDataInfo.poolTokenAuthority.toBuffer(),
+        TOKEN_PROGRAM_ID.toBuffer(),
+        GlobalVars.baseTokenMint?.publicKey.toBuffer(),
+      ],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    )[0];
+    GlobalVars.poolSourceTokenAccount = poolSourceTokenAccount || null;
 
-    const TxArgs = [poolAddr, amount, account];
+    const userDepeTokenAccount = PublicKey.findProgramAddressSync(
+      [
+        owner.publicKey.toBuffer(),
+        TOKEN_PROGRAM_ID.toBuffer(),
+        GlobalVars.depeBaseTokenMint!.publicKey.toBuffer(),
+      ],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    )[0];
 
-    const extraParams = getEthValueParams(
-      baseToken,
-      formatUnits(amount, baseToken?.decimals || 18),
+    await GlobalVars.baseTokenMint!.mintTo(
+      userSourceTokenAccount!,
+      owner,
+      [],
+      10000000000000 * 100,
     );
 
-    write({
-      args: TxArgs as any,
-      ...extraParams,
-    });
+    await program.methods
+      .deposit(new BN(Number(amount)))
+      .accounts({
+        provider: owner.publicKey,
+        userSourceTokenAccount,
+        userDepeTokenAccount,
+        poolSourceTokenAccount,
+        sourceTokenMint: GlobalVars.baseTokenMint!.publicKey,
+        depeTokenMint: GlobalVars.depeBaseTokenMint!.publicKey,
+        poolTokenAuthority: GlobalVars.initializeDataInfo.poolTokenAuthority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        systemProgram,
+        initializeData: GlobalVars.initializeData,
+      })
+      .signers([owner])
+      .rpc();
   };
 
   const { mutate: refetchPoolAsset } = usePoolAsset();
 
+  const wrapRes = useTxStatus(writeAction);
+
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPoolAsset();
     }
-  }, [isSuccess, refetchPoolAsset]);
+  }, [wrapRes.isSuccess, refetchPoolAsset]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return;
 }

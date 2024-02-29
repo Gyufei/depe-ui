@@ -1,27 +1,26 @@
-import { useEffect, useMemo } from "react";
+import * as anchor from "@coral-xyz/anchor";
+import { useEffect } from "react";
 import { useAtomValue } from "jotai";
-import { parseUnits } from "viem";
 
 import {
   SAmountInMaxAtom,
   SBaseTokenAmountAtom,
   SBaseTokenAtom,
   SLeverageAtom,
-  SMintNftFlagAtom,
+  // SMintNftFlagAtom,
   SPoolAtom,
   SQuoteTokenAmountAtom,
   SQuoteTokenAtom,
 } from "@/lib/states/swap";
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { useTokenRoutes } from "../api/use-token-routes";
-import { useTxWrite } from "./use-tx-write";
-import { useSpecialToken } from "../use-eth-token";
 import { usePositions } from "../api/use-positions";
+import useTxStatus from "./use-tx-status";
+import { useTempMock } from "./temp-mock";
+import useDepeProgram from "../use-depe-program";
+import { PublicKey } from "@solana/web3.js";
+import { BN } from "bn.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 export function useOpenPosition() {
-  const { clusterConfig } = useClusterConfig();
-
   const pool = useAtomValue(SPoolAtom);
   const baseToken = useAtomValue(SBaseTokenAtom);
   const baseTokenAmount = useAtomValue(SBaseTokenAmountAtom);
@@ -29,72 +28,57 @@ export function useOpenPosition() {
   const amountInMax = useAtomValue(SAmountInMaxAtom);
   const quoteTokenAmount = useAtomValue(SQuoteTokenAmountAtom);
   const leverage = useAtomValue(SLeverageAtom);
-  const mintNFTFlag = useAtomValue(SMintNftFlagAtom);
+  // const mintNFTFlag = useAtomValue(SMintNftFlagAtom);
 
-  const PositionManagerAddress = clusterConfig?.program?.DepePositionManager;
+  const { owner, GlobalVars } = useTempMock();
+  const { program, systemProgram } = useDepeProgram();
 
-  const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
-  const { encodeTxExtendedParamsBytes } = useTokenRoutes();
-
-  const extraParams = useMemo(() => {
-    return getEthValueParams(baseToken, baseTokenAmount);
-  }, [baseToken, baseTokenAmount, getEthValueParams]);
-
-  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "openPosition",
-    ...extraParams,
-  });
-
-  const writeAction = () => {
+  const writeAction = async () => {
     if (
       !pool ||
       !amountInMax ||
       !baseToken ||
+      !baseTokenAmount ||
       !quoteToken ||
       !quoteTokenAmount ||
       !leverage
     )
       return;
 
-    const abiEncodedPath = encodeTxExtendedParamsBytes(
-      baseToken.address,
-      quoteToken.address,
-      true,
-    );
+    const seedAccount = new anchor.web3.Keypair().publicKey;
 
-    const quoteAmount = parseUnits(quoteTokenAmount, quoteToken?.decimals);
+    const position = PublicKey.findProgramAddressSync(
+      [Buffer.from("position"), seedAccount.toBuffer()],
+      program.programId,
+    )[0];
 
-    const TxArgs = [
-      pool.poolAddr,
-      clusterConfig?.contract?.UniswapV3Router,
-      quoteAmount,
-      BigInt((leverage * 100).toFixed()),
-      amountInMax,
-      abiEncodedPath,
-      mintNFTFlag,
-    ];
+    GlobalVars.position = position || null;
 
-    write({
-      args: TxArgs as any,
-    });
+    await program.methods
+      .openPosition(new BN(500), new BN(5 * 100), new BN(5 * 100), [])
+      .accounts({
+        trader: owner.publicKey,
+        seedAccount,
+        position,
+        pool: GlobalVars.pool,
+        userSourceTokenAccount: GlobalVars.userSourceTokenAccount,
+        poolSourceTokenAccount: GlobalVars.poolSourceTokenAccount,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram,
+      })
+      .signers([owner])
+      .rpc();
   };
 
   const { mutate: refetchPositions } = usePositions();
 
+  const wrapRes = useTxStatus(writeAction);
+
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPositions();
     }
-  });
+  }, [wrapRes.isSuccess, refetchPositions]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }

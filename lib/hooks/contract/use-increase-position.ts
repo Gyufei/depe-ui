@@ -1,73 +1,40 @@
-import { parseUnits } from "viem";
+import useTxStatus from "./use-tx-status";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import BN from "bn.js";
+import { useTempMock } from "./temp-mock";
+import useDepeProgram from "../use-depe-program";
+import { usePositions } from "../api/use-positions";
+import { useEffect } from "react";
 
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { useTokenRoutes } from "../api/use-token-routes";
-import { IPool } from "../../types/pool";
-import { IPosition } from "../../types/position";
-import { useTokensInfo } from "../api/use-token-info";
-import { useTxWrite } from "./use-tx-write";
-import { useSpecialToken } from "../use-eth-token";
+export function useIncreasePosition() {
+  // pool: IPool, position: IPosition
+  const { owner, GlobalVars } = useTempMock();
+  const { program } = useDepeProgram();
 
-export function useIncreasePosition(pool: IPool, position: IPosition) {
-  const { chainConfig } = useClusterConfig();
-
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
-  const SwapRouterAddress = chainConfig?.contract?.UniswapV3Router;
-
-  const [baseToken, quoteToken] = useTokensInfo([
-    pool.baseToken,
-    pool.quoteToken,
-  ]);
-
-  const { getEthTxValueParams: getEthValueParams } = useSpecialToken();
-  const { encodeTxExtendedParamsBytes } = useTokenRoutes();
-
-  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "increasePosition",
-  });
-
-  const writeAction = (
-    amount: string,
-    aInMax: bigint,
-    estPayout: string | null,
-  ) => {
-    if (!pool || !position || !quoteToken || !amount || !aInMax || !estPayout)
-      return;
-
-    const increaseSize = parseUnits(amount, quoteToken?.decimals);
-
-    const abiEncodedPath = encodeTxExtendedParamsBytes(
-      pool.baseToken,
-      pool.quoteToken,
-      true,
-    );
-
-    const extraParams = getEthValueParams(baseToken, estPayout);
-
-    const TxArgs = [
-      pool.poolAddr,
-      position.positionAddr,
-      SwapRouterAddress,
-      increaseSize,
-      aInMax,
-      abiEncodedPath,
-    ];
-
-    write({
-      args: TxArgs as any,
-      ...extraParams,
-    });
+  const writeAction = async (amount: string) => {
+    await program.methods
+      .increasePosition(new BN(Number(amount)), new BN(5 * 100), [])
+      .accounts({
+        trader: owner.publicKey,
+        position: GlobalVars.position,
+        pool: GlobalVars.pool,
+        userSourceTokenAccount: GlobalVars.userSourceTokenAccount,
+        poolSourceTokenAccount: GlobalVars.poolSourceTokenAccount,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([owner])
+      .rpc();
   };
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  const wrapRes = useTxStatus(writeAction);
+
+  const { mutate: refetchPositions } = usePositions();
+
+  useEffect(() => {
+    if (wrapRes.isSuccess) {
+      refetchPositions();
+    }
+  }, [wrapRes.isSuccess, refetchPositions]);
+
+  return wrapRes;
 }

@@ -1,59 +1,62 @@
+import * as anchor from "@coral-xyz/anchor";
 import { BN } from "bn.js";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-  Token,
-  u64,
-} from "@solana/spl-token";
-import {
-  PublicKey,
-  SystemProgram,
-  Connection,
-  LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
+import useTxStatus from "./use-tx-status";
+import useDepeProgram from "../use-depe-program";
+import { useTempMock } from "./temp-mock";
+import { usePoolAsset } from "../api/use-pool-asset";
+import { useEffect } from "react";
 
 export function useCreatePool() {
-  let margin_coin = baseTokenMint.publicKey;
-  let max_leverage = new BN(500);
-  let trading_fee = new BN(3000);
-  let duration_days = new BN(7776000);
+  const { owner, GlobalVars } = useTempMock();
+  const { programId, program } = useDepeProgram();
 
-  const seedAccount = new anchor.web3.Keypair().publicKey;
+  async function writeAction() {
+    const margin_coin = GlobalVars.baseTokenMint?.publicKey;
+    const max_leverage = new BN(500);
+    const trading_fee = new BN(3000);
+    const duration_days = new BN(7776000);
 
-  // await program.methods.
-  pool = PublicKey.findProgramAddressSync(
-    [Buffer.from("pool"), seedAccount.toBuffer()],
-    program.programId,
-  )[0];
+    const seedAccount = new anchor.web3.Keypair().publicKey;
+    const systemProgram = anchor.web3.SystemProgram.programId;
 
-  await program.methods
-    .createPool(
-      margin_coin,
-      {
-        high: {},
-      },
-      max_leverage,
-      {
-        orca: {},
-      },
-      trading_fee,
-      duration_days,
-    )
-    .accounts({
-      creator: owner.publicKey,
-      seedAccount,
-      pool: pool,
-      systemProgram,
-    })
-    .signers([owner])
-    .rpc();
+    const pool = PublicKey.findProgramAddressSync(
+      [Buffer.from("pool"), seedAccount.toBuffer()],
+      programId,
+    )[0];
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+    await program.methods
+      .createPool(
+        margin_coin,
+        {
+          high: {},
+        },
+        max_leverage,
+        {
+          orca: {},
+        },
+        trading_fee,
+        duration_days,
+      )
+      .accounts({
+        creator: owner.publicKey,
+        seedAccount,
+        pool: pool,
+        systemProgram,
+      })
+      .signers([owner])
+      .rpc();
+  }
+
+  const { mutate: refetchPoolAsset } = usePoolAsset();
+
+  const wrapRes = useTxStatus(writeAction);
+
+  useEffect(() => {
+    if (wrapRes.isSuccess) {
+      refetchPoolAsset();
+    }
+  }, [wrapRes.isSuccess, refetchPoolAsset]);
+
+  return wrapRes;
 }

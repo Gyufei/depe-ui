@@ -228,18 +228,23 @@ function CreatePoolBtn() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   if (isDesktop) {
-    <Dialog open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
-      <DialogTrigger asChild>
-        <button className="c-shadow-translate c-font-text-65 flex w-fit items-center justify-center  rounded-xl border-2 border-black bg-white py-3 px-9 leading-6 shadow-25">
-          Create Pool
-        </button>
-      </DialogTrigger>
-      <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
-        <DialogGimp />
-        <DialogTitle className="px-6 pt-6">Create Pool</DialogTitle>
-        <CreatePoolDialogContent />
-      </DialogContent>
-    </Dialog>;
+    return (
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(isOpen) => setDialogOpen(isOpen)}
+      >
+        <DialogTrigger asChild>
+          <button className="c-shadow-translate c-font-text-65 flex w-fit items-center justify-center  rounded-xl border-2 border-black bg-white py-3 px-9 leading-6 shadow-25">
+            Create Pool
+          </button>
+        </DialogTrigger>
+        <DialogContent className="w-[400px] p-0 pb-6 md:w-[400px]">
+          <DialogGimp />
+          <DialogTitle className="px-6 pt-6">Create Pool</DialogTitle>
+          <CreatePoolDialogContent />
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (

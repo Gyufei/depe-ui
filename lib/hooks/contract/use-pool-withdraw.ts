@@ -1,45 +1,43 @@
 import { useEffect } from "react";
-
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-import { useTxWrite } from "./use-tx-write";
-import { IPool } from "../../types/pool";
-import { DepePositionManagerABI } from "../../abi/DepePositionManager";
 import { usePoolAsset } from "../api/use-pool-asset";
+import useTxStatus from "./use-tx-status";
+import useDepeProgram from "../use-depe-program";
+import { useTempMock } from "./temp-mock";
+import BN from "bn.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-export function usePoolWithdraw(poolAddr: IPool["poolAddr"] | null) {
-  const { chainConfig } = useClusterConfig();
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+export function usePoolWithdraw() {
+  // poolAddr: IPool["poolAddr"] | null
 
-  const { data, error, isLoading, isSuccess, isError, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "withdraw",
-  });
+  const { owner, GlobalVars } = useTempMock();
+  const { program } = useDepeProgram();
 
-  const writeAction = (amount: bigint) => {
-    if (!poolAddr || !amount) return;
-
-    const TxArgs = [poolAddr, amount];
-
-    write({
-      args: TxArgs as any,
-    });
+  const writeAction = async (amount: bigint) => {
+    await program.methods
+      .withdraw(new BN(Number(amount)))
+      .accounts({
+        provider: owner.publicKey,
+        userDepeTokenAccount: GlobalVars.userDepeTokenAccount,
+        poolSourceTokenAccount: GlobalVars.poolSourceTokenAccount,
+        userSourceTokenAccount: GlobalVars.userSourceTokenAccount,
+        depeTokenMint: GlobalVars.depeBaseTokenMint!.publicKey,
+        poolTokenAuthority: GlobalVars.initializeDataInfo.poolTokenAuthority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        initializeData: GlobalVars.initializeData,
+      })
+      .signers([owner])
+      .rpc();
   };
 
   const { mutate: refetchPoolAsset } = usePoolAsset();
 
+  const wrapRes = useTxStatus(writeAction);
+
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPoolAsset();
     }
-  }, [isSuccess, refetchPoolAsset]);
+  }, [wrapRes.isSuccess, refetchPoolAsset]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }

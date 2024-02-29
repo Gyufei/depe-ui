@@ -13,10 +13,11 @@ import { RATING_LEVELS } from "@/lib/constant";
 import { formatNum } from "@/lib/utils/number";
 import { NumericalInput } from "../share/numerical-input";
 import WithApproveBtn from "../share/with-approve-btn";
+import { useCreatePool } from "@/lib/hooks/contract/use-create-pool";
 
 export default function CreatePoolDialogContent() {
   return (
-    <div className="md:mx-6 flex flex-col items-stretch gap-y-6">
+    <div className="flex flex-col items-stretch gap-y-6 md:mx-6">
       <Margin />
       <AssetLevel />
       <MaxLeverage />
@@ -245,8 +246,12 @@ function CreateBtn() {
   const cost = 10;
   const baseToken = {} as IToken;
   const originBtnText = "Submit";
+
+  const { write } = useCreatePool();
+
   const handleBtnClick = () => {
-    console.log("submit");
+    write();
+    // console.log("submit");
   };
 
   return (

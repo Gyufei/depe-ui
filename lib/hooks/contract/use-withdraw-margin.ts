@@ -1,45 +1,44 @@
 import { useEffect } from "react";
-import { Address } from "viem";
-
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
-import { DepePositionManagerABI } from "@/lib/abi/DepePositionManager";
-import { useTxWrite } from "./use-tx-write";
 import { usePositions } from "../api/use-positions";
+import useTxStatus from "./use-tx-status";
+import { useTempMock } from "./temp-mock";
+import useDepeProgram from "../use-depe-program";
+import BN from "bn.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-export function useWithdrawMargin(poolAddr: Address, positionAddr: Address) {
-  const { chainConfig } = useClusterConfig();
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+export function useWithdrawMargin() {
+  // poolAddr: Address, positionAddr: Address
+  const { owner, GlobalVars } = useTempMock();
+  const { program } = useDepeProgram();
 
-  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "decreaseMargin",
-  });
+  const writeAction = async (amount: bigint) => {
+    // if (!poolAddr || !positionAddr) return;
 
-  const writeAction = (amount: bigint) => {
-    if (!poolAddr || !positionAddr) return;
-
-    const TxArgs = [poolAddr, positionAddr, amount];
-
-    write({
-      args: TxArgs as any,
-    });
+    await program.methods
+      .decreaseMargin(new BN(Number(amount)))
+      .accounts({
+        trader: owner.publicKey,
+        position: GlobalVars.position,
+        pool: GlobalVars.pool,
+        userSourceTokenAccount: GlobalVars.userSourceTokenAccount,
+        poolSourceTokenAccount: GlobalVars.poolSourceTokenAccount,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        poolTokenAuthority: GlobalVars.initializeDataInfo.poolTokenAuthority,
+        initializeData: GlobalVars.initializeData,
+      })
+      .signers([owner])
+      .rpc();
   };
 
   const { mutate: refetchPositions } = usePositions();
 
+  const wrapRes = useTxStatus(writeAction);
+
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPositions();
     }
-  }, [isSuccess, refetchPositions]);
+  }, [wrapRes.isSuccess, refetchPositions]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }
