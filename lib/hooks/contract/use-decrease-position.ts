@@ -5,9 +5,11 @@ import { useTempMock } from "./temp-mock";
 import useDepeProgram from "../use-depe-program";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import useTxStatus from "./use-tx-status";
+import { IPool } from "@/lib/types/pool";
+import { IPosition } from "@/lib/types/position";
 
-export function useDecreasePosition() {
-  // pool: IPool, position: IPosition
+export function useDecreasePosition(pool: IPool, position: IPosition) {
+  console.log(pool, position);
   const { owner, GlobalVars } = useTempMock();
   const { program } = useDepeProgram();
 

@@ -16,6 +16,7 @@ export function useTokenBalance(tokenAddress: string | null) {
       value: "1",
       formatted: "1",
     },
+    isLoading: false,
   };
 
   const dataValue = useMemo(() => {

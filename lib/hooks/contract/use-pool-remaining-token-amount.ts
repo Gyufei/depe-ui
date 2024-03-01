@@ -7,7 +7,7 @@ export function usePoolRemainingTokenAmount(pool: IPool | null) {
   const [baseToken] = useTokensInfo([pool?.baseToken || null]);
 
   const remainTokenRes = {
-    data: 1,
+    data: '1',
   };
 
   const dataValue = useMemo(() => {

@@ -68,7 +68,7 @@ export default function TransferDialogContent({
 
   const handleMint = () => {
     if (!position?.positionAddr || isNFT) return;
-    mintAction();
+    mintAction(undefined);
   };
 
   const handleTransfer = () => {

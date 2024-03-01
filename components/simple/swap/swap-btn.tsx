@@ -36,7 +36,7 @@ export default function SwapBtn() {
   const baseTokenBalance = balanceData?.formatted || null;
 
   const handleBtnClick = () => {
-    swapAction();
+    swapAction(undefined);
     handleOrderOverviewDisplay();
   };
 
