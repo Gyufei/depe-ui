@@ -14,7 +14,6 @@ export function usePoolRemainingTokenAmount(pool: IPool | null) {
     if (!remainTokenRes.data || !pool || !baseToken) return null;
     // const unitVal = formatUnits(remainTokenRes.data, baseToken.decimals);
     const unitVal = remainTokenRes.data;
-    console.log(baseToken.decimals);
 
     return unitVal;
   }, [remainTokenRes.data, baseToken, pool]);

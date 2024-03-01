@@ -10,10 +10,12 @@ import { IPool } from "@/lib/types/pool";
 export function usePoolWithdraw(poolAddr: IPool["poolAddr"] | null) {
   console.log(poolAddr);
 
-  const { owner, GlobalVars } = useTempMock();
+  const { owner, GlobalVars, init } = useTempMock();
   const { program } = useDepeProgram();
 
   const writeAction = async (amount: bigint) => {
+    await init();
+
     await program.methods
       .withdraw(new BN(Number(amount)))
       .accounts({

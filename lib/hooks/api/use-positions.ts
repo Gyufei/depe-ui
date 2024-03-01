@@ -21,7 +21,7 @@ export function usePositions() {
         positionAddr: "123",
         dpPoolAddr: "p1",
         trader: "123",
-        leverage: '10',
+        leverage: "10",
         positionSize: "0.1",
         debtAmount: "1",
         marginAmount: "100",
@@ -35,6 +35,7 @@ export function usePositions() {
       },
     ],
     isLoading: false,
+    mutate: () => {},
   };
   // {
   //   ...positionsRes,

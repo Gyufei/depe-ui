@@ -18,6 +18,8 @@ export function usePoolDepositInput(pool: IPool) {
   );
 
   const handleBtnClick = () => {
+    console.log("------");
+    console.log(123, pool, baseToken, inputVal, isLoading);
     if (!pool) return;
     if (!baseToken) return;
     if (!inputVal) return;

@@ -28,8 +28,6 @@ export default function Footer() {
     return pathname.match(regex);
   }, [pathname]);
 
-  console.log(pathname);
-
   return (
     <div className="relative mt-8 flex flex-col items-center justify-center md:flex-row">
       <PoweredBy />
@@ -153,7 +151,6 @@ function BlockNumberTag() {
     async function getBlockHeight() {
       try {
         const res = await connection.getBlockHeight();
-        console.log(res);
         setData(res);
         setIsLoading(false);
         setStatus("success");

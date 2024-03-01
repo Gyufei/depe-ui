@@ -36,7 +36,7 @@ export default function WithApproveBtn({
 
   const handleBtnClick = () => {
     if (shouldApprove) {
-      approveAction();
+      (approveAction as any)();
     } else {
       onClick();
     }

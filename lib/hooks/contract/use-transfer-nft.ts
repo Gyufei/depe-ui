@@ -6,8 +6,6 @@ import useTxStatus from "./use-tx-status";
 export function useTransferNFT(position: IPosition) {
   const writeAction = async (to: string) => {
     if (!position?.isNFT || !to) return;
-
-    console.log("transfer nft");
   };
 
   const { mutate: refetchPositions } = usePositions();

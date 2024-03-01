@@ -17,8 +17,6 @@ export default function PoolItem({ params }: { params: any }) {
   const isPortActive = activePanel === "Portfolio";
   const isPositionsActive = activePanel === "Positions";
 
-  console.log(activePanel);
-
   useEffect(() => {
     if (poolId) setPDPoolId(poolId);
   });

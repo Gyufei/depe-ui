@@ -61,10 +61,6 @@ export function useTempMock() {
   const { program } = useDepeProgram();
   const systemProgram = anchor.web3.SystemProgram.programId;
 
-  if (!GlobalVars.initializeData) {
-    init();
-  }
-
   async function init() {
     GlobalVars.initializeData = PublicKey.findProgramAddressSync(
       [Buffer.from("initialize_data")],
@@ -116,6 +112,7 @@ export function useTempMock() {
   }
 
   return {
+    init,
     payer,
     owner,
     GlobalVars,

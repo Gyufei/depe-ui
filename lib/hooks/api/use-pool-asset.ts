@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { PoolAsset } from "../../gql-document/pool";
-import { useGqlRequest } from "./use-graphql-request";
-import { useWallet } from "@solana/wallet-adapter-react";
-import toPubString from "@/lib/utils/pub-string";
+// import { PoolAsset } from "../../gql-document/pool";
+// import { useGqlRequest } from "./use-graphql-request";
+// import { useWallet } from "@solana/wallet-adapter-react";
+// import toPubString from "@/lib/utils/pub-string";
 
 export interface IPoolAsset {
   dpPoolAddr: string;
@@ -10,8 +10,7 @@ export interface IPoolAsset {
 }
 
 export function usePoolAsset() {
-  const { publicKey } = useWallet();
-  console.log(publicKey, toPubString, useGqlRequest, PoolAsset);
+  // const { publicKey } = useWallet();
 
   // const res = useGqlRequest(
   //   PoolAsset(

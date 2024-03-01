@@ -250,7 +250,7 @@ function CreateBtn() {
   const { write } = useCreatePool();
 
   const handleBtnClick = () => {
-    write();
+    write(undefined);
     // console.log("submit");
   };
 

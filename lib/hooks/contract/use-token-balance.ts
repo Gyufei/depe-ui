@@ -13,7 +13,7 @@ export function useTokenBalance(tokenAddress: string | null) {
 
   const balanceRes = {
     data: {
-      value: 1,
+      value: "1",
       formatted: "1",
     },
   };
@@ -21,7 +21,7 @@ export function useTokenBalance(tokenAddress: string | null) {
   const dataValue = useMemo(() => {
     if (!balanceRes.data) return undefined;
 
-    const unitVal = balanceRes.data;
+    const unitVal = balanceRes.data.value;
 
     return unitVal;
   }, [balanceRes.data]);

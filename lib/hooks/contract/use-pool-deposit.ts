@@ -17,12 +17,12 @@ export function usePoolDeposit(
   baseToken: IToken | null,
 ) {
   console.log(poolAddr, baseToken);
-  const { owner, GlobalVars } = useTempMock();
+  const { owner, GlobalVars, init } = useTempMock();
   const { program, systemProgram } = useDepeProgram();
 
   const writeAction = async (amount: bigint) => {
+    await init();
     // if (!poolAddr || !amount) return;
-
     const userSourceTokenAccount =
       await GlobalVars.baseTokenMint?.createAssociatedTokenAccount(
         owner.publicKey,
@@ -54,6 +54,8 @@ export function usePoolDeposit(
       [],
       10000000000000 * 100,
     );
+
+    console.log("here here");
 
     await program.methods
       .deposit(new BN(Number(amount)))
