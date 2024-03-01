@@ -1,13 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import { ReactNode, useMemo, useState } from "react";
 import domtoimage from "dom-to-image";
-import { useAccount } from "wagmi";
 
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
 import { IPool } from "@/lib/types/pool";
 import { EPositionStatus, IPosition } from "@/lib/types/position";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "../../ui/checkbox";
+import { useWallet } from "@solana/wallet-adapter-react";
+import toPubString from "@/lib/utils/pub-string";
 
 export default function ShareDialogContent({
   position,
@@ -16,7 +17,7 @@ export default function ShareDialogContent({
   position: IPosition;
   pool: IPool;
 }) {
-  const { address: account } = useAccount();
+  const { publicKey } = useWallet();
 
   const {
     quoteToken,
@@ -31,8 +32,8 @@ export default function ShareDialogContent({
   const [showHash, setShowHash] = useState(true);
   const [showPnlAmount, setShowPnlAmount] = useState(true);
   const showTrader = useMemo(() => {
-    return account === position.trader;
-  }, [account, position.trader]);
+    return toPubString(publicKey) === position.trader;
+  }, [publicKey, position.trader]);
 
   async function handleDownload() {
     const shareDomNode = document.querySelector("#share-content");
@@ -117,7 +118,7 @@ export default function ShareDialogContent({
                   height={69}
                   alt="logo"
                 />
-                <OpenedOn openDate={openOn.formatted || ''}></OpenedOn>
+                <OpenedOn openDate={openOn.formatted || ""}></OpenedOn>
               </div>
               <QrCode />
             </div>

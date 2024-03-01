@@ -1,36 +1,27 @@
-import { useAccount, useBalance } from "wagmi";
-import { Address, formatUnits } from "viem";
 import { useMemo } from "react";
 import { useTokensInfo } from "../api/use-token-info";
-import { useSpecialToken } from "../use-eth-token";
+import { useSpecialToken } from "../use-special-token";
 
-export function useTokenBalance(tokenAddress: Address | null) {
-  const { address: account } = useAccount();
-
+export function useTokenBalance(tokenAddress: string | null) {
   const [tokenInfo] = useTokensInfo([tokenAddress || "0x"]);
-  const { checkIsEth } = useSpecialToken();
+  const { checkIsSol } = useSpecialToken();
 
-  const isEth = useMemo(() => {
-    return checkIsEth(tokenInfo);
-  }, [checkIsEth, tokenInfo]);
+  const isSol = useMemo(() => {
+    return checkIsSol(tokenInfo);
+  }, [checkIsSol, tokenInfo]);
+  console.log(isSol);
 
-  const balanceRes = useBalance({
-    address: account,
-    enabled: !!tokenAddress,
-    ...(isEth
-      ? {}
-      : {
-          token: tokenAddress || "0x",
-        }),
-  });
+  const balanceRes = {
+    data: {
+      value: 1,
+      formatted: "1",
+    },
+  };
 
   const dataValue = useMemo(() => {
     if (!balanceRes.data) return undefined;
 
-    const unitVal = formatUnits(
-      balanceRes.data?.value,
-      balanceRes.data?.decimals,
-    );
+    const unitVal = balanceRes.data;
 
     return unitVal;
   }, [balanceRes.data]);

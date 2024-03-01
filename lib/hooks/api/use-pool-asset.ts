@@ -1,20 +1,37 @@
 import { useMemo } from "react";
 import { PoolAsset } from "../../gql-document/pool";
 import { useGqlRequest } from "./use-graphql-request";
-import { Address } from "viem";
-import { useAccount } from "wagmi";
+import { useWallet } from "@solana/wallet-adapter-react";
+import toPubString from "@/lib/utils/pub-string";
 
 export interface IPoolAsset {
-  dpPoolAddr: Address;
+  dpPoolAddr: string;
   amount: string;
 }
 
 export function usePoolAsset() {
-  const { address: account } = useAccount();
+  const { publicKey } = useWallet();
+  console.log(publicKey, toPubString, useGqlRequest, PoolAsset);
 
-  const res = useGqlRequest(
-    PoolAsset(account ? [{ key: "account", value: account }] : []),
-  );
+  // const res = useGqlRequest(
+  //   PoolAsset(
+  //     publicKey ? [{ key: "account", value: toPubString(publicKey) }] : [],
+  //   ),
+  // );
+  //
+  const res = {
+    data: {
+      poolAsset: {
+        data: [
+          {
+            dpPoolAddr: "p1",
+            amount: "1",
+          },
+        ],
+      },
+    },
+    isLoading: false,
+  };
 
   const data = useMemo<Array<IPoolAsset>>(() => {
     const resData = res.data?.poolAsset?.data;
@@ -29,7 +46,7 @@ export function usePoolAsset() {
     return data.reduce((acc, cur) => {
       acc[cur.dpPoolAddr] = cur;
       return acc;
-    }, {} as Record<Address, IPoolAsset>);
+    }, {} as Record<string, IPoolAsset>);
   }, [data]);
 
   return {

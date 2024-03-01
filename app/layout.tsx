@@ -7,7 +7,6 @@ import SWRConfigProvider from "@/components/provider/swr-config-provider";
 import HomeLayout from "@/components/layout/home-layout";
 import GlobalProvider from "@/components/provider/global-provider";
 import { SolanaWalletProviders } from "@/components/provider/solana-wallets";
-import Web3ConnectProvider from "@/components/provider/~web3-connect-provider";
 
 export const metadata = {
   title: "Depe",
@@ -23,15 +22,13 @@ export default async function RootLayout({
     <html lang="en">
       <body className={cn(HaasGrotDisp.variable, HaasGrotText.variable)}>
         <GlobalProvider>
-          <Web3ConnectProvider>
-            <JotaiProvider>
-              <SolanaWalletProviders>
-                <SWRConfigProvider>
-                  <HomeLayout>{children}</HomeLayout>
-                </SWRConfigProvider>
-              </SolanaWalletProviders>
-            </JotaiProvider>
-          </Web3ConnectProvider>
+          <JotaiProvider>
+            <SolanaWalletProviders>
+              <SWRConfigProvider>
+                <HomeLayout>{children}</HomeLayout>
+              </SWRConfigProvider>
+            </SolanaWalletProviders>
+          </JotaiProvider>
         </GlobalProvider>
       </body>
     </html>

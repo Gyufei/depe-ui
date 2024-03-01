@@ -7,7 +7,6 @@ import { IPool } from "../types/pool";
 import { formatNum } from "../utils/number";
 import { usePoolFormat } from "./use-pool-format";
 import { useTokenPrice } from "./contract/use-token-price";
-import { formatUnits } from "viem";
 
 export function usePositionFormat(position: IPosition, pool: IPool) {
   const positionPool = usePoolFormat(pool);
@@ -82,7 +81,9 @@ function getLeverage(position: IPosition) {
 }
 
 function getSize(position: IPosition, decimals: number = 6) {
-  const val = formatUnits(BigInt(position?.positionSize || 0), decimals);
+  // const val = formatUnits(BigInt(position?.positionSize || 0), decimals);
+  const val = position?.positionSize;
+  console.log(decimals);
 
   return {
     value: val,
@@ -93,7 +94,9 @@ function getSize(position: IPosition, decimals: number = 6) {
 function getMarginAmount(position: IPosition, decimals: number = 6) {
   if (!position?.marginAmount) return {};
 
-  const val = formatUnits(BigInt(position?.marginAmount), decimals);
+  // const val = formatUnits(BigInt(position?.marginAmount), decimals);
+  const val = position?.marginAmount;
+  console.log(decimals);
   return {
     value: val,
     formatted: formatNum(val),
@@ -113,7 +116,9 @@ function getOpenOn(position: IPosition) {
 function getDebtAmount(position: IPosition, decimals: number = 6) {
   if (!position?.debtAmount) return {};
 
-  const debt = formatUnits(BigInt(position?.debtAmount), decimals);
+  // const debt = formatUnits(BigInt(position?.debtAmount), decimals);
+  const debt = position?.debtAmount;
+  console.log(decimals);
 
   return {
     value: debt,

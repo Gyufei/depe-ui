@@ -2,11 +2,11 @@ import { useMemo } from "react";
 import { useClusterConfig } from "../common/use-cluster-config";
 
 export function useEndPoint() {
-  const { chainConfig } = useClusterConfig();
+  const { clusterConfig } = useClusterConfig();
 
   const apiEndPoint = useMemo(() => {
-    return chainConfig?.api.default;
-  }, [chainConfig]);
+    return clusterConfig?.api.default;
+  }, [clusterConfig]);
 
   const gqlEndPoint = useMemo(() => {
     return apiEndPoint + "/graphql";
@@ -16,14 +16,9 @@ export function useEndPoint() {
     return "https://token.jup.ag/strict";
   }, []);
 
-  const routerEndPoint = useMemo(() => {
-    return chainConfig?.api.routerApi;
-  }, [chainConfig]);
-
   return {
     apiEndPoint,
     gqlEndPoint,
     tokenEndPoint,
-    routerEndPoint,
   };
 }

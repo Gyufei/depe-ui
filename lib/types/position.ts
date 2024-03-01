@@ -1,5 +1,3 @@
-import { Address } from "viem";
-
 export enum EPositionStatus {
   genesis,
   open,
@@ -8,9 +6,9 @@ export enum EPositionStatus {
 }
 
 export interface IPosition {
-  positionAddr: Address;
-  dpPoolAddr: Address;
-  trader: Address;
+  positionAddr: string;
+  dpPoolAddr: string;
+  trader: string;
   leverage: string;
   positionSize: string;
   debtAmount: string;

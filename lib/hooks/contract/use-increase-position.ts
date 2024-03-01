@@ -5,9 +5,11 @@ import { useTempMock } from "./temp-mock";
 import useDepeProgram from "../use-depe-program";
 import { usePositions } from "../api/use-positions";
 import { useEffect } from "react";
+import { IPool } from "@/lib/types/pool";
+import { IPosition } from "@/lib/types/position";
 
-export function useIncreasePosition() {
-  // pool: IPool, position: IPosition
+export function useIncreasePosition(pool: IPool, position: IPosition) {
+  console.log(pool, position);
   const { owner, GlobalVars } = useTempMock();
   const { program } = useDepeProgram();
 

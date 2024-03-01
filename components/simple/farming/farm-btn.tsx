@@ -5,7 +5,6 @@ import { FDepositAmountAtom, FPoolAtom } from "@/lib/states/farming";
 import WithApproveBtn from "@/components/share/with-approve-btn";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolDeposit } from "@/lib/hooks/contract/use-pool-deposit";
-import { parseUnits } from "viem";
 import { IsActivePanelContext } from "../hover-active-panel";
 
 export default function FarmBtn() {
@@ -50,7 +49,8 @@ export default function FarmBtn() {
   const handleBtnClick = () => {
     if (!depositAmount) return;
 
-    const amount = parseUnits(depositAmount, baseToken?.decimals || 18);
+    // const amount = parseUnits(depositAmount, baseToken?.decimals || 18);
+    const amount = depositAmount;
     writeAction(amount);
   };
 

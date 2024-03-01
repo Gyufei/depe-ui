@@ -3,7 +3,6 @@ import { IPool } from "../types/pool";
 import { useTokenBalance } from "./contract/use-token-balance";
 import { usePoolDeposit } from "./contract/use-pool-deposit";
 import { usePoolFormat } from "./use-pool-format";
-import { parseUnits } from "viem";
 
 export function usePoolDepositInput(pool: IPool) {
   const [inputVal, setInputVal] = useState("");
@@ -24,7 +23,8 @@ export function usePoolDepositInput(pool: IPool) {
     if (!inputVal) return;
     if (isLoading) return;
 
-    const amount = parseUnits(inputVal, baseToken?.decimals);
+    // const amount = parseUnits(inputVal, baseToken?.decimals);
+    const amount = inputVal;
     writeAction(amount);
   };
 

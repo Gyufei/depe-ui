@@ -13,6 +13,7 @@ import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 import { usePoolParsedAsset } from "@/lib/hooks/use-pool-parsed-asset";
 import { useTokenPrice } from "@/lib/hooks/contract/use-token-price";
 import { formatNum } from "@/lib/utils/number";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
 export default function PoolPanel({
   pool,
@@ -23,6 +24,7 @@ export default function PoolPanel({
   isLoading: boolean;
   recordAPY: (_id: string, _a: string) => void;
 }) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
   const { baseToken, quoteToken, leverage, expiration } = usePoolFormat(pool);
   const { data: poolAPY, isLoading: isPoolAPYLoading } = usePoolAPY(
@@ -59,9 +61,11 @@ export default function PoolPanel({
     <div className="relative flex flex-col ">
       <div
         style={{
-          clipPath: "polygon(0 0%, 375px 0%, 100% 400px, 0% 100%)",
+          clipPath: isDesktop
+            ? "polygon(0 0%, 375px 0%, 100% 400px, 0% 100%)"
+            : "polygon(0 0%, 139px 0%, 100% 455px, 0% 100%)",
         }}
-        className="flex h-16 items-center rounded-tl-3xl border-t-2 border-l-2 border-black bg-white p-6"
+        className="flex h-16 items-center rounded-tl-3xl border-t-2 border-l-2 border-black bg-white p-4 md:p-6"
       >
         {isPoolLoading ? (
           <>
@@ -74,16 +78,23 @@ export default function PoolPanel({
               img1={quoteToken?.logoURI || ""}
               img2={baseToken?.logoURI || ""}
             />
-            <div className="c-font-text-65 ml-4 leading-6">
-              {quoteToken?.symbol}/{baseToken?.symbol}
-            </div>
+            {isDesktop ? (
+              <div className="c-font-text-65 ml-4 leading-6">
+                {quoteToken?.symbol}/{baseToken?.symbol}
+              </div>
+            ) : (
+              <div className="ml-2">
+                <div className="text-green">High</div>
+                <div>1~{pool.maxleverage}</div>
+              </div>
+            )}
           </>
         )}
       </div>
 
       <PanelLogo isLoading={isPoolLoading} />
 
-      <div className="relative z-30 box-border h-[280px] rounded-3xl rounded-tl-none border-2 border-black bg-white p-6 shadow-50 before:absolute before:left-0 before:-top-[2px] before:h-[2px] before:w-[403.5px] before:skew-x-[26deg] before:bg-white before:content-['']">
+      <div className="relative z-30 box-border h-[280px] rounded-3xl rounded-tl-none border-2 border-black bg-white p-6 shadow-50 before:bg-white before:content-[''] before:absolute before:left-0 before:-top-[2px] before:w-[51%] before:h-[2px] md:before:w-[403.5px] before:skew-x-[26deg]">
         <div className="flex flex-col gap-y-6 border-b border-[#eee] pb-6">
           <FieldRow>
             <TitleText>Leverage</TitleText>
@@ -140,7 +151,7 @@ export default function PoolPanel({
 function PanelLogo({ isLoading }: { isLoading: boolean }) {
   return (
     <>
-      <div className="absolute left-[390px] z-10 flex skew-x-[26deg]">
+      <div className="absolute left-[155px] z-10 flex skew-x-[26deg] md:left-[390px]">
         <div className="h-[66px] w-[2px] bg-black"></div>
         <div className="mt-[10px] h-[55px] w-[4px] bg-black"></div>
         <div className="relative top-6 h-2 w-5 border-y-2 border-black bg-white"></div>

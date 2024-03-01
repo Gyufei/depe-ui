@@ -1,6 +1,5 @@
 import NP from "number-precision";
 import { useEffect, useState } from "react";
-import { parseUnits } from "viem";
 
 import { IPool } from "../types/pool";
 import { usePoolWithdraw } from "./contract/use-pool-withdraw";
@@ -23,7 +22,9 @@ export function usePoolWithdrawInput(pool: IPool, assetValue: string) {
     if (!inputVal) return;
     if (isLoading) return;
 
-    const amount = parseUnits(inputVal, baseToken?.decimals);
+    // const amount = parseUnits(inputVal, baseToken?.decimals);
+    const amount = inputVal;
+    console.log(baseToken.decimals);
     writeAction(amount);
   };
 

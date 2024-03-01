@@ -3,12 +3,16 @@ import { Skeleton } from "../../ui/skeleton";
 import { ProfitText } from "@/components/share/profit-text";
 
 export function TitleText({ children }: { children: React.ReactNode }) {
-  return <div className="text-lg leading-7 text-black">{children}</div>;
+  return (
+    <div className="text-base leading-7 text-black md:text-lg">{children}</div>
+  );
 }
 
 export function SecondText({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-xs leading-[18px] text-lightgray">{children}</div>
+    <div className="text-[10px] leading-[18px] text-lightgray md:text-xs">
+      {children}
+    </div>
   );
 }
 

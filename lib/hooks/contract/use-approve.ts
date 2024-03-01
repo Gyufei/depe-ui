@@ -1,48 +1,36 @@
 import { useEffect, useMemo } from "react";
-import { Address, formatUnits, parseUnits } from "viem";
 
-import { erc20ABI, useAccount, useContractRead } from "wagmi";
-
-import { useClusterConfig } from "@/lib/hooks/common/use-cluster-config";
 import { useTokensInfo } from "@/lib/hooks/api/use-token-info";
-import { IUSDTABI } from "@/lib/abi/IUSDT";
-import { useTxWrite } from "./use-tx-write";
-import { useSpecialToken } from "../use-eth-token";
+import { useSpecialToken } from "../use-special-token";
+import useTxStatus from "./use-tx-status";
 
 export function useApprove(
-  tokenAddress: Address | null,
+  tokenAddress: string | null,
   tokenAmount: string | null,
 ) {
-  const { address: account } = useAccount();
-  const { chainConfig } = useClusterConfig();
   const [tokenInfo] = useTokensInfo([tokenAddress]);
-  const IPIBoneAddress = chainConfig?.contract.IPIBone;
 
-  const { checkIsEth, checkIsUSDT } = useSpecialToken();
-  const isUSDT = useMemo(() => {
-    return checkIsUSDT(tokenInfo);
-  }, [tokenInfo, checkIsUSDT]);
+  const { checkIsSol } = useSpecialToken();
 
   const isEth = useMemo(() => {
-    return checkIsEth(tokenInfo);
-  }, [tokenInfo, checkIsEth]);
+    return checkIsSol(tokenInfo);
+  }, [tokenInfo, checkIsSol]);
 
   const {
     data: allowanceValue,
     isLoading: isAllowanceLoading,
     refetch: getAllowance,
-  } = useContractRead({
-    address: tokenAddress!,
-    abi: erc20ABI,
-    functionName: "allowance",
-    args: [account!, IPIBoneAddress!],
-    enabled: !!(account && IPIBoneAddress && tokenAddress),
-  });
+  } = {
+    data: 1,
+    isLoading: false,
+    refetch: () => {},
+  };
 
   const allowance = useMemo(() => {
     if (!allowanceValue || !tokenInfo) return 0;
+    console.log(tokenInfo);
 
-    return formatUnits(allowanceValue, tokenInfo?.decimals);
+    return allowanceValue;
   }, [allowanceValue, tokenInfo]);
 
   const shouldApprove = useMemo(() => {
@@ -54,43 +42,20 @@ export function useApprove(
     );
   }, [tokenAddress, allowance, tokenAmount, isEth]);
 
-  const { data, isLoading, error, isError, isSuccess, write } = useTxWrite({
-    address: tokenAddress!,
-    abi: isUSDT ? (IUSDTABI as any) : erc20ABI,
-    functionName: "approve",
-    successTip: "Approve successfully",
-  });
+  const writeAction = async () => {};
 
-  const writeAction = () => {
-    if (!IPIBoneAddress || !tokenAddress || !tokenInfo) return;
-
-    let amountVal = String(10 ** tokenInfo.decimals);
-    if (isUSDT) {
-      amountVal = allowance === 0 ? amountVal : "0";
-    }
-
-    const amount = parseUnits(amountVal, tokenInfo.decimals);
-
-    write({
-      args: [IPIBoneAddress, amount!],
-    });
-  };
+  const wrapRes = useTxStatus(writeAction);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       getAllowance();
     }
-  }, [isSuccess, getAllowance]);
+  }, [wrapRes.isSuccess, getAllowance]);
 
   return {
     allowance,
     isAllowanceLoading,
     shouldApprove,
-    data,
-    error,
-    isError,
-    isLoading,
-    isSuccess,
-    write: writeAction,
+    ...wrapRes,
   };
 }

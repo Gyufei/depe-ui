@@ -9,10 +9,14 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import useDepeProgram from "../use-depe-program";
+import { IPool } from "@/lib/types/pool";
+import { IToken } from "@/lib/types/token";
 
-export function usePoolDeposit() {
-  // poolAddr: IPool["poolAddr"] | null,
-  // baseToken: IToken | null,
+export function usePoolDeposit(
+  poolAddr: IPool["poolAddr"] | null,
+  baseToken: IToken | null,
+) {
+  console.log(poolAddr, baseToken);
   const { owner, GlobalVars } = useTempMock();
   const { program, systemProgram } = useDepeProgram();
 
@@ -80,5 +84,5 @@ export function usePoolDeposit() {
     }
   }, [wrapRes.isSuccess, refetchPoolAsset]);
 
-  return;
+  return wrapRes;
 }

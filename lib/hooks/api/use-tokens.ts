@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useClusterConfig } from "../common/use-cluster-config";
 
 export function useTokens() {
-  const { chainConfig } = useClusterConfig();
+  const { clusterConfig } = useClusterConfig();
   const { tokenEndPoint } = useEndPoint();
 
   async function tFetcher() {
@@ -21,14 +21,14 @@ export function useTokens() {
   }>(tokenEndPoint, tFetcher);
 
   const marginTokens = useMemo(() => {
-    const mTs = chainConfig?.marginTokens || [];
+    const mTs = clusterConfig?.marginTokens || [];
     return data?.tokens.filter((t) => mTs.includes(t.address));
-  }, [chainConfig, data?.tokens]);
+  }, [clusterConfig, data?.tokens]);
 
   const notMarginTokens = useMemo(() => {
-    const mTs = chainConfig?.marginTokens || [];
+    const mTs = clusterConfig?.marginTokens || [];
     return data?.tokens.filter((t) => !mTs.includes(t.address));
-  }, [chainConfig, data?.tokens]);
+  }, [clusterConfig, data?.tokens]);
 
   return {
     data: data?.tokens,

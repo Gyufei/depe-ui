@@ -1,13 +1,12 @@
 import { PoolDoc } from "../../gql-document/pool";
 import { useGqlRequest } from "./use-graphql-request";
 import { IPool } from "../../types/pool";
-import { Address } from "viem";
 
 export function usePool({
   poolAddr,
   poolId,
 }: {
-  poolAddr?: Address;
+  poolAddr?: string;
   poolId?: string;
 }) {
   const poolRes = useGqlRequest(

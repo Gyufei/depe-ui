@@ -1,5 +1,3 @@
-import { Address } from "viem";
-
 export enum EPoolStatus {
   genesis,
   running,
@@ -10,7 +8,7 @@ export enum EPoolStatus {
 export interface IPool {
   poolId: string;
   poolStatus: EPoolStatus;
-  poolAddr: Address;
+  poolAddr: string;
 
   durationDays: string;
   maxleverage: string;
@@ -18,9 +16,9 @@ export interface IPool {
   tradingFeeRate: string;
   fundingFeeRate: string;
 
-  baseToken: Address;
-  quoteToken: Address;
-  dpToken: Address;
-  creator: Address;
+  baseToken: string;
+  quoteToken: string;
+  dpToken: string;
+  creator: string;
   poolCreateTimes: string;
 }

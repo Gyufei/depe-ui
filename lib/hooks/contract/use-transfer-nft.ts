@@ -1,50 +1,23 @@
 import { useEffect } from "react";
-import { Address } from "viem";
-import { useAccount } from "wagmi";
-
 import { IPosition } from "../../types/position";
-import { useClusterConfig } from "../common/use-cluster-config";
-import { DepePositionManagerABI } from "../../abi/DepePositionManager";
-import { useTxWrite } from "./use-tx-write";
 import { usePositions } from "../api/use-positions";
+import useTxStatus from "./use-tx-status";
 
 export function useTransferNFT(position: IPosition) {
-  const { chainConfig } = useClusterConfig();
-  const { address: account } = useAccount();
-
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
-
-  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "transferFrom",
-  });
-
-  const writeAction = (to: Address) => {
+  const writeAction = async (to: string) => {
     if (!position?.isNFT || !to) return;
 
-    const nftTokenId = position.tokenId;
-    const TxArgs = [account, to, nftTokenId];
-
-    write({
-      args: TxArgs as any,
-    });
+    console.log("transfer nft");
   };
 
   const { mutate: refetchPositions } = usePositions();
+  const wrapRes = useTxStatus(writeAction);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (wrapRes.isSuccess) {
       refetchPositions();
     }
-  }, [isSuccess, refetchPositions]);
+  }, [wrapRes.isSuccess, refetchPositions]);
 
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }

@@ -1,35 +1,11 @@
 import { IPosition } from "../../types/position";
-import { useClusterConfig } from "../common/use-cluster-config";
-import { DepePositionManagerABI } from "../../abi/DepePositionManager";
-import { useTxWrite } from "./use-tx-write";
+import useTxStatus from "./use-tx-status";
 
 export function useMintPositionNft(position: IPosition) {
-  const { chainConfig } = useClusterConfig();
+  console.log(position);
+  const writeAction = async () => {};
 
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
+  const wrapRes = useTxStatus(writeAction);
 
-  const { data, isLoading, isSuccess, isError, error, write } = useTxWrite({
-    address: PositionManagerAddress,
-    abi: DepePositionManagerABI,
-    functionName: "mintPosition",
-  });
-
-  const writeAction = () => {
-    if (!position?.positionAddr) return;
-
-    const TxArgs = [position.positionAddr];
-
-    write({
-      args: TxArgs as any,
-    });
-  };
-
-  return {
-    data,
-    error,
-    isLoading,
-    isSuccess,
-    isError,
-    write: writeAction,
-  };
+  return wrapRes;
 }

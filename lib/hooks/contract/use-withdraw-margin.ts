@@ -6,13 +6,13 @@ import useDepeProgram from "../use-depe-program";
 import BN from "bn.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-export function useWithdrawMargin() {
-  // poolAddr: Address, positionAddr: Address
+export function useWithdrawMargin(poolAddr: string, positionAddr: string) {
+  console.log(poolAddr, positionAddr);
   const { owner, GlobalVars } = useTempMock();
   const { program } = useDepeProgram();
 
   const writeAction = async (amount: bigint) => {
-    // if (!poolAddr || !positionAddr) return;
+    if (!poolAddr || !positionAddr) return;
 
     await program.methods
       .decreaseMargin(new BN(Number(amount)))

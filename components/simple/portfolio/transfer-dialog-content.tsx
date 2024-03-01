@@ -6,7 +6,6 @@ import { Textarea } from "../../ui/textarea";
 import { IPosition } from "@/lib/types/position";
 import { useMintPositionNft } from "@/lib/hooks/contract/use-mint-position-nft";
 import { useTransferNFT } from "@/lib/hooks/contract/use-transfer-nft";
-import { isAddress } from "viem";
 
 function EmptyNFT() {
   return (
@@ -37,7 +36,7 @@ export default function TransferDialogContent({
   const [isNFT, setIsNFT] = useState<boolean>(false);
 
   const [sendAddress, setSendAddress] = useState<string>("");
-  const isAddr = isAddress(sendAddress);
+  const isAddr = true;
 
   const {
     write: mintAction,

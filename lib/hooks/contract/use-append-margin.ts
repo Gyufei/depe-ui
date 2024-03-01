@@ -5,17 +5,20 @@ import useDepeProgram from "../use-depe-program";
 import BN from "bn.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import useTxStatus from "./use-tx-status";
+import { IToken } from "@/lib/types/token";
 
-export function useAppendMargin() {
-  // poolAddr: Address,
-  // positionAddr: Address,
-  // baseToken: IToken | null,
+export function useAppendMargin(
+  poolAddr: string,
+  positionAddr: string,
+  baseToken: IToken | null,
+) {
+  console.log(poolAddr, positionAddr, baseToken);
 
   const { owner, GlobalVars } = useTempMock();
   const { program } = useDepeProgram();
 
-  const writeAction = async (amount: bigint) => {
-    // if (!poolAddr || !positionAddr || !amount) return;
+  const writeAction = async (amount: number) => {
+    if (!poolAddr || !positionAddr || !amount) return;
 
     await program.methods
       .increaseMargin(new BN(Number(amount)))

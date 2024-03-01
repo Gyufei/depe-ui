@@ -83,7 +83,7 @@ export default function Pools() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 grid-rows-2 gap-[55px]">
+      <div className="grid grid-cols-1 gap-[55px] md:grid-cols-2 md:grid-rows-2">
         {filteredPools.length !== 0 &&
           filteredPools.map((pool) => (
             <PoolPanel

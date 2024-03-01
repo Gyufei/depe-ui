@@ -20,7 +20,10 @@ export function ListContainer({
   return (
     <div
       data-state={isActive ? "active" : "inactive"}
-      className={cn("c-active-border rounded-xl border-2 p-2", className)}
+      className={cn(
+        "c-active-border rounded-xl border-0 p-0 md:border-2 md:p-2",
+        className,
+      )}
     >
       {isLoading ? (
         <Skeleton className="mb-1 h-5 w-[72px]" />

@@ -1,29 +1,20 @@
-import { useContractRead } from "wagmi";
 import { IPool } from "../../types/pool";
-import { useClusterConfig } from "../common/use-cluster-config";
-import { formatUnits } from "viem";
 import { useMemo } from "react";
 import { useTokensInfo } from "../api/use-token-info";
 import { formatNum } from "../../utils/number";
-import { DepePoolABI } from "../../abi/DepePool";
 
 export function usePoolRemainingTokenAmount(pool: IPool | null) {
-  const { chainConfig } = useClusterConfig();
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
-
   const [baseToken] = useTokensInfo([pool?.baseToken || null]);
 
-  const remainTokenRes = useContractRead({
-    address: pool?.poolAddr,
-    abi: DepePoolABI,
-    functionName: "getRemainingTokenAmount",
-    args: [PositionManagerAddress || "0x"],
-    enabled: !!(pool && pool.poolAddr && PositionManagerAddress),
-  });
+  const remainTokenRes = {
+    data: 1,
+  };
 
   const dataValue = useMemo(() => {
     if (!remainTokenRes.data || !pool || !baseToken) return null;
-    const unitVal = formatUnits(remainTokenRes.data, baseToken.decimals);
+    // const unitVal = formatUnits(remainTokenRes.data, baseToken.decimals);
+    const unitVal = remainTokenRes.data;
+    console.log(baseToken.decimals);
 
     return unitVal;
   }, [remainTokenRes.data, baseToken, pool]);

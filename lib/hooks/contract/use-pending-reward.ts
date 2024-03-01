@@ -1,41 +1,25 @@
-import { useAccount, useContractRead } from "wagmi";
 import { IPool } from "../../types/pool";
-import { useClusterConfig } from "../common/use-cluster-config";
-import { formatUnits } from "viem";
 import { useMemo } from "react";
 import { formatNum } from "../../utils/number";
-import { DepePoolABI } from "../../abi/DepePool";
 import { useTokensInfo } from "../api/use-token-info";
 
 export function usePendingReward(pool: IPool | null) {
-  const { address: account } = useAccount();
-
-  const { chainConfig } = useClusterConfig();
-  const PositionManagerAddress = chainConfig?.contract?.DepePositionManager;
-
   const [baseToken] = useTokensInfo([pool?.baseToken || null]);
 
-  const rewardRes = useContractRead({
-    address: pool?.poolAddr,
-    abi: DepePoolABI,
-    functionName: "pendingRewards",
-    args: [account!, PositionManagerAddress!],
-    enabled: !!(pool && pool.poolAddr && PositionManagerAddress && account),
-  });
+  const rewardRes = {
+    isLoading: false,
+    data: "1",
+  };
 
   const dataValue = useMemo(() => {
-    if (
-      !rewardRes.data ||
-      !pool ||
-      !account ||
-      !baseToken ||
-      rewardRes.isLoading
-    )
+    if (!rewardRes.data || !pool || !baseToken || rewardRes.isLoading)
       return null;
-    const unitVal = formatUnits(rewardRes.data[0], baseToken.decimals);
+    // const unitVal = formatUnits(rewardRes.data[0], baseToken.decimals);
+    const unitVal = rewardRes.data[0];
+    console.log(baseToken.decimals);
 
     return unitVal;
-  }, [rewardRes, baseToken, pool, account]);
+  }, [rewardRes, baseToken, pool]);
 
   const dataFormatted = useMemo(() => {
     if (!dataValue) return null;

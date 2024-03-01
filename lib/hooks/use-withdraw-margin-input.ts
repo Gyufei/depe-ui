@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
-import { parseUnits } from "viem";
 import { useWithdrawMargin } from "./contract/use-withdraw-margin";
 import { usePositionFormat } from "./use-position-format";
 
@@ -23,7 +22,8 @@ export function useAppendMarginInput(pool: IPool, position: IPosition) {
   };
 
   const handleBtnClick = () => {
-    const amount = parseUnits(inputVal, baseToken?.decimals || 18);
+    const amount = inputVal;
+    console.log(baseToken?.decimals || 18);
     write(amount);
   };
 

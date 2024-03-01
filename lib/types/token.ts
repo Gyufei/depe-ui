@@ -1,7 +1,5 @@
-import { Address } from "viem";
-
 export interface IToken {
-  address: Address;
+  address: string;
   name: string;
   symbol: string;
   decimals: number;

@@ -5,9 +5,10 @@ import useDepeProgram from "../use-depe-program";
 import { useTempMock } from "./temp-mock";
 import BN from "bn.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { IPool } from "@/lib/types/pool";
 
-export function usePoolWithdraw() {
-  // poolAddr: IPool["poolAddr"] | null
+export function usePoolWithdraw(poolAddr: IPool["poolAddr"] | null) {
+  console.log(poolAddr);
 
   const { owner, GlobalVars } = useTempMock();
   const { program } = useDepeProgram();

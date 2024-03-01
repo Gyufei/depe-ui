@@ -31,7 +31,7 @@ export function PoolRow({ isLast, pool }: { isLast: boolean; pool: IPool }) {
   const { baseToken, quoteToken, leverage } = usePoolFormat(pool);
 
   return (
-    <div className="flex pl-2 pt-[10px] pr-6">
+    <div className="flex pl-2 pt-[10px] pr-2 md:pr-6">
       <TokenPairImage
         img1={quoteToken?.logoURI || ""}
         img2={baseToken?.logoURI || ""}
@@ -73,7 +73,7 @@ export function PoolRow({ isLast, pool }: { isLast: boolean; pool: IPool }) {
             <DialogTrigger asChild>
               <RowOperateDot isActive={dialogOpen} />
             </DialogTrigger>
-            <DialogContent className="w-[400px]">
+            <DialogContent className="w-[calc(100vw-52px)] md:w-[400px]">
               <DialogGimp />
               <DialogTitle>Farming</DialogTitle>
               <PoolDialogContent

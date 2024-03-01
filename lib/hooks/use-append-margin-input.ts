@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { IPool } from "../types/pool";
 import { IPosition } from "../types/position";
 import { useTokenBalance } from "./contract/use-token-balance";
-import { parseUnits } from "viem";
 import { useAppendMargin } from "./contract/use-append-margin";
 import { useTokensInfo } from "./api/use-token-info";
 
@@ -23,7 +22,8 @@ export function useAppendMarginInput(pool: IPool, position: IPosition) {
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
 
   const handleBtnClick = () => {
-    const amount = parseUnits(inputVal, baseToken?.decimals || 18);
+    // const amount = parseUnits(inputVal, baseToken?.decimals || 18);
+    const amount = inputVal;
     write(amount);
   };
 
