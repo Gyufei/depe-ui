@@ -31,6 +31,7 @@ export function usePoolAsset() {
       },
     },
     isLoading: false,
+    mutate: () => {},
   };
 
   const data = useMemo<Array<IPoolAsset>>(() => {
