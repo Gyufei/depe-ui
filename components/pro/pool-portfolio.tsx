@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import DialogGimp from "../share/dialog-gimp";
 import ProPoolDialogContent from "./pro-pool-dialog-content";
+import { IPool } from "@/lib/types/pool";
 
 export default function PoolPortfolio() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -84,7 +85,13 @@ export default function PoolPortfolio() {
               <div className="c-font-title-55 text-base leading-[30px] text-[#3d3d3d] md:text-xl">
                 Farming
               </div>
-              {!isDesktop && <OperatorIcon onClick={handleGoFarming} />}
+              <PoolDialogBtn
+                pool={pool}
+                asset={{
+                  data: assetData,
+                  isLoading: isAssetLoading,
+                }}
+              />
             </div>
 
             <div className="mt-4 flex items-center justify-between">
@@ -343,7 +350,19 @@ function OperatorIcon({ onClick }: { onClick: () => void }) {
   );
 }
 
-function PoolDialogBtn() {
+function PoolDialogBtn({
+  pool,
+  asset,
+}: {
+  pool: IPool;
+  asset: {
+    data: {
+      value: string | null;
+      formatted: string | null;
+    };
+    isLoading: boolean;
+  };
+}) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -354,6 +373,7 @@ function PoolDialogBtn() {
       <DialogContent className="w-[calc(100vw-52px)] md:w-[400px]">
         <DialogGimp />
         <DialogTitle>Farming</DialogTitle>
+        <ProPoolDialogContent pool={pool} asset={asset} />
       </DialogContent>
     </Dialog>
   );
