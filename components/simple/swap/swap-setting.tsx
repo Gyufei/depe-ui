@@ -43,7 +43,7 @@ export default function SwapSetting() {
       </DialogTrigger>
       <DialogContent className="w-[320px] md:w-[320px]" showClose={false}>
         <div>
-          <TitleText>UniswapX</TitleText>
+          <TitleText>Depe Pro</TitleText>
           <div className="mt-1 flex items-center justify-between border-b border-lightgray pb-4">
             <div className="text-xs leading-[17px] text-gray">
               When available, aggregates
@@ -62,7 +62,7 @@ export default function SwapSetting() {
         </div>
 
         <div className="flex items-center justify-between border-b border-lightgray pb-4">
-          <TitleText>Local routing</TitleText>
+          <TitleText>Routing Optimization</TitleText>
           <Switch checked={localRouting} onCheckedChange={setLocalRouting} />
         </div>
 

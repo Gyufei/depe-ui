@@ -117,6 +117,7 @@ function BalanceDisplay() {
         setBalanceData(null);
       } else {
         const res = await connection.getBalance(pb);
+        console.log(res);
         setBalanceData(res);
         setIsLoading(false);
       }
