@@ -17,9 +17,18 @@ import OperatorInIcon from "/public/icons/operator-in.svg";
 import OperatorInHoverIcon from "/public/icons/operator-in-hover.svg";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import DialogGimp from "../share/dialog-gimp";
+import ProPoolDialogContent from "./pro-pool-dialog-content";
+
 export default function PoolPortfolio() {
-  const poolId = useAtomValue(PDPoolIdAtom);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const poolId = useAtomValue(PDPoolIdAtom);
 
   const { data: pool, isLoading: isPoolLoading } = usePool({
     poolId,
@@ -54,77 +63,91 @@ export default function PoolPortfolio() {
   const { baseToken, marginAmount, pnlAmount, pnlPercent, debtAmount } =
     usePositionFormat(tradePositions, pool);
 
-  const handleGoFarming = () => {};
+  const [showPoolTrade, setShowPoolTrade] = useState(false);
 
-  // const handleGoTrade = () => {};
+  const handleGoFarming = () => {
+    setShowPoolTrade(true);
+  };
 
   return (
     <div
       data-state="active"
       className="c-shadow-panel h-fit w-[calc(100vw-52px)]  md:w-[574px]"
     >
-      <div className="c-font-title-65 text-lg leading-6 text-[#3d3d3d] md:text-xl">
-        Portfolio
-      </div>
-      <div className="mt-4 flex flex-col border-b border-[#eee] pb-6">
-        <div className="flex justify-between">
-          <div className="c-font-title-55 text-base leading-[30px] text-[#3d3d3d] md:text-xl">
-            Farming
+      {!showPoolTrade ? (
+        <>
+          <div className="c-font-title-65 text-lg leading-6 text-[#3d3d3d] md:text-xl">
+            Portfolio
           </div>
-          {!isDesktop && <OperatorIcon onClick={handleGoFarming} />}
-        </div>
+          <div className="mt-4 flex flex-col border-b border-[#eee] pb-6">
+            <div className="flex justify-between">
+              <div className="c-font-title-55 text-base leading-[30px] text-[#3d3d3d] md:text-xl">
+                Farming
+              </div>
+              {!isDesktop && <OperatorIcon onClick={handleGoFarming} />}
+            </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center gap-x-10">
-            <Rewards
-              isLoading={isPoolLoading || pendingRewardLoading}
-              reward={pendingReward.formatted || ""}
-            ></Rewards>
-            <APYDisplay
-              isLoading={!poolAPY || isPoolAPYLoading}
-              apy={poolAPY}
-            />
-            <CurrentProviding
-              isLoading={isPoolLoading || isAssetLoading}
-              currProviding={assetData.value || ""}
-              baseToken={baseToken}
-            />
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex items-center gap-x-10">
+                <Rewards
+                  isLoading={isPoolLoading || pendingRewardLoading}
+                  reward={pendingReward.formatted || ""}
+                ></Rewards>
+                <APYDisplay
+                  isLoading={!poolAPY || isPoolAPYLoading}
+                  apy={poolAPY}
+                />
+                <CurrentProviding
+                  isLoading={isPoolLoading || isAssetLoading}
+                  currProviding={assetData.value || ""}
+                  baseToken={baseToken}
+                />
+              </div>
+              {isDesktop && <OperatorIcon onClick={handleGoFarming} />}
+            </div>
           </div>
-          {isDesktop && <OperatorIcon onClick={handleGoFarming} />}
-        </div>
-      </div>
 
-      <div className="mt-6">
-        <div className="c-font-title-55 text-xl leading-[30px] text-[#3d3d3d]">
-          Trading
-        </div>
+          <div className="mt-6">
+            <div className="c-font-title-55 text-xl leading-[30px] text-[#3d3d3d]">
+              Trading
+            </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <PL
-            isLoading={isPoolLoading || isPositionsLoading}
-            amount={pnlAmount.formatted || ""}
-            percent={pnlPercent.formatted || ""}
-          />
+            <div className="mt-4 flex items-center justify-between">
+              <PL
+                isLoading={isPoolLoading || isPositionsLoading}
+                amount={pnlAmount.formatted || ""}
+                percent={pnlPercent.formatted || ""}
+              />
 
-          <DebtDisplay
-            isLoading={isPoolLoading || isPositionsLoading}
-            debt={debtAmount.formatted || ""}
-          />
-        </div>
+              <DebtDisplay
+                isLoading={isPoolLoading || isPositionsLoading}
+                debt={debtAmount.formatted || ""}
+              />
+            </div>
 
-        <div className="mt-4 flex items-center justify-between md:gap-x-[140px]">
-          <NotionalValue
-            isLoading={isPoolLoading || isPositionsLoading}
-            debt={debtAmount.formatted || ""}
-          />
+            <div className="mt-4 flex items-center justify-between md:gap-x-[140px]">
+              <NotionalValue
+                isLoading={isPoolLoading || isPositionsLoading}
+                debt={debtAmount.formatted || ""}
+              />
 
-          <MarginDisplay
-            isLoading={isPoolLoading || isPositionsLoading}
-            margin={marginAmount.formatted || ""}
-            baseToken={baseToken}
-          />
-        </div>
-      </div>
+              <MarginDisplay
+                isLoading={isPoolLoading || isPositionsLoading}
+                margin={marginAmount.formatted || ""}
+                baseToken={baseToken}
+              />
+            </div>
+          </div>
+        </>
+      ) : (
+        <ProPoolDialogContent
+          pool={pool}
+          asset={{
+            data: assetData,
+            isLoading: isAssetLoading,
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -317,6 +340,22 @@ function OperatorIcon({ onClick }: { onClick: () => void }) {
         <Image src={OperatorInIcon} width={32} height={32} alt="operator" />
       )}
     </div>
+  );
+}
+
+function PoolDialogBtn() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <Dialog open={dialogOpen} onOpenChange={(isOpen) => setDialogOpen(isOpen)}>
+      <DialogTrigger asChild>
+        <OperatorIcon onClick={() => setDialogOpen(true)} />
+      </DialogTrigger>
+      <DialogContent className="w-[calc(100vw-52px)] md:w-[400px]">
+        <DialogGimp />
+        <DialogTitle>Farming</DialogTitle>
+      </DialogContent>
+    </Dialog>
   );
 }
 

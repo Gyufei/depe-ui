@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils/common";
 import { ReactNode, useState } from "react";
-import WithWalletBtn from "../../share/with-wallet-btn";
-import SwitchTab from "../../share/switch-tab";
-import InputPanel from "../../share/input-panel";
+import WithWalletBtn from "../share/with-wallet-btn";
+import SwitchTab from "../share/switch-tab";
+import InputPanel from "../share/input-panel";
 import { IPool } from "@/lib/types/pool";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import BalanceDisplay from "@/components/share/balance-display";
@@ -12,7 +12,7 @@ import WithApproveBtn from "@/components/share/with-approve-btn";
 import { usePoolDepositInput } from "@/lib/hooks/use-pool-deposit-input";
 import { usePoolWithdrawInput } from "@/lib/hooks/use-pool-withdraw-input";
 
-export default function PoolDialogContent({
+export default function ProPoolDialogContent({
   pool,
   asset,
 }: {
