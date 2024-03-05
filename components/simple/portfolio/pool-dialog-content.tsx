@@ -134,7 +134,7 @@ export default function PoolDialogContent({
           className="flex-1"
           token={baseToken}
           isLoading={dBtnLoading}
-          balanceAmount={balanceData!.value || "0"}
+          balanceAmount={balanceData?.value || "0"}
           willUseAmount={depositVal || "0"}
           disabled={dBtnDisabled}
           onClick={handleDBtnClick}

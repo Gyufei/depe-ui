@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   ColumnDef,
@@ -23,10 +24,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
+import Empty from "../share/empty";
+import { EPositionStatus } from "@/lib/types/position";
 
 export default function PoolPositions() {
   return (
-    <div className="relative">
+    <div className="relative md:w-full">
       <div className="md:absolute md:top-[100px] md:-left-[116px] md:-rotate-90">
         <PanelLeaderButton className="bg-pink" defaultActive={true}>
           Positions
@@ -44,38 +47,38 @@ export default function PoolPositions() {
 }
 
 const data: IPositionRow[] = [
-  // {
-  //   tokenName: "m5gr84i9",
-  //   tokenLogo: "usdt",
-  //   positionStatus: "success",
-  //   hash: "4442321131",
-  //   leverage: 5,
-  //   size: 1,
-  //   margin: "usdt",
-  //   liqPrice: 123,
-  //   pl: 15,
-  //   plPercent: 0.2,
-  //   isNft: true,
-  // },
-  // {
-  //   tokenName: "m5gr84i9",
-  //   tokenLogo: "sdf",
-  //   positionStatus: "success",
-  //   hash: "4442321131",
-  //   leverage: 10,
-  //   size: 1,
-  //   margin: "usdt",
-  //   liqPrice: 123,
-  //   pl: 15,
-  //   plPercent: 0.2,
-  //   isNft: false,
-  // },
+  {
+    tokenName: "m5gr84i9",
+    tokenLogo: "usdt",
+    positionStatus: 1,
+    hash: "4442321131",
+    leverage: 5,
+    size: 1,
+    margin: "usdt",
+    liqPrice: 123,
+    pl: 15,
+    plPercent: 0.2,
+    isNft: true,
+  },
+  {
+    tokenName: "m5gr84i9",
+    tokenLogo: "sdf",
+    positionStatus: 3,
+    hash: "4442321131",
+    leverage: 10,
+    size: 1,
+    margin: "usdt",
+    liqPrice: 123,
+    pl: 15,
+    plPercent: 0.2,
+    isNft: false,
+  },
 ];
 
 export type IPositionRow = {
   tokenName: string;
   tokenLogo: string;
-  positionStatus: string;
+  positionStatus: EPositionStatus;
   hash: string;
   leverage: number;
   size: number;
@@ -99,7 +102,24 @@ export const columns: ColumnDef<IPositionRow>[] = [
   {
     accessorKey: "tokenName",
     header: () => <div className="text-sm leading-5 text-lightgray">Token</div>,
-    cell: ({ row }) => <div>{row.getValue("tokenName")}</div>,
+    cell: ({ row }) => {
+      console.log(row.getValue("positionStatus"), '111111');
+      return (
+        <div className="flex items-center">
+          <Image
+            src={row.getValue("tokenLogo")}
+            width={24}
+            height={24}
+            alt="token"
+            className="c-shadow-image"
+          />
+          <div className="flex flex-col">
+            <span>{row.getValue("tokenName")}</span>
+            <PositionStatusTag status={row.getValue("positionStatus")} />
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "hash",
@@ -260,12 +280,26 @@ function PositionTable() {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No Results
+                <Empty />
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
+    </div>
+  );
+}
+
+function PositionStatusTag({ status }: { status: EPositionStatus }) {
+  const statusTexts = ["Genesis", "Open", "Liquidating", "Closed"];
+  const statusText = statusTexts[status];
+
+  return (
+    <div
+      data-state={status}
+      className="rounded px-1 data-[state=3]:bg-[#f8f8f8] data-[state=1]:bg-green data-[state=2]:bg-red"
+    >
+      {statusText}
     </div>
   );
 }

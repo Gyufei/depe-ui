@@ -33,7 +33,7 @@ export default function PoolItem({ params }: { params: any }) {
       </div>
       <div
         data-active={isPositionsActive ? true : false}
-        className="mt-[55px] data-[active=true]:block data-[active=false]:hidden md:data-[active=false]:flex"
+        className="mt-[55px] data-[active=true]:block data-[active=false]:hidden md:data-[active=true]:flex md:data-[active=false]:flex md:w-full"
       >
         <PoolPositions />
       </div>

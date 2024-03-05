@@ -17,15 +17,16 @@ import OperatorInIcon from "/public/icons/operator-in.svg";
 import OperatorInHoverIcon from "/public/icons/operator-in-hover.svg";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import DialogGimp from "../share/dialog-gimp";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import ProPoolDialogContent from "./pro-pool-dialog-content";
 import { IPool } from "@/lib/types/pool";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function PoolPortfolio() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -66,8 +67,12 @@ export default function PoolPortfolio() {
 
   const [showPoolTrade, setShowPoolTrade] = useState(false);
 
-  const handleGoFarming = () => {
+  const handleGoTrade = () => {
     setShowPoolTrade(true);
+  };
+
+  const handleCloseTrade = () => {
+    setShowPoolTrade(false);
   };
 
   return (
@@ -85,13 +90,15 @@ export default function PoolPortfolio() {
               <div className="c-font-title-55 text-base leading-[30px] text-[#3d3d3d] md:text-xl">
                 Farming
               </div>
-              <PoolDialogBtn
-                pool={pool}
-                asset={{
-                  data: assetData,
-                  isLoading: isAssetLoading,
-                }}
-              />
+              {!isDesktop && (
+                <PoolDialogBtn
+                  pool={pool}
+                  asset={{
+                    data: assetData,
+                    isLoading: isAssetLoading,
+                  }}
+                />
+              )}
             </div>
 
             <div className="mt-4 flex items-center justify-between">
@@ -110,7 +117,18 @@ export default function PoolPortfolio() {
                   baseToken={baseToken}
                 />
               </div>
-              {isDesktop && <OperatorIcon onClick={handleGoFarming} />}
+              {isDesktop && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <OperatorIcon onClick={handleGoTrade} />
+                    </TooltipTrigger>
+                    <TooltipContent className="border-0 bg-white">
+                      <p className="text-base text-black">Portfolio</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </div>
           </div>
 
@@ -153,6 +171,7 @@ export default function PoolPortfolio() {
             data: assetData,
             isLoading: isAssetLoading,
           }}
+          goBack={handleCloseTrade}
         />
       )}
     </div>
@@ -371,9 +390,11 @@ function PoolDialogBtn({
         <OperatorIcon onClick={() => setDialogOpen(true)} />
       </DialogTrigger>
       <DialogContent className="w-[calc(100vw-52px)] md:w-[400px]">
-        <DialogGimp />
-        <DialogTitle>Farming</DialogTitle>
-        <ProPoolDialogContent pool={pool} asset={asset} />
+        <ProPoolDialogContent
+          pool={pool}
+          asset={asset}
+          goBack={() => setDialogOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );

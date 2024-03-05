@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils/common";
 import { ReactNode, useState } from "react";
 import WithWalletBtn from "../share/with-wallet-btn";
@@ -15,6 +16,7 @@ import { usePoolWithdrawInput } from "@/lib/hooks/use-pool-withdraw-input";
 export default function ProPoolDialogContent({
   pool,
   asset,
+  goBack,
 }: {
   pool: IPool;
   asset: {
@@ -24,6 +26,7 @@ export default function ProPoolDialogContent({
     };
     isLoading: boolean;
   };
+  goBack: () => void;
 }) {
   const tabs = ["Deposit", "Withdraw"];
   const [activeTab, setActiveTab] = useState("Deposit");
@@ -53,39 +56,41 @@ export default function ProPoolDialogContent({
 
   return (
     <div className="flex flex-col items-stretch gap-y-6">
-      <div>
-        <RowContainer>
-          <FieldContainer>
-            <TitleText>Pool</TitleText>
-            <FieldText>#{pool.poolId}</FieldText>
-          </FieldContainer>
-          <FieldContainer className="items-end">
-            <TitleText>Leverage</TitleText>
-            <FieldText>1~{leverage}×</FieldText>
-          </FieldContainer>
-        </RowContainer>
-
-        <RowContainer>
-          <FieldContainer>
-            <TitleText>Current Farming</TitleText>
-            {asset.isLoading ? (
-              <Skeleton className="h-5 w-[100px]" />
-            ) : (
-              <FieldText>
-                {asset.data.formatted} {baseToken?.symbol}
-              </FieldText>
-            )}
-          </FieldContainer>
-          <FieldContainer className="items-end">
-            <TitleText>Profit</TitleText>
-            {pendingRewardLoading ? (
-              <Skeleton className="h-5 w-[100px]" />
-            ) : (
-              <FieldText>+{pendingReward.formatted} USDT</FieldText>
-            )}
-          </FieldContainer>
-        </RowContainer>
+      <div
+        className="relative -left-10 flex w-fit cursor-pointer space-x-3 rounded-xl border-2 border-black bg-white px-4"
+        onClick={() => goBack()}
+      >
+        <Image
+          src="/icons/arrow-right.svg"
+          width={24}
+          height={24}
+          alt="arrow"
+          className="rotate-180"
+        />
+        <div className="font-title text-xl font-semibold leading-6 text-[#3d3d3d]">
+          Portfolio on #{pool.poolId}
+        </div>
       </div>
+      <RowContainer>
+        <FieldContainer>
+          <TitleText>Net Value</TitleText>
+          {asset.isLoading ? (
+            <Skeleton className="h-5 w-[100px]" />
+          ) : (
+            <FieldText>
+              {asset.data.formatted} {baseToken?.symbol}
+            </FieldText>
+          )}
+        </FieldContainer>
+        <FieldContainer className="items-end">
+          <TitleText>Rewards</TitleText>
+          {pendingRewardLoading ? (
+            <Skeleton className="h-5 w-[100px]" />
+          ) : (
+            <FieldText>+{pendingReward.formatted} USDT</FieldText>
+          )}
+        </FieldContainer>
+      </RowContainer>
 
       <div>
         <SwitchTab
@@ -134,7 +139,7 @@ export default function ProPoolDialogContent({
           className="flex-1"
           token={baseToken}
           isLoading={dBtnLoading}
-          balanceAmount={balanceData!.value || "0"}
+          balanceAmount={balanceData?.value || "0"}
           willUseAmount={depositVal || "0"}
           disabled={dBtnDisabled}
           onClick={handleDBtnClick}
@@ -158,11 +163,7 @@ export default function ProPoolDialogContent({
 }
 
 function RowContainer({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex h-[68px] justify-between border-b border-lightgray last:border-0">
-      {children}
-    </div>
-  );
+  return <div className="flex h-[68px] justify-between">{children}</div>;
 }
 
 function FieldContainer({

@@ -83,7 +83,7 @@ function getLeverage(position: IPosition) {
 function getSize(position: IPosition, decimals: number = 6) {
   // const val = formatUnits(BigInt(position?.positionSize || 0), decimals);
   const val = position?.positionSize;
-  console.log(decimals);
+  console.info(decimals);
 
   return {
     value: val,

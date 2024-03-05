@@ -26,10 +26,12 @@ export function useTokenBalance(tokenAddress: string | null) {
 
   useEffect(() => {
     async function getTokenBalance() {
+      console.log("----", tokenAddress, account);
       if (!tokenAddress || !account) return;
 
       setIsLoading(true);
 
+      console.log(",,,,", isSol);
       try {
         if (isSol) {
           const res = await connection.getBalance(account);
@@ -40,11 +42,13 @@ export function useTokenBalance(tokenAddress: string | null) {
           return;
         }
 
-        const tokenAddr = new PublicKey(tokenAddress);
-        const token = new Token(connection, tokenAddr, TOKEN_PROGRAM_ID, null);
-
-        const balance = await token.getAccountInfo(tokenAddr);
-        console.log(balance, "----");
+        // const tokenAddr = new PublicKey(tokenAddress);
+        // const token = new Token(connection, tokenAddr, TOKEN_PROGRAM_ID, null);
+        // const balance = await token.getAccountInfo(tokenAddr);
+        const balance = await connection.getTokenAccountsByOwner(account, {
+          programId: TOKEN_PROGRAM_ID,
+        });
+        console.log(balance, "123----");
       } catch (error) {
         console.error("error", error);
       }
