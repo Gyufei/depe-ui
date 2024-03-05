@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/table";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 import Empty from "../share/empty";
-import { EPositionStatus } from "@/lib/types/position";
 
 export default function PoolPositions() {
   return (
@@ -48,9 +47,9 @@ export default function PoolPositions() {
 
 const data: IPositionRow[] = [
   {
-    tokenName: "m5gr84i9",
-    tokenLogo: "usdt",
-    positionStatus: 1,
+    tokenName: "WIF",
+    tokenLogo: "https://cdn.depe.app",
+    positionStatus: "Closed",
     hash: "4442321131",
     leverage: 5,
     size: 1,
@@ -61,9 +60,35 @@ const data: IPositionRow[] = [
     isNft: true,
   },
   {
-    tokenName: "m5gr84i9",
-    tokenLogo: "sdf",
-    positionStatus: 3,
+    tokenName: "ZIT",
+    tokenLogo: "https://cdn.depe.app",
+    positionStatus: "Safe",
+    hash: "4442321131",
+    leverage: 10,
+    size: 1,
+    margin: "usdt",
+    liqPrice: 123,
+    pl: 15,
+    plPercent: 0.2,
+    isNft: false,
+  },
+  {
+    tokenName: "SAO",
+    tokenLogo: "https://cdn.depe.app",
+    positionStatus: "Risky",
+    hash: "4442321131",
+    leverage: 10,
+    size: 1,
+    margin: "usdt",
+    liqPrice: 123,
+    pl: 15,
+    plPercent: 0.2,
+    isNft: false,
+  },
+  {
+    tokenName: "WIF",
+    tokenLogo: "https://cdn.depe.app",
+    positionStatus: "Moderate",
     hash: "4442321131",
     leverage: 10,
     size: 1,
@@ -78,7 +103,7 @@ const data: IPositionRow[] = [
 export type IPositionRow = {
   tokenName: string;
   tokenLogo: string;
-  positionStatus: EPositionStatus;
+  positionStatus: string;
   hash: string;
   leverage: number;
   size: number;
@@ -94,7 +119,9 @@ export const columns: ColumnDef<IPositionRow>[] = [
     id: "index",
     header: () => <div className="text-sm leading-5 text-lightgray">#</div>,
     cell: ({ row }) => {
-      return row.index + 1;
+      return (
+        <div className="text-base leading-6 text-black">{row.index + 1}</div>
+      );
     },
     enableSorting: false,
     enableHiding: false,
@@ -103,19 +130,20 @@ export const columns: ColumnDef<IPositionRow>[] = [
     accessorKey: "tokenName",
     header: () => <div className="text-sm leading-5 text-lightgray">Token</div>,
     cell: ({ row }) => {
-      console.log(row.getValue("positionStatus"), '111111');
       return (
         <div className="flex items-center">
           <Image
-            src={row.getValue("tokenLogo")}
+            src={row.original.tokenLogo}
             width={24}
             height={24}
             alt="token"
-            className="c-shadow-image"
+            className="c-image-shadow"
           />
-          <div className="flex flex-col">
-            <span>{row.getValue("tokenName")}</span>
-            <PositionStatusTag status={row.getValue("positionStatus")} />
+          <div className="ml-3 flex flex-col">
+            <span className="text-base leading-6 text-black">
+              {row.getValue("tokenName")}
+            </span>
+            <PositionStatusTag status={row.original.positionStatus} />
           </div>
         </div>
       );
@@ -124,14 +152,35 @@ export const columns: ColumnDef<IPositionRow>[] = [
   {
     accessorKey: "hash",
     header: () => <div className="text-sm leading-5 text-lightgray">Hash</div>,
-    cell: ({ row }) => <div>{row.getValue("hash")}</div>,
+    cell: ({ row }) => {
+      const hash = row.getValue("hash") as string;
+      const isNft = row.original.isNft;
+      return (
+        <div className="flex items-center space-x-1 text-base text-black">
+          <div>{hash.slice(0, 5) + "..." + hash.slice(-3)}</div>
+          {isNft && (
+            <Image
+              width={16}
+              height={16}
+              src="/icons/nft-flag.svg"
+              alt="is-nft"
+            />
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "leverage",
     header: () => (
       <div className="text-sm leading-5 text-lightgray">Leverage</div>
     ),
-    cell: ({ row }) => <div>{row.getValue("leverage")}</div>,
+    cell: ({ row }) => (
+      <div className="pl-10 text-base text-black">
+        {row.getValue("leverage")}×
+      </div>
+    ),
+    size: 60,
   },
   {
     accessorKey: "size",
@@ -141,7 +190,15 @@ export const columns: ColumnDef<IPositionRow>[] = [
   {
     accessorKey: "margin",
     header: () => (
-      <div className="text-sm leading-5 text-lightgray">Margin</div>
+      <div className="flex items-center space-x-1">
+        <div className="text-sm leading-5 text-lightgray">Margin</div>
+        <Image
+          width={16}
+          height={16}
+          src="/icons/solana.svg"
+          alt="margin coin"
+        />
+      </div>
     ),
     cell: ({ row }) => <div>{row.getValue("margin")}</div>,
   },
@@ -150,7 +207,7 @@ export const columns: ColumnDef<IPositionRow>[] = [
     header: () => (
       <div className="text-sm leading-5 text-lightgray">Liq.Price</div>
     ),
-    cell: ({ row }) => <div>{row.getValue("liqPrice")}</div>,
+    cell: ({ row }) => <div>${row.getValue("liqPrice")}</div>,
   },
   {
     accessorKey: "pl",
@@ -161,14 +218,22 @@ export const columns: ColumnDef<IPositionRow>[] = [
     id: "actions",
     enableHiding: false,
     cell: () => {
-      return <MoreHorizontal className="h-4 w-4" />;
+      return <MoreHorizontal className="h-4 w-4 rotate-90 cursor-pointer" />;
     },
   },
   {
     id: "share",
     enableHiding: false,
     cell: () => {
-      return <MoreHorizontal className="h-4 w-4" />;
+      return (
+        <Image
+          src="/icons/share.svg"
+          width={16}
+          height={16}
+          alt="share"
+          className="cursor-pointer"
+        />
+      );
     },
   },
 ];
@@ -290,16 +355,22 @@ function PositionTable() {
   );
 }
 
-function PositionStatusTag({ status }: { status: EPositionStatus }) {
-  const statusTexts = ["Genesis", "Open", "Liquidating", "Closed"];
-  const statusText = statusTexts[status];
-
+function PositionStatusTag({ status }: { status: string }) {
   return (
     <div
       data-state={status}
-      className="rounded px-1 data-[state=3]:bg-[#f8f8f8] data-[state=1]:bg-green data-[state=2]:bg-red"
+      className="rounded px-1 text-xs 
+      data-[state='Closed']:bg-[#F8F8F8] 
+      data-[state='Safe']:bg-[#E9F7F1] 
+      data-[state='Risky']:bg-[#FDEFEF] 
+      data-[state='Moderate']:bg-[#FDF0EA] 
+      data-[state='Safe']:text-[#2DB079] 
+      data-[state='Risky']:text-[#F16464] 
+      data-[state='Moderate']:text-[#EF814E] 
+      data-[state='Closed']:text-[#9A96AD]
+      "
     >
-      {statusText}
+      {status}
     </div>
   );
 }

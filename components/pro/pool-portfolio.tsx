@@ -8,7 +8,7 @@ import { Skeleton } from "../ui/skeleton";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 import { usePoolParsedAsset } from "@/lib/hooks/use-pool-parsed-asset";
 import { usePositions } from "@/lib/hooks/api/use-positions";
-import { useMemo, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
 import { ProfitText } from "../share/profit-text";
 import { IToken } from "@/lib/types/token";
@@ -345,7 +345,7 @@ function MarginDisplay({
   );
 }
 
-function OperatorIcon({ onClick }: { onClick: () => void }) {
+const OperatorIcon = forwardRef(({ onClick }: { onClick: () => void }) => {
   const [isHover, setIsHover] = useState(false);
 
   return (
@@ -367,7 +367,9 @@ function OperatorIcon({ onClick }: { onClick: () => void }) {
       )}
     </div>
   );
-}
+});
+
+OperatorIcon.displayName = "OperatorIcon";
 
 function PoolDialogBtn({
   pool,
