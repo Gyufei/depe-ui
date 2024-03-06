@@ -12,7 +12,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
 
 import PanelLeaderButton from "../share/panel-leader-button";
 import {
@@ -25,6 +24,8 @@ import {
 } from "@/components/ui/table";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
 import Empty from "../share/empty";
+import PositionRowOperation from "./position-row-operation";
+import PositionRowShare from "./position-row-share";
 
 export default function PoolPositions() {
   return (
@@ -57,6 +58,7 @@ const data: IPositionRow[] = [
     liqPrice: 123,
     pl: 15,
     plPercent: 0.2,
+    plStatus: "loss",
     isNft: true,
   },
   {
@@ -70,6 +72,7 @@ const data: IPositionRow[] = [
     liqPrice: 123,
     pl: 15,
     plPercent: 0.2,
+    plStatus: "profit",
     isNft: false,
   },
   {
@@ -83,6 +86,7 @@ const data: IPositionRow[] = [
     liqPrice: 123,
     pl: 15,
     plPercent: 0.2,
+    plStatus: "profit",
     isNft: false,
   },
   {
@@ -96,6 +100,7 @@ const data: IPositionRow[] = [
     liqPrice: 123,
     pl: 15,
     plPercent: 0.2,
+    plStatus: "loss",
     isNft: false,
   },
 ];
@@ -111,6 +116,7 @@ export type IPositionRow = {
   liqPrice: number;
   pl: number;
   plPercent: number;
+  plStatus: "profit" | "loss";
   isNft: boolean;
 };
 
@@ -184,13 +190,15 @@ export const columns: ColumnDef<IPositionRow>[] = [
   },
   {
     accessorKey: "size",
-    header: () => <div className="text-sm leading-5 text-lightgray">Size</div>,
-    cell: ({ row }) => <div>{row.getValue("size")}</div>,
+    header: () => (
+      <div className="text-right text-sm leading-5 text-lightgray">Size</div>
+    ),
+    cell: ({ row }) => <div className="text-right">{row.getValue("size")}</div>,
   },
   {
     accessorKey: "margin",
     header: () => (
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center justify-end space-x-1">
         <div className="text-sm leading-5 text-lightgray">Margin</div>
         <Image
           width={16}
@@ -200,40 +208,66 @@ export const columns: ColumnDef<IPositionRow>[] = [
         />
       </div>
     ),
-    cell: ({ row }) => <div>{row.getValue("margin")}</div>,
+    cell: ({ row }) => (
+      <div className="text-right">{row.getValue("margin")}</div>
+    ),
   },
   {
     accessorKey: "liqPrice",
     header: () => (
-      <div className="text-sm leading-5 text-lightgray">Liq.Price</div>
+      <div className="text-right text-sm leading-5 text-lightgray">
+        Liq.Price
+      </div>
     ),
-    cell: ({ row }) => <div>${row.getValue("liqPrice")}</div>,
+    cell: ({ row }) => (
+      <div className="text-right">${row.getValue("liqPrice")}</div>
+    ),
   },
   {
     accessorKey: "pl",
-    header: () => <div className="text-sm leading-5 text-lightgray">P/L</div>,
-    cell: ({ row }) => <div>{row.getValue("liqPrice")}</div>,
+    header: () => (
+      <div className="text-center text-sm leading-5 text-lightgray">P/L</div>
+    ),
+    cell: ({ row }) => {
+      const pl = row.getValue("pl") as string;
+      const plPercent = row.original.plPercent;
+      const plStatus = row.original.plStatus;
+      const isUp = plStatus === "profit";
+      return (
+        <div className="flex justify-center space-x-1">
+          <Image
+            src={
+              isUp
+                ? "/icons/green-up-triangle.svg"
+                : "/icons/red-down-triangle.svg"
+            }
+            width={16}
+            height={16}
+            alt="triangle"
+          />
+          <div
+            data-state={isUp}
+            className="data-[state=true]:text-green data-[state=false]:text-red"
+          >
+            <div className="text-base leading-6">${pl}</div>
+            <div className="text-sm leading-5">{plPercent}%</div>
+          </div>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: () => {
-      return <MoreHorizontal className="h-4 w-4 rotate-90 cursor-pointer" />;
+      return <PositionRowOperation pool={null} position={null} />;
     },
   },
   {
     id: "share",
     enableHiding: false,
     cell: () => {
-      return (
-        <Image
-          src="/icons/share.svg"
-          width={16}
-          height={16}
-          alt="share"
-          className="cursor-pointer"
-        />
-      );
+      return <PositionRowShare pool={null} position={null} />;
     },
   },
 ];
