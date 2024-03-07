@@ -10,7 +10,7 @@ export default function ProSideMenu({ className }: { className?: string }) {
   const currentRoute = usePathname();
 
   return (
-    <div className={cn("flex flex-col gap-y-10", className)}>
+    <div className={cn("flex flex-col gap-y-10 h-40", className)}>
       <Pools isActive={currentRoute.includes(routePath[0])} />
       <Governance isActive={currentRoute.includes(routePath[1])} />
       <Achievements isActive={currentRoute === routePath[2]} />

@@ -97,7 +97,7 @@ export default function PoolPanel({
         </div>
 
         <div className="relative z-30 box-border h-[280px] rounded-3xl rounded-tl-none p-6 pr-10">
-          <div className="flex flex-col md:gap-y-6 gap-y-4 border-b border-[#eee] pb-6">
+          <div className="flex flex-col gap-y-4 border-b border-[#eee] pb-6 md:gap-y-6">
             <FieldRow>
               <TitleText>Leverage</TitleText>
               <FieldText isLoading={isPoolLoading}>1~{leverage}×</FieldText>
@@ -156,9 +156,9 @@ function PanelLogo({ isLoading }: { isLoading: boolean }) {
 
   return (
     <>
-      <div className="absolute flex right-0 w-full">
+      <div className="absolute right-0 flex w-full">
         <div className="relative top-6 h-2 w-full border-y-2 border-black bg-white"></div>
-        <div className="relative -bottom-[50px] right-4 h-6 w-2 border-x-2 border-black bg-white"></div>
+        <div className="relative -bottom-[50px] right-6 h-6 w-2 border-x-2 border-black bg-white"></div>
       </div>
 
       <div className="absolute right-0 top-0 z-20">

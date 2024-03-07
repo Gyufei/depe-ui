@@ -34,32 +34,24 @@ export default function PoolPositions() {
 }
 
 const data: IBundleRow[] = [
-  // {
-  //   tokenName: "m5gr84i9",
-  //   tokenLogo: "usdt",
-  //   positionStatus: "success",
-  //   hash: "4442321131",
-  //   leverage: 5,
-  //   size: 1,
-  //   margin: "usdt",
-  //   liqPrice: 123,
-  //   pl: 15,
-  //   plPercent: 0.2,
-  //   isNft: true,
-  // },
-  // {
-  //   tokenName: "m5gr84i9",
-  //   tokenLogo: "sdf",
-  //   positionStatus: "success",
-  //   hash: "4442321131",
-  //   leverage: 10,
-  //   size: 1,
-  //   margin: "usdt",
-  //   liqPrice: 123,
-  //   pl: 15,
-  //   plPercent: 0.2,
-  //   isNft: false,
-  // },
+  {
+    bundle: "1",
+    amount: 200,
+    date: "2010-01-02",
+    value: 33,
+  },
+  {
+    bundle: "2",
+    amount: 201,
+    date: "2011-01-02",
+    value: 34,
+  },
+  {
+    bundle: "3",
+    amount: 400,
+    date: "2010-01-12",
+    value: 38,
+  },
 ];
 
 export type IBundleRow = {
@@ -71,38 +63,64 @@ export type IBundleRow = {
 
 export const columns: ColumnDef<IBundleRow>[] = [
   {
-    id: "index",
-    header: () => <div className="text-sm leading-5 text-lightgray">#</div>,
-    cell: ({ row }) => {
-      return row.index + 1;
-    },
-    footer: () => <div>Total</div>,
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "bundle",
     header: () => (
       <div className="text-sm leading-5 text-lightgray">Bundle</div>
     ),
-    cell: ({ row }) => <div>{row.getValue("bundle")}</div>,
+    cell: ({ row }) => (
+      <div className="text-base leading-6 text-black">
+        #{row.getValue("bundle")}
+      </div>
+    ),
+    footer: () => (
+      <div className="pl-4 text-left text-lg font-normal leading-7 text-black">
+        Total
+      </div>
+    ),
   },
   {
     accessorKey: "amount",
     header: () => (
       <div className="text-sm leading-5 text-lightgray">Amount</div>
     ),
-    cell: ({ row }) => <div>{row.getValue("amount")}</div>,
+    cell: ({ row }) => (
+      <div className="text-base leading-6 text-black">
+        {row.getValue("amount")}
+      </div>
+    ),
+    footer: () => (
+      <div className="pl-4 text-left text-lg font-normal leading-7 text-black">
+        1856
+      </div>
+    ),
   },
   {
     accessorKey: "date",
     header: () => <div className="text-sm leading-5 text-lightgray">Date</div>,
-    cell: ({ row }) => <div>{row.getValue("size")}</div>,
+    cell: ({ row }) => (
+      <div className="text-base leading-6 text-black">
+        {row.getValue("value")}
+      </div>
+    ),
+    footer: () => (
+      <div className="pl-4 text-left text-lg font-normal leading-7 text-black">
+        -
+      </div>
+    ),
   },
   {
     accessorKey: "value",
     header: () => <div className="text-sm leading-5 text-lightgray">Value</div>,
     cell: ({ row }) => <div>{row.getValue("value")}</div>,
+    footer: (res) => {
+      console.log(res);
+      // const value = data.reduce((total, row) => total + row.value, 0);
+      return (
+        <div className="pl-4 text-left text-lg font-normal leading-7 text-green">
+          ${}
+        </div>
+      );
+    },
   },
 ];
 
@@ -189,7 +207,7 @@ function BundleTable() {
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell className="py-6" key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -203,6 +221,22 @@ function BundleTable() {
             </TableRow>
           )}
         </TableBody>
+        <tfoot className="before:absolute before:h-1 before:border-t before:border-dashed before:border-lightgray before:w-[calc(100%-40px)] before:left-4 before:content-['']">
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <th key={header.id} className="py-5">
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.footer,
+                        header.getContext(),
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
       </Table>
     </div>
   );
