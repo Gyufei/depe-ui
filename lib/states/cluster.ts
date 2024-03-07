@@ -58,8 +58,8 @@ export const DevnetCluster: Cluster = {
     tokenApi: EndPointPathMap.ethTokens,
   },
   marginTokens: [
-    "0xd2bB751e65fD6DBb224872ED7Df807f29b0F98aa",
-    "0x7BdabA369F4554A4F3b39AF031C9D8355BBa6161",
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
   ],
   program: {},
 };

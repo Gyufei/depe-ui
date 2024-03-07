@@ -221,7 +221,7 @@ function BundleTable() {
             </TableRow>
           )}
         </TableBody>
-        <tfoot className="before:absolute before:h-1 before:border-t before:border-dashed before:border-lightgray before:w-[calc(100%-40px)] before:left-4 before:content-['']">
+        <tfoot className="before:absolute before:left-4 before:h-1 before:w-[calc(100%-40px)] before:border-t before:border-dashed before:border-lightgray before:content-['']">
           {table.getFooterGroups().map((footerGroup) => (
             <tr key={footerGroup.id}>
               {footerGroup.headers.map((header) => (

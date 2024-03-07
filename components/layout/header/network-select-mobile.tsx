@@ -11,6 +11,7 @@ import {
 
 import { useAtom } from "jotai";
 import { ClusterAtom, ClusterType } from "@/lib/states/cluster";
+import { CircleFlag } from "@/components/share/circle-flag";
 
 export default function NetworkSelectMobile() {
   const [cluster, setCluster] = useAtom(ClusterAtom);
@@ -85,11 +86,5 @@ export default function NetworkSelectMobile() {
         </div>
       </DrawerContent>
     </Drawer>
-  );
-}
-
-function CircleFlag() {
-  return (
-    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

@@ -23,6 +23,7 @@ import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolAPY } from "@/lib/hooks/api/use-pool-apy";
 import { usePoolsFilter } from "@/lib/hooks/use-pools-filter";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
+import { CircleFlag } from "./circle-flag";
 
 export default function SelectPoolDialogContent({
   isLoading,
@@ -312,11 +313,5 @@ function TitleText({ children }: { children: React.ReactNode }) {
 function SecondText({ children }: { children: React.ReactNode }) {
   return (
     <div className="text-xs leading-[18px] text-lightgray">{children}</div>
-  );
-}
-
-function CircleFlag() {
-  return (
-    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

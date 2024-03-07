@@ -20,6 +20,7 @@ import TradeDialogContent from "../simple/portfolio/trade-dialog-content";
 import { IPool } from "@/lib/types/pool";
 import { IPosition } from "@/lib/types/position";
 import TransferDialogContent from "../simple/portfolio/transfer-dialog-content";
+import { CircleFlag } from "../share/circle-flag";
 
 export default function PositionRowOperation({
   pool,
@@ -145,11 +146,5 @@ export default function PositionRowOperation({
         </Dialog>
       )}
     </div>
-  );
-}
-
-function CircleFlag() {
-  return (
-    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

@@ -9,6 +9,8 @@ import { FarmingPoolSelect } from "./farming-pool-select";
 import { Deposit } from "./deposit";
 import FarmBtn from "./farm-btn";
 import HoverActivePanel, { IsActivePanelContext } from "../hover-active-panel";
+import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
+import { MobileMarginCoin } from "./mobile-margin-coin";
 
 export default function Farming() {
   return (
@@ -20,6 +22,7 @@ export default function Farming() {
 
 function FarmingBase() {
   const isActive = useContext(IsActivePanelContext);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
     <>
@@ -29,11 +32,12 @@ function FarmingBase() {
         className="c-shadow-panel w-[calc(100vw-52px)]  md:w-[480px]"
       >
         <div className="flex flex-col items-stretch gap-y-6">
-          <MarginCoin />
+          {isDesktop && <MarginCoin />}
           <AssetRatingLevel />
           <MaxLeverage />
           <FarmingPoolSelect />
-          <Deposit />
+          {isDesktop && <Deposit />}
+          {!isDesktop && <MobileMarginCoin />}
           <FarmBtn />
         </div>
       </div>

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTokensInfo } from "../api/use-token-info";
 import { useSpecialToken } from "../use-special-token";
-import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import NP from "number-precision";
@@ -17,7 +16,7 @@ export function useTokenBalance(tokenAddress: string | null) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [bValue, setBValue] = useState(0);
+  const [bValue, setBValue] = useState("0");
   const [bFormatted, setBFormatted] = useState("");
 
   const isSol = useMemo(() => {
@@ -26,29 +25,32 @@ export function useTokenBalance(tokenAddress: string | null) {
 
   useEffect(() => {
     async function getTokenBalance() {
-      console.log("----", tokenAddress, account);
       if (!tokenAddress || !account) return;
 
       setIsLoading(true);
 
-      console.log(",,,,", isSol);
       try {
         if (isSol) {
           const res = await connection.getBalance(account);
           const solB = NP.divide(res, 10 ** SOLDecimals);
           setBalance(res);
-          setBValue(solB);
+          setBValue(String(solB));
           setBFormatted(formatNum(solB, 4));
           return;
         }
 
-        // const tokenAddr = new PublicKey(tokenAddress);
-        // const token = new Token(connection, tokenAddr, TOKEN_PROGRAM_ID, null);
-        // const balance = await token.getAccountInfo(tokenAddr);
-        const balance = await connection.getTokenAccountsByOwner(account, {
-          programId: TOKEN_PROGRAM_ID,
-        });
-        console.log(balance, "123----");
+        const tokenAddr = new PublicKey(tokenAddress);
+        const balance = await connection.getParsedTokenAccountsByOwner(
+          account,
+          {
+            mint: tokenAddr,
+          },
+        );
+        const accounts = balance.value;
+        const tokenAmount = accounts[0].account.data.parsed.info;
+        setBalance(tokenAmount.amount);
+        setBValue(tokenAmount.uiAmount);
+        setBFormatted(formatNum(tokenAmount.uiAmount, 4));
       } catch (error) {
         console.error("error", error);
       }

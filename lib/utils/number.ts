@@ -243,3 +243,10 @@ export function trimZeroOfMantissa(num: NumberType) {
 
   return numStr.replace(/\.?0*$/, "");
 }
+
+export function truncateNumber(num: number | string, n: number) {
+  const multiplier = 10 ** n; // 计算 10 的 n 次方
+  const multipliedNum = Number(num) * multiplier; // 将数字扩大对应倍数
+  const truncatedNum = Math.trunc(multipliedNum); // 截断小数部分，保留整数部分
+  return truncatedNum;
+}

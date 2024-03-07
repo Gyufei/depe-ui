@@ -26,6 +26,7 @@ import { usePool } from "@/lib/hooks/api/use-pool";
 import { usePositionFormat } from "@/lib/hooks/use-position-format";
 import ShareDialogContent from "./share-dialog-content";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
+import { CircleFlag } from "@/components/share/circle-flag";
 
 export function PositionRow({
   position,
@@ -297,11 +298,5 @@ export function PositionRow({
         </div>
       </div>
     </div>
-  );
-}
-
-function CircleFlag() {
-  return (
-    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

@@ -20,7 +20,7 @@ export function usePoolDeposit(
   const { owner, GlobalVars, init } = useTempMock();
   const { program, systemProgram } = useDepeProgram();
 
-  const writeAction = async (amount: bigint) => {
+  const writeAction = async (amount: BN) => {
     await init();
     // if (!poolAddr || !amount) return;
     const userSourceTokenAccount =
@@ -58,7 +58,7 @@ export function usePoolDeposit(
     console.log("here here");
 
     await program.methods
-      .deposit(new BN(Number(amount)))
+      .deposit(amount)
       .accounts({
         provider: owner.publicKey,
         userSourceTokenAccount,

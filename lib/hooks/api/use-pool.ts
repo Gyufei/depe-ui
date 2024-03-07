@@ -32,7 +32,7 @@ export function usePool({
       tradingFeeRate: "0.005",
       fundingFeeRate: "0.001",
 
-      baseToken: "So11111111111111111111111111111111111111112",
+      baseToken: "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
       quoteToken: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       dpToken: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       creator: "123",

@@ -34,6 +34,7 @@ import DialogGimp from "@/components/share/dialog-gimp";
 import CreatePoolDialogContent from "@/components/pro/create-pool-dialog-content";
 import { useState } from "react";
 import { useMediaQuery } from "@/lib/hooks/common/use-media-query";
+import { CircleFlag } from "@/components/share/circle-flag";
 
 export default function Pools() {
   const { data: pools, isLoading } = usePools();
@@ -259,11 +260,5 @@ function CreatePoolBtn() {
         <CreatePoolDialogContent />
       </DrawerContent>
     </Drawer>
-  );
-}
-
-function CircleFlag() {
-  return (
-    <div className="h-3 w-3 rounded-full border-2 border-black bg-yellow"></div>
   );
 }

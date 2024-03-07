@@ -6,6 +6,8 @@ import WithApproveBtn from "@/components/share/with-approve-btn";
 import { usePoolFormat } from "@/lib/hooks/use-pool-format";
 import { usePoolDeposit } from "@/lib/hooks/contract/use-pool-deposit";
 import { IsActivePanelContext } from "../hover-active-panel";
+import { BN } from "bn.js";
+import { truncateNumber } from "@/lib/utils/number";
 
 export default function FarmBtn() {
   const originBtnText = "Farm";
@@ -49,8 +51,9 @@ export default function FarmBtn() {
   const handleBtnClick = () => {
     if (!depositAmount) return;
 
-    // const amount = parseUnits(depositAmount, baseToken?.decimals || 18);
-    const amount = depositAmount;
+    const amount = new BN(
+      truncateNumber(depositAmount, baseToken?.decimals || 9),
+    );
     writeAction(amount);
   };
 
