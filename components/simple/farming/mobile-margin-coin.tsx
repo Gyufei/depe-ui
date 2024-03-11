@@ -48,7 +48,7 @@ export function MobileMarginCoin() {
               data-state="active"
               className=" c-active-border flex flex-1 cursor-pointer items-center justify-between rounded-xl border-2 p-3 hover:brightness-110 md:p-4"
             >
-              <div className="flex items-center justify-start space-x-2">
+              <div className="flex items-center justify-start space-x-2 py-[5px]">
                 <Image
                   src={marginToken?.logoURI || ""}
                   width={16}
